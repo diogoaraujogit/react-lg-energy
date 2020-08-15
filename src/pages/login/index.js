@@ -68,7 +68,7 @@ const Login = () => {
                     <p>{errors && errors.password}</p>
                   </div>
                   <button type='submit'>
-                    ENTRAR
+                    LOGIN
                   </button>
                 </form>
               )}
