@@ -3,9 +3,9 @@ import Layout from '../../components/Layout'
 
 import { Container } from './styles';
 
-const Dashboard = () => {
+const Comparatives = () => {
   return (
-    <Layout title='Dashboard'>
+    <Layout title='Comparatives'>
       <Container>
         
       </Container>
@@ -14,4 +14,4 @@ const Dashboard = () => {
   );
 }
 
-export default Dashboard;
+export default Comparatives;
