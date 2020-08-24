@@ -2,12 +2,17 @@ import styled from 'styled-components';
 
 export const Container = styled.div`
   display: flex;
+  transition: width 0.8s;
   width: ${(props) => props.openMenu? '15vw' : '6vw'};
   height: 100%;
   padding-top: 4.7rem;
 
-  svg {
-    margin-right: ${(props) => props.openMenu? '2rem' : '0rem'};
+  p {
+    transition: display 0.5s;
+    width: 0rem;
+    padding-left: ${(props) => props.openMenu? '2rem' : '0rem'};
+    margin-right: -2rem;
+    display: ${(props) => props.openMenu? '' : 'none'}
   }
 `;
 
@@ -33,12 +38,14 @@ export const Icons = styled.div`
    flex-direction: column;
    justify-content: space-between;
    height: 50rem;
+   overflow-x: hidden;
 
 
   div {
     display: flex;
     flex-direction: row;
     align-items: center;
+    overflow-x: hidden;
 
     p {
       font-size: 1.6rem;

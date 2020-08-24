@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
-import { Container, ContentArea, Logo, Icons } from './styles';
+import { Container, ContentArea, Icons } from './styles';
 
 import { Link } from 'react-router-dom'
 import WrapperButton from './wrapper'
 
-import { MdMenu, MdSearch, MdPowerSettingsNew, MdNotifications, MdClear } from 'react-icons/md'
+import { MdSearch, MdPowerSettingsNew, MdNotifications, MdClear } from 'react-icons/md'
 
 
 const Header = (props) => {

@@ -38,7 +38,7 @@ const Menu = () => {
                       <MenuToolTip title={MENU_CONFIG[item].name} placement='right-start'>
                         <div>
                           {MENU_CONFIG[item].icon}
-                          {openMenu ? <p>{MENU_CONFIG[item].name}</p> : ''}
+                          { <p>{MENU_CONFIG[item].name}</p> }
                         </div>
                       </MenuToolTip>
                       
