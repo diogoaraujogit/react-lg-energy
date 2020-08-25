@@ -31,7 +31,7 @@ const Login = () => {
             validationSchema={schema}
             onSubmit={(values) => {
               console.log(values)
-              history.push('/dashboard')
+              history.push('/devices')
             }}
             initialValues={{}}
           >
