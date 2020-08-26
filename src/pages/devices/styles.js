@@ -1,11 +1,16 @@
 import styled from 'styled-components'
 
 export const Container = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
 `;
 
 export const Header = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
   width: 100%;
   padding: 0rem 7.7rem 0rem 6rem;
   margin-bottom: 3rem;
@@ -59,8 +64,121 @@ export const Info = styled.div`
 `;
 
 export const Features = styled.div`
-  
+  > div {
+
+&:first-child {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 4.5rem;
+  margin-bottom: 2rem;
+  color: #222222;
+
+  > button {
+    width: 15rem;
+    height: 4.5rem;
+    background-color: #ffffff;
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 500;
+    box-shadow: 0rem 0.3rem 0.6rem #00000029;
+    border-radius: 10px;
+    transition: all 0.2s;
+    transition-property: color background-color;
+
+    &:hover {
+      background-color: #222222;
+      color: #ffffff;
+    }
+  }
+
+}
+
+&:last-child {
+  display: flex;
+  flex-direction: row;
+  color: #707070;
+  font-size: 1.4rem;
+  align-items: center;
+
+  p {
+    font-weight: 500;
+  }
+
+  svg {
+    color: #222222;
+
+    &:last-of-type {
+      color: #C1C1C1;
+    }
+  }
+
+}
+
+}
 `;
+
+export const AddDevice = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  width: 100%;
+  padding: 4.1rem 2.6rem 3.4rem 2.6rem; 
+  color: #222222;
+
+  p {
+    font-size: 2rem;
+    font-weight: 500;
+    margin-bottom: 2rem;
+  }
+
+  form {
+    display: flex;
+    height: 12rem;
+    justify-content: space-between;
+    flex-direction: column;
+
+    div {
+      display: flex;
+      justify-content: flex-end;
+
+      button {
+        width: 12rem;
+        height: 4.2rem;
+        border: none;
+        border-radius: 5px;
+        color: #222222;
+        font-size: 1.8rem;
+        font-weight: 500;
+
+        &:first-child {
+          margin-right: 2rem;
+          background-color: transparent;
+        }
+
+        &:last-child {
+          color: #ffffff;
+          background-color: #222222;
+        }
+      }
+    }
+  }
+
+  input {
+    border: none;
+    border-bottom: 2px solid #C1C1C1;
+    padding: 1rem 0rem;
+    font-size: 1.8rem;
+
+    &::placeholder {
+      color: #B3B3B3;
+
+    }
+  }
+`;
+
 
 // BODY
 
@@ -69,8 +187,24 @@ export const Body = styled.div`
   padding: 0rem 5.8rem 0rem 3.8rem;
 `;
 
+export const LoadingArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2rem;
+`;
+
 export const BodyMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 2rem;
   
+  color: #788195;
+  font-weight: 600;
+  font-size: 1.8rem;
 `;
 
 export const Groups = styled.div`

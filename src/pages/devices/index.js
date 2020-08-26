@@ -1,10 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import Layout from '../../components/Layout'
 
-import { Container, Header, Info, Features, Body, BodyMessage, Groups, Group, GroupHeader, Cards, Card } from './styles';
+import {
+  Container, Header, Info, Features, AddDevice,
+  Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card
+} from './styles';
 
 import { MdLens } from 'react-icons/md'
 import Loading from '../../components/Loading'
+import Popup from 'reactjs-popup'
 
 import api_crud from '../../services/api_crud';
 import SwitchLabels from '../../components/Switch';
@@ -19,18 +23,22 @@ const Devices = () => {
   const [groups, setGroups] = useState([])
 
   const [switchDisabled, setSwitchDisabled] = useState(false)
+  const [devicesLength, setDevicesLength] = useState(0)
+
+  const [deviceName, setDeviceName] = useState('')
+  const [formError, setFormError] = useState(false)
 
   // VARIÁVEIS
 
   // FUNÇÕES
 
-  
+
 
   function handlePowerDevice(checked, setChecked) {
     //setSwitchDisabled(true)
     setChecked(!checked)
     // setDevicePower(!devicePower)
-}
+  }
 
   async function getGroups() {
 
@@ -60,6 +68,20 @@ const Devices = () => {
     getGroups()
   }, [])
 
+  useEffect(() => {
+
+    let count = 0
+
+    groups && Array.isArray(groups) && groups.map(group => {
+      const devices = group.devices.length
+      count = count + devices
+      return count
+    })
+
+    setDevicesLength(count)
+
+  }, [groups])
+
   return (
     <Layout title='Devices'>
       <Container>
@@ -67,7 +89,7 @@ const Devices = () => {
           <Info>
             <div>
               <h2>Devices</h2>
-              <span>{`${groups.length} Devices`}</span>
+              <span>{`${devicesLength} Devices`}</span>
             </div>
             <div>
               <span>Status:&emsp;</span>
@@ -78,12 +100,70 @@ const Devices = () => {
             </div>
           </Info>
           <Features>
+            <div>
+              <Popup
+                onOpen={() => {
+                  setDeviceName('')
+                  setFormError(false)
+                }}
 
+                contentStyle={{ width: '53rem', height: '30rem', borderRadius: '1rem' }}
+                trigger={
+                  <button>
+                    New Device
+                  </button>
+                }
+                modal
+              >
+                {
+                  close => {
+                    return (
+                      <AddDevice>
+                        <p>New Device</p>
+                        <div>
+                          {
+
+                          }
+                        </div>
+                        <form>
+                          <input
+                            maxLength='20'
+                            value={deviceName}
+                            onChange={event => {
+                              setDeviceName(event.target.value);
+                            }}
+                            placeholder='Device name'
+                          />
+                          <div>
+                            <button>
+                              Cancel
+                            </button>
+                            <button>
+                              Register
+                            </button>
+                          </div>
+                        </form>
+                      </AddDevice>
+                    )
+                  }
+                }
+
+              </Popup>
+            </div>
+            <div>
+              <span>Relay:&emsp;</span>
+              <MdLens />
+              <p>&nbsp;ON&emsp;</p>
+              <MdLens />
+              <p>&nbsp;OFF</p>
+            </div>
           </Features>
         </Header>
         <Body>
           {bodyLoading ?
-            <Loading />
+            <LoadingArea>
+              <Loading />
+            </LoadingArea>
             :
             bodyMessage ?
               <BodyMessage>
@@ -115,7 +195,7 @@ const Devices = () => {
                               const status = true
                               const name = device.name || '-'
                               const relay_status = false
-                              
+
 
                               return (
                                 <Card status={status}>
@@ -126,7 +206,7 @@ const Devices = () => {
                                     <p>{name}</p>
                                   </div>
                                   <SwitchLabels label='' func={(checked, setChecked) => handlePowerDevice(checked, setChecked)} variable={relay_status}
-                                                fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled}
+                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled}
                                   />
                                 </Card>
                               )

@@ -15,9 +15,12 @@ export const MenuArea = styled.div`
 `;
 
 export const ContentArea = styled.div`
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 94vw;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 `;
 
 export const HeaderArea = styled.div`
@@ -27,9 +30,9 @@ export const HeaderArea = styled.div`
 `;
 
 export const PageArea = styled.div`
-  width: 100%;
+  
   height: 100%;
+  width: 100%;
   overflow-x: hidden;
-  overflow-y: auto;
   background-color: #F8F8F8;
 `;
