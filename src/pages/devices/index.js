@@ -7,6 +7,7 @@ import {
 } from './styles';
 
 import { MdLens } from 'react-icons/md'
+import { RiFilterFill } from 'react-icons/ri'
 import Loading from '../../components/Loading'
 import Popup from 'reactjs-popup'
 
@@ -101,6 +102,59 @@ const Devices = () => {
           </Info>
           <Features>
             <div>
+            <button className='disable-schedules'>
+              Disable Schedules
+            </button>
+            <Popup
+                onOpen={() => {
+                  setDeviceName('')
+                  setFormError(false)
+                }}
+
+                contentStyle={{ width: '53rem', height: '30rem', borderRadius: '1rem' }}
+                trigger={
+                  <button className='filter-button'>
+                    <RiFilterFill />
+                    <span>filter</span>
+                  </button>
+                }
+                modal
+              >
+                {
+                  close => {
+                    return (
+                      <AddDevice>
+                        <p>New Device</p>
+                        <div>
+                          {
+                            true && 'O nome é obrigatório'
+                          }
+                        </div>
+                        <form>
+                          <input
+                            maxLength='20'
+                            value={deviceName}
+                            onChange={event => {
+                              setDeviceName(event.target.value);
+                            }}
+                            placeholder='Device name'
+                          />
+                          <div>
+                            <button>
+                              Cancel
+                            </button>
+                            <button>
+                              Register
+                            </button>
+                          </div>
+                        </form>
+                      </AddDevice>
+                    )
+                  }
+                }
+
+              </Popup>
+
               <Popup
                 onOpen={() => {
                   setDeviceName('')
@@ -109,7 +163,7 @@ const Devices = () => {
 
                 contentStyle={{ width: '53rem', height: '30rem', borderRadius: '1rem' }}
                 trigger={
-                  <button>
+                  <button className='add-device-button'>
                     New Device
                   </button>
                 }
@@ -122,7 +176,7 @@ const Devices = () => {
                         <p>New Device</p>
                         <div>
                           {
-
+                            true && 'O nome é obrigatório'
                           }
                         </div>
                         <form>

@@ -76,6 +76,8 @@ export const Features = styled.div`
   color: #222222;
 
   > button {
+
+
     width: 15rem;
     height: 4.5rem;
     background-color: #ffffff;
@@ -91,6 +93,18 @@ export const Features = styled.div`
       background-color: #222222;
       color: #ffffff;
     }
+  }
+
+  .disable-schedules {
+
+  }
+
+  .filter-button {
+
+  }
+
+  .add-device-button {
+    
   }
 
 }
@@ -288,7 +302,7 @@ export const Card = styled.div`
     svg {
       margin-right: 1.5rem;
       font-size: 1.5rem;
-      color: ${props => props.status? '#00D624' : '#ff0000'}
+      color: ${props => props.status ? '#00D624' : '#ff0000'}
     }
   }
 `;
