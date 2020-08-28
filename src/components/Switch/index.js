@@ -9,15 +9,16 @@ import { useMediaPredicate } from "react-media-hook";
 export default function SwitchLabels(props) {
 
     // Media query
-    const smallerThan1650 = useMediaPredicate("(max-width: 1650px)");
-    const smallerThan1045 = useMediaPredicate("(max-width: 1045px)");
-    const smallerThan768 = useMediaPredicate("(max-width: 768px)");
+    // const smallerThan1650 = useMediaPredicate("(max-width: 1650px)");
+    // const smallerThan1045 = useMediaPredicate("(max-width: 1045px)");
+    // const smallerThan768 = useMediaPredicate("(max-width: 768px)");
     const smallerThan480 = useMediaPredicate("(max-width: 480px)");
 
 
     const font480 = props.font480
     const fontSize = smallerThan480? font480 || '1.8rem' : props.fontSize || '1.8rem'
     const disabled = props.disabled || false
+    const size = props.size || 'normal'
 
     const label = props.label
     const variable = props.variable
@@ -89,7 +90,8 @@ export default function SwitchLabels(props) {
                         value="checked"
                         disabled={disabled}
                         color="primary"
-                        size={(smallerThan1650 && !smallerThan1045) || (smallerThan768 && !smallerThan480) ? 'small':'medium'}
+                        size={size}
+                        // size={(smallerThan1650 && !smallerThan1045) || (smallerThan768 && !smallerThan480) ? 'small':'medium'}
 					/>
 				}
 				label={label}

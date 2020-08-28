@@ -26,8 +26,9 @@ export default createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     background: #FFFFFF;
   }
-  textarea, body, input, button, select {
+  * {
     font: 14px 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
   a {
     text-decoration: none;

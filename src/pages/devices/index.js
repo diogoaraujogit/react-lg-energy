@@ -2,12 +2,13 @@ import React, { useEffect, useState, useMemo } from 'react';
 import Layout from '../../components/Layout'
 
 import {
-  Container, Header, Info, Features, AddDevice,
+  Container, Header, Info, Features, AddDevice, AddFilter,
   Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card
 } from './styles';
 
 import { MdLens } from 'react-icons/md'
 import { RiFilterFill } from 'react-icons/ri'
+import arrow_icon from '../../assets/chevron-forward-outline.svg'
 import Loading from '../../components/Loading'
 import Popup from 'reactjs-popup'
 
@@ -29,10 +30,21 @@ const Devices = () => {
   const [deviceName, setDeviceName] = useState('')
   const [formError, setFormError] = useState(false)
 
+  const [disableSchedules, setDisableSchedules] = useState(false)
+
   // VARIÁVEIS
 
   // FUNÇÕES
 
+  const handleSubmit = (e) => {
+    e.preventDefault()
+
+    if (deviceName) {
+
+    } else {
+      setFormError('Device name is required')
+    }
+  }
 
 
   function handlePowerDevice(checked, setChecked) {
@@ -100,18 +112,21 @@ const Devices = () => {
               <p>&nbsp;Inactive</p>
             </div>
           </Info>
-          <Features>
+          <Features disableSchedules={disableSchedules}>
             <div>
-            <button className='disable-schedules'>
-              Disable Schedules
-            </button>
-            <Popup
+              <button className='disable-schedules' onClick={() => setDisableSchedules(!disableSchedules)}>
+                {disableSchedules ? 'Schedules disabled' : 'Disable Schedules'}
+              </button>
+
+              {/* FILTRAR */}
+
+              <Popup
                 onOpen={() => {
                   setDeviceName('')
                   setFormError(false)
                 }}
 
-                contentStyle={{ width: '53rem', height: '30rem', borderRadius: '1rem' }}
+                contentStyle={{ width: '37rem', height: '36rem', borderRadius: '1rem' }}
                 trigger={
                   <button className='filter-button'>
                     <RiFilterFill />
@@ -123,45 +138,53 @@ const Devices = () => {
                 {
                   close => {
                     return (
-                      <AddDevice>
-                        <p>New Device</p>
-                        <div>
-                          {
-                            true && 'O nome é obrigatório'
-                          }
+                      <AddFilter>
+                        <h2>Filter</h2>
+                        <div className='filter-select'>
+                          <select>
+                            <option>Option</option>
+                          </select>
+                          <img src={arrow_icon} alt='' />
                         </div>
-                        <form>
-                          <input
-                            maxLength='20'
-                            value={deviceName}
-                            onChange={event => {
-                              setDeviceName(event.target.value);
-                            }}
-                            placeholder='Device name'
-                          />
-                          <div>
-                            <button>
-                              Cancel
-                            </button>
-                            <button>
-                              Register
-                            </button>
-                          </div>
-                        </form>
-                      </AddDevice>
+
+                        <div className='filter-options'>
+                          <button>
+                            ALL
+                          </button>
+                          <button>
+                            ON
+                          </button>
+                          <button>
+                            OFF
+                          </button>
+                        </div>
+                        <button>
+                          REMOVE FILTER
+                        </button>
+                        <div className='filter-buttons'>
+                          <button>
+                            Cancel
+                          </button>
+                          <button>
+                            Filter
+                          </button>
+                        </div>
+                      </AddFilter>
                     )
                   }
                 }
 
               </Popup>
 
+
+              {/* ADICIONAR DEVICE */}
               <Popup
                 onOpen={() => {
                   setDeviceName('')
                   setFormError(false)
                 }}
 
-                contentStyle={{ width: '53rem', height: '30rem', borderRadius: '1rem' }}
+                contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
                 trigger={
                   <button className='add-device-button'>
                     New Device
@@ -172,18 +195,17 @@ const Devices = () => {
                 {
                   close => {
                     return (
-                      <AddDevice>
+                      <AddDevice formError={formError}>
                         <p>New Device</p>
                         <div>
-                          {
-                            true && 'O nome é obrigatório'
-                          }
+                          <span>{formError}</span>
                         </div>
-                        <form>
+                        <form onSubmit={handleSubmit}>
                           <input
                             maxLength='20'
                             value={deviceName}
                             onChange={event => {
+                              setFormError('')
                               setDeviceName(event.target.value);
                             }}
                             placeholder='Device name'
@@ -192,7 +214,7 @@ const Devices = () => {
                             <button>
                               Cancel
                             </button>
-                            <button>
+                            <button type='submit'>
                               Register
                             </button>
                           </div>
@@ -260,7 +282,7 @@ const Devices = () => {
                                     <p>{name}</p>
                                   </div>
                                   <SwitchLabels label='' func={(checked, setChecked) => handlePowerDevice(checked, setChecked)} variable={relay_status}
-                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled}
+                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled} size='normal'
                                   />
                                 </Card>
                               )

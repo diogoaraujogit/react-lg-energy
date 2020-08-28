@@ -20,6 +20,7 @@ export const ContentArea = styled.div`
   h1 {
     color: #707070;
     font-size: 1.8rem;
+    font-weight: 500;
   }
 `;
 

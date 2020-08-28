@@ -1,5 +1,7 @@
 import styled from 'styled-components'
 
+import { shade } from 'polished'
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,6 +32,7 @@ export const Info = styled.div`
       h2 {
         font-size: 2rem;
         color: #222222;
+        font-weight: 500;
       }
 
       span {
@@ -76,9 +79,7 @@ export const Features = styled.div`
   color: #222222;
 
   > button {
-
-
-    width: 15rem;
+    width: 16rem;
     height: 4.5rem;
     background-color: #ffffff;
     border: none;
@@ -88,23 +89,39 @@ export const Features = styled.div`
     border-radius: 10px;
     transition: all 0.2s;
     transition-property: color background-color;
+    margin-right: 2rem;
 
     &:hover {
       background-color: #222222;
       color: #ffffff;
     }
+
   }
 
   .disable-schedules {
-
+    background-color: ${props => props.disableSchedules ? '#C5004F' : '#FFFFFF'};
+    color: ${props => props.disableSchedules ? '#FFFFFF' : '#222222'};
+    
+    &:hover {
+      background-color: ${props => props.disableSchedules ? shade(0.2, '#C5004F') : '#C5004F'};
+    }
   }
 
   .filter-button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.5rem 0rem;
+    font-size: 1.2rem;
+    width: 4.5rem;
 
+    svg {
+      font-size: 2rem;
+    }
   }
 
   .add-device-button {
-    
+    margin: 0rem;
   }
 
 }
@@ -115,6 +132,8 @@ export const Features = styled.div`
   color: #707070;
   font-size: 1.4rem;
   align-items: center;
+  justify-content: flex-end;
+  margin-right: 2rem;
 
   p {
     font-weight: 500;
@@ -145,7 +164,17 @@ export const AddDevice = styled.div`
   p {
     font-size: 2rem;
     font-weight: 500;
-    margin-bottom: 2rem;
+  }
+
+  > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 2rem;
+
+    span {
+      color: red;
+    }
   }
 
   form {
@@ -183,6 +212,7 @@ export const AddDevice = styled.div`
   input {
     border: none;
     border-bottom: 2px solid #C1C1C1;
+    border-color: ${props => props.formError ? '#FF0000' : '#C1C1C1'};
     padding: 1rem 0rem;
     font-size: 1.8rem;
 
@@ -190,7 +220,121 @@ export const AddDevice = styled.div`
       color: #B3B3B3;
 
     }
+    &:focus {
+      border-color: ${props => props.formError ? '#FF0000' : '#222222'};
+    }
   }
+`;
+
+export const AddFilter = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 3rem 5.9rem; 
+  color: #222222;
+
+  h2 {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  select {
+    width: 25rem;
+    height: 4.5rem;
+    padding: 0rem 2rem;
+    font-size: 1.6rem;
+    border: 2px solid #B3B3B3;
+    border-radius: 5px;
+    color: #222222;
+    font-weight: 500;
+
+    -moz-appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .filter-select {
+    display: flex;
+    flex-direction: row;
+
+    img {
+      margin-left: -3rem;
+    }
+
+    select::-ms-expand {
+      display: none;
+    }
+  }
+
+  .filter-options {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    height: 4.5rem;
+    width: 25rem;
+    border-radius: 5px;
+
+
+    button {
+      width: 100%;
+      border: none;
+      border: 1.5px solid #B3B3B3;
+      background-color: #ffffff;
+      transition: all 0.2s;
+      transition-property: color background-color;
+
+      &:hover {
+        background-color: #222222;
+        color: #ffffff;
+        border-color: #222222;
+      }
+
+      &:first-of-type {
+        border-right: none;
+        border-radius: 5px 0px 0px 5px;
+      }
+
+      &:last-of-type {
+        border-left: none;
+        border-radius: 0px 5px 5px 0px;
+      }
+    }
+  }
+
+  > button {
+    color: red;
+    font-size: 1.4rem;
+    font-weight: 500;
+    background-color: #ffffff;
+    border: none;
+  }
+
+  .filter-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+
+    button {
+      width: 12rem;
+      height: 4.2rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.8rem;
+      font-weight: 500;
+
+      &:first-child {
+        background-color: #F8F8F8;
+        color: #222222;
+      }
+
+      &:last-child {
+        background-color: #222222;
+        color: #ffffff;
+      }
+    }
+  }
+
 `;
 
 
@@ -241,11 +385,11 @@ export const GroupHeader = styled.div`
   justify-content: space-between;
   margin-bottom: 3rem;
   align-items: flex-start;
-
+  color: #222222;
 
   h2 {
     font-size: 2rem;
-
+    font-weight: 500;
   }
 
   
@@ -293,6 +437,12 @@ export const Card = styled.div`
     overflow-wrap: break-word;
     
     word-break: break-word;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+    }
 
     p {
       font-size: 1.8rem;
