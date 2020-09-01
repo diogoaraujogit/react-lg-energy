@@ -11,10 +11,14 @@ import { RiFilterFill } from 'react-icons/ri'
 import arrow_icon from '../../assets/chevron-forward-outline.svg'
 import Loading from '../../components/Loading'
 import Popup from 'reactjs-popup'
+import { toast } from 'react-toastify'
 
 import api_crud from '../../services/api_crud';
 import SwitchLabels from '../../components/Switch';
 import { Link } from 'react-router-dom';
+import { base_device } from './base_device';
+
+// import Fuse from 'fuse.js'
 
 const Devices = () => {
 
@@ -31,19 +35,69 @@ const Devices = () => {
   const [formError, setFormError] = useState(false)
 
   const [disableSchedules, setDisableSchedules] = useState(false)
+  const [filterSelect, setFilterSelect] = useState('all')
+  const [filterOption, setFilterOption] = useState('')
+  const [isFiltered, setIsFiltered] = useState(false)
+
+  const [groupsArray, setGroupsArray] = useState([])
+
+
+  const [registering, setRegistering] = useState(false)
 
   // VARIÁVEIS
 
   // FUNÇÕES
 
-  const handleSubmit = (e) => {
+  const handleFilter = (close) => {
+
+    if(!filterOption && filterSelect === 'all') {
+      setIsFiltered(false)
+    }
+
+    if (filterOption) {
+      setIsFiltered(true)
+      const filteredGroups = groups.filter(group => group.name === filterOption)
+      setGroupsArray(filteredGroups)
+    }
+    
+    close()
+  }
+
+  const removeFilter = () => {
+    setFilterOption('')
+    setFilterSelect('all')
+    setIsFiltered(false)
+    setGroupsArray(groups)
+  }
+
+  async function handleSubmit(e, close) {
     e.preventDefault()
+    setRegistering(true)
 
     if (deviceName) {
+
+      try {
+
+      const response = await api_crud.post('/devices', {
+        ...base_device, name: deviceName
+      })
+
+      if(response.data) {
+        toast.info('Sucesso') 
+        
+      } else {
+        toast.error('Erro')
+      }
+
+      } catch(e) {
+        toast.error('Erro')
+      }
 
     } else {
       setFormError('Device name is required')
     }
+
+    setRegistering(false)
   }
 
 
@@ -64,6 +118,10 @@ const Devices = () => {
 
       if (response.data) {
         setGroups(response.data)
+
+        if(!isFiltered) {
+          setGroupsArray(response.data)
+        }
       }
 
     } catch (e) {
@@ -85,7 +143,7 @@ const Devices = () => {
 
     let count = 0
 
-    groups && Array.isArray(groups) && groups.map(group => {
+    groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
       const devices = group.devices.length
       count = count + devices
       return count
@@ -93,7 +151,17 @@ const Devices = () => {
 
     setDevicesLength(count)
 
-  }, [groups])
+  }, [groupsArray])
+
+  // const options = {
+  //   keys: ['devices.name']
+  // }
+
+  // const fuse = new Fuse(groups, options)
+  // const result = fuse.search('4')
+  // console.log('Resultados')
+  // console.log(result)
+
 
   return (
     <Layout title='Devices'>
@@ -112,7 +180,7 @@ const Devices = () => {
               <p>&nbsp;Inactive</p>
             </div>
           </Info>
-          <Features disableSchedules={disableSchedules}>
+          <Features disableSchedules={disableSchedules} filtered={isFiltered}>
             <div>
               <button className='disable-schedules' onClick={() => setDisableSchedules(!disableSchedules)}>
                 {disableSchedules ? 'Schedules disabled' : 'Disable Schedules'}
@@ -122,8 +190,6 @@ const Devices = () => {
 
               <Popup
                 onOpen={() => {
-                  setDeviceName('')
-                  setFormError(false)
                 }}
 
                 contentStyle={{ width: '37rem', height: '36rem', borderRadius: '1rem' }}
@@ -141,31 +207,43 @@ const Devices = () => {
                       <AddFilter>
                         <h2>Filter</h2>
                         <div className='filter-select'>
-                          <select>
-                            <option>Option</option>
+                          <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
+                            <option key={0} value=''>
+                              Select a group
+                            </option>
+                            {
+                              groups && Array.isArray(groups) && groups.map(group => {
+
+                                return (
+                                  <option key={groups.indexOf(group) + 1} value={group.name}>
+                                    {group.name}
+                                  </option>
+                                )
+                              })
+                            }
                           </select>
                           <img src={arrow_icon} alt='' />
                         </div>
 
                         <div className='filter-options'>
-                          <button>
+                          <button className={filterSelect === 'all' && 'filter-selected'} onClick={() => setFilterSelect('all')}>
                             ALL
                           </button>
-                          <button>
+                          <button className={filterSelect === 'on' && 'filter-selected'} onClick={() => setFilterSelect('on')}>
                             ON
                           </button>
-                          <button>
+                          <button className={filterSelect === 'off' && 'filter-selected'} onClick={() => setFilterSelect('off')}>
                             OFF
                           </button>
                         </div>
-                        <button>
+                        <button onClick={() => removeFilter()}>
                           REMOVE FILTER
                         </button>
                         <div className='filter-buttons'>
-                          <button>
+                          <button onClick={() => close()}>
                             Cancel
                           </button>
-                          <button>
+                          <button onClick={() => handleFilter(close)}>
                             Filter
                           </button>
                         </div>
@@ -195,12 +273,12 @@ const Devices = () => {
                 {
                   close => {
                     return (
-                      <AddDevice formError={formError}>
+                      <AddDevice formError={formError} registering={registering}>
                         <p>New Device</p>
                         <div>
                           <span>{formError}</span>
                         </div>
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={(e) => handleSubmit(e, close)}>
                           <input
                             maxLength='20'
                             value={deviceName}
@@ -211,11 +289,11 @@ const Devices = () => {
                             placeholder='Device name'
                           />
                           <div>
-                            <button>
+                            <button disabled={registering} onClick={() => close()}>
                               Cancel
                             </button>
-                            <button type='submit'>
-                              Register
+                            <button disabled={registering} type='submit'>
+                              Register {registering && <Loading />}
                             </button>
                           </div>
                         </form>
@@ -248,7 +326,7 @@ const Devices = () => {
               :
               <Groups>
                 {
-                  groups && Array.isArray(groups) && groups.map(group => {
+                  groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
 
                     const devices = group.devices || []
                     const name = group.name || '-'

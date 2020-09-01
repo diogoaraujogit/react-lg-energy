@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { shade } from 'polished'
+import { shade, lighten } from 'polished'
 
 export const Container = styled.div`
   display: flex;
@@ -115,6 +115,13 @@ export const Features = styled.div`
     font-size: 1.2rem;
     width: 4.5rem;
 
+    background-color: ${props => props.filtered ? '#C5004F' : '#FFFFFF'};
+    color: ${props => props.filtered ? '#FFFFFF' : '#222222'};
+
+    &:hover {
+      background-color: ${props => props.filtered ? shade(0.2, '#C5004F') : ''};
+    }
+
     svg {
       font-size: 2rem;
     }
@@ -188,6 +195,10 @@ export const AddDevice = styled.div`
       justify-content: flex-end;
 
       button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
         width: 12rem;
         height: 4.2rem;
         border: none;
@@ -204,6 +215,29 @@ export const AddDevice = styled.div`
         &:last-child {
           color: #ffffff;
           background-color: #222222;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: ${() => lighten(0.1, '#222222')}
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .MuiCircularProgress-root {
+          width: 1.4rem !important;
+          height: 1.4rem !important;
+          margin-left: 1rem;
+        }
+
+        .MuiCircularProgress-svg {
+          color: #ffffff;
+          opacity: 1;
+          width: 1.4rem;
+          height: 1.4rem;
         }
       }
     }
@@ -244,7 +278,7 @@ export const AddFilter = styled.div`
   select {
     width: 25rem;
     height: 4.5rem;
-    padding: 0rem 2rem;
+    padding: 0rem 0rem 0rem 2rem;
     font-size: 1.6rem;
     border: 2px solid #B3B3B3;
     border-radius: 5px;
@@ -299,6 +333,12 @@ export const AddFilter = styled.div`
         border-left: none;
         border-radius: 0px 5px 5px 0px;
       }
+    }
+
+    .filter-selected {
+      background-color: #222222;
+        color: #ffffff;
+        border-color: #222222;
     }
   }
 

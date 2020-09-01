@@ -8,7 +8,7 @@ import history from './services/history';
 
 import GlobalStyle from './styles/global';
 import useWindowSize from "./styles/optional-desktop-responsive"
-
+import { ToastContainer } from 'react-toastify'
 
 const App = props => {
   
@@ -20,6 +20,7 @@ const App = props => {
         <Router history={history}>
             <Routes></Routes>
             <GlobalStyle rate={rate} />
+            <ToastContainer autoClose={4000} />
         </Router>
 )};
 
