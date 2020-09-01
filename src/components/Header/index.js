@@ -13,23 +13,23 @@ const Header = (props) => {
 
   const [showSearchBar, setShowSearchBar] = useState(false)
   const title = props.title
-  const search = props.search
+  // const search = props.search
   const setSearch = props.setSearch
-  const enableElasticSearch = props.enableElasticSearch
+  // const enableElasticSearch = props.enableElasticSearch
 
   // FUNÇÕES
 
-  function clearSearch() {
-    setSearch('')
-    console.log(showSearchBar)
-    setShowSearchBar(!showSearchBar)
-  }
+  // function clearSearch() {
+  //   setSearch('')
+  //   console.log(showSearchBar)
+  //   setShowSearchBar(!showSearchBar)
+  // }
 
-  function handleKeyPress(event) {
-    if (event.keyCode === 27) {
-      clearSearch()
-    }
-  }
+  // function handleKeyPress(event) {
+  //   if (event.keyCode === 27) {
+  //     clearSearch()
+  //   }
+  // }
 
   function handleLogout() {
     // api.api_notifications_post(`Logout de usuário`, 'Usuários', `O usuário '${username}' realizou um logout do sistema`)
@@ -46,7 +46,7 @@ const Header = (props) => {
         </h1>
 
         <Icons>
-          {
+          {/* {
             showSearchBar && enableElasticSearch &&
             <div>
               <input
@@ -68,7 +68,7 @@ const Header = (props) => {
             <WrapperButton tip='Buscar'>
               <MdSearch onClick={() => clearSearch()} />
             </WrapperButton>
-          }
+          } */}
 
           <WrapperButton tip='Notifications'>
             <Link to='/notifications'>

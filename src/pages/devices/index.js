@@ -1,8 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState, useMemo, useCallback } from 'react';
 import Layout from '../../components/Layout'
+import { useHistory } from 'react-router-dom'
 
 import {
-  Container, Header, Info, Features, AddDevice, AddFilter,
+  Container, Header, Info, Features, AddDevice, AddFilter, Search,
   Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card
 } from './styles';
 
@@ -19,6 +20,9 @@ import { Link } from 'react-router-dom';
 import { base_device } from './base_device';
 
 // import Fuse from 'fuse.js'
+
+import { MdSearch, MdClear } from 'react-icons/md'
+
 
 const Devices = () => {
 
@@ -46,12 +50,14 @@ const Devices = () => {
 
   // VARIÁVEIS
 
+  const history = useHistory()
+
   // FUNÇÕES
 
   const handleFilter = (close) => {
 
-    if(!filterOption && filterSelect === 'all') {
-      setIsFiltered(false)
+    if (!filterOption && filterSelect === 'all') {
+      removeFilter()
     }
 
     if (filterOption) {
@@ -59,7 +65,7 @@ const Devices = () => {
       const filteredGroups = groups.filter(group => group.name === filterOption)
       setGroupsArray(filteredGroups)
     }
-    
+
     close()
   }
 
@@ -78,18 +84,18 @@ const Devices = () => {
 
       try {
 
-      const response = await api_crud.post('/devices', {
-        ...base_device, name: deviceName
-      })
+        const response = await api_crud.post('/devices', {
+          ...base_device, name: deviceName
+        })
 
-      if(response.data) {
-        toast.info('Sucesso') 
-        
-      } else {
-        toast.error('Erro')
-      }
+        if (response.data) {
+          toast.info('Sucesso')
 
-      } catch(e) {
+        } else {
+          toast.error('Erro')
+        }
+
+      } catch (e) {
         toast.error('Erro')
       }
 
@@ -119,7 +125,7 @@ const Devices = () => {
       if (response.data) {
         setGroups(response.data)
 
-        if(!isFiltered) {
+        if (!isFiltered) {
           setGroupsArray(response.data)
         }
       }
@@ -151,6 +157,12 @@ const Devices = () => {
 
     setDevicesLength(count)
 
+    if (count < 1) {
+      setBodyMessage('Nenhum dispositivo cadastrado')
+    } else {
+      setBodyMessage('')
+    }
+
   }, [groupsArray])
 
   // const options = {
@@ -161,6 +173,23 @@ const Devices = () => {
   // const result = fuse.search('4')
   // console.log('Resultados')
   // console.log(result)
+
+  const [showSearchBar, setShowSearchBar] = useState(false)
+  const [search, setSearch] = useState('')
+
+  // FUNÇÕES
+
+  function clearSearch() {
+    setSearch('')
+    console.log(showSearchBar)
+    setShowSearchBar(!showSearchBar)
+  }
+
+  function handleKeyPress(event) {
+    if (event.keyCode === 27) {
+      clearSearch()
+    }
+  }
 
 
   return (
@@ -182,9 +211,29 @@ const Devices = () => {
           </Info>
           <Features disableSchedules={disableSchedules} filtered={isFiltered}>
             <div>
-              <button className='disable-schedules' onClick={() => setDisableSchedules(!disableSchedules)}>
-                {disableSchedules ? 'Schedules disabled' : 'Disable Schedules'}
-              </button>
+              <Search>
+              {
+                showSearchBar &&
+                <div>
+                  <input
+                    type='text'
+                    maxlength='20'
+                    autoFocus
+                    value={search}
+                    onKeyDown={handleKeyPress}
+                    onChange={event => setSearch(event.target.value)}
+                  />
+                  <button onClick={() => setSearch('')} >
+                    <MdClear />
+                  </button>
+                </div>
+              }
+
+                <MdSearch onClick={() => clearSearch()} />
+
+              </Search>
+
+              
 
               {/* FILTRAR */}
 
@@ -253,6 +302,10 @@ const Devices = () => {
                 }
 
               </Popup>
+
+              <button className='disable-schedules' onClick={() => setDisableSchedules(!disableSchedules)}>
+                {disableSchedules ? 'Schedules disabled' : 'Disable Schedules'}
+              </button>
 
 
               {/* ADICIONAR DEVICE */}
@@ -349,18 +402,18 @@ const Devices = () => {
                               const status = true
                               const name = device.name || '-'
                               const relay_status = false
-
+                              const id = device.id
 
                               return (
                                 <Card status={status}>
-                                  <div>
+                                  <div  onClick={() => history.push(`/devices/${id}`)}>
                                     <div>
                                       <MdLens />
                                     </div>
                                     <p>{name}</p>
                                   </div>
                                   <SwitchLabels label='' func={(checked, setChecked) => handlePowerDevice(checked, setChecked)} variable={relay_status}
-                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled} size='normal'
+                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled} size='medium'
                                   />
                                 </Card>
                               )

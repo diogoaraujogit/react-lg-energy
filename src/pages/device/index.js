@@ -7,7 +7,20 @@ const Device = () => {
   return (
     <Layout title='Device'>
       <Container>
-        
+
+        {/* <Header>
+
+        </Header>
+
+        <Info>
+
+        </Info>
+
+        <Body>
+
+        </Body> */}
+
+
       </Container>
     </Layout>
 

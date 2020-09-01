@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-import { shade, lighten } from 'polished'
+import { shade, lighten, darken } from 'polished'
 
 export const Container = styled.div`
   display: flex;
@@ -377,6 +377,47 @@ export const AddFilter = styled.div`
 
 `;
 
+export const Search = styled.div`
+  display: flex;
+  height: 100%;
+  align-items: center;
+  margin-right: 2rem;
+
+  > div {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  button {
+    background-color: transparent;
+    border: none;
+
+    svg {
+      margin-left: -4rem;
+    }
+  }
+
+  input {
+    border: none;
+    border-radius: 5px;
+    height: 100%;
+    padding: 0rem 2rem;
+    box-shadow: 0rem 0.3rem 0.6rem #00000029;
+  }
+
+  svg {
+    color: #707070;
+    font-size: 2.5rem;
+    margin-left: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: ${darken(0.2, '#707070')}
+    }
+  }
+`;
+
 
 // BODY
 
@@ -495,4 +536,19 @@ export const Card = styled.div`
       color: ${props => props.status ? '#00D624' : '#ff0000'}
     }
   }
+
+  .MuiSwitch-colorPrimary {
+    color: #C1C1C1;
+
+    &.Mui-checked {
+      color: #222222;
+    }
+
+    &.Mui-checked + .MuiSwitch-track {
+      background-color: #222222;
+      opacity: 0.8;
+    }
+  }
+
+  
 `;
