@@ -3,7 +3,7 @@ import Layout from '../../components/Layout'
 import { useHistory } from 'react-router-dom'
 
 import {
-  Container, Header, Info, Features, AddDevice, AddFilter, Search,
+  Container, Header, Info, Features, AddDevice, AddFilter, Search, SearchInfo,
   Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card
 } from './styles';
 
@@ -19,7 +19,7 @@ import SwitchLabels from '../../components/Switch';
 import { Link } from 'react-router-dom';
 import { base_device } from './base_device';
 
-// import Fuse from 'fuse.js'
+import Fuse from 'fuse.js'
 
 import { MdSearch, MdClear } from 'react-icons/md'
 
@@ -44,7 +44,7 @@ const Devices = () => {
   const [isFiltered, setIsFiltered] = useState(false)
 
   const [groupsArray, setGroupsArray] = useState([])
-
+  const [groupsFiltered, setGroupsFiltered] = useState([])
 
   const [registering, setRegistering] = useState(false)
 
@@ -64,6 +64,7 @@ const Devices = () => {
       setIsFiltered(true)
       const filteredGroups = groups.filter(group => group.name === filterOption)
       setGroupsArray(filteredGroups)
+      setGroupsFiltered(filteredGroups)
     }
 
     close()
@@ -74,6 +75,7 @@ const Devices = () => {
     setFilterSelect('all')
     setIsFiltered(false)
     setGroupsArray(groups)
+    setGroupsFiltered(groups)
   }
 
   async function handleSubmit(e, close) {
@@ -90,7 +92,8 @@ const Devices = () => {
 
         if (response.data) {
           toast.info('Sucesso')
-
+          getGroups()
+          close()
         } else {
           toast.error('Erro')
         }
@@ -117,6 +120,9 @@ const Devices = () => {
 
     setBodyLoading(true)
     setBodyMessage('')
+    removeFilter()
+    setSearch('')
+    setShowSearchBar(false)
 
     try {
 
@@ -124,10 +130,9 @@ const Devices = () => {
 
       if (response.data) {
         setGroups(response.data)
-
-        if (!isFiltered) {
-          setGroupsArray(response.data)
-        }
+        setGroupsArray(response.data)
+        setGroupsFiltered(response.data)
+        
       }
 
     } catch (e) {
@@ -165,14 +170,6 @@ const Devices = () => {
 
   }, [groupsArray])
 
-  // const options = {
-  //   keys: ['devices.name']
-  // }
-
-  // const fuse = new Fuse(groups, options)
-  // const result = fuse.search('4')
-  // console.log('Resultados')
-  // console.log(result)
 
   const [showSearchBar, setShowSearchBar] = useState(false)
   const [search, setSearch] = useState('')
@@ -190,6 +187,37 @@ const Devices = () => {
       clearSearch()
     }
   }
+
+  // FUZZY SEARCH
+
+
+  useEffect(() => {
+
+    const groupsArray_copy = [...groupsFiltered]
+
+    const searched = groupsArray_copy.map(group => {
+
+      let obj = Object.assign({}, group)
+
+      const result_devices = obj.devices.filter(device =>
+        device.name.toLowerCase().includes(search.toLowerCase())  
+      )
+
+      obj.devices = result_devices
+
+      return obj
+    })
+
+    const newGroups = searched.filter(group => group.devices.length > 0)
+
+    console.log('Resultados')
+    console.log(searched)
+    console.log(newGroups)
+
+    setGroupsArray(newGroups)
+  }, [search, groupsFiltered])
+
+
 
 
   return (
@@ -212,28 +240,28 @@ const Devices = () => {
           <Features disableSchedules={disableSchedules} filtered={isFiltered}>
             <div>
               <Search>
-              {
-                showSearchBar &&
-                <div>
-                  <input
-                    type='text'
-                    maxlength='20'
-                    autoFocus
-                    value={search}
-                    onKeyDown={handleKeyPress}
-                    onChange={event => setSearch(event.target.value)}
-                  />
-                  <button onClick={() => setSearch('')} >
-                    <MdClear />
-                  </button>
-                </div>
-              }
+                {
+                  showSearchBar &&
+                  <div>
+                    <input
+                      type='text'
+                      maxlength='20'
+                      autoFocus
+                      value={search}
+                      onKeyDown={handleKeyPress}
+                      onChange={event => setSearch(event.target.value)}
+                    />
+                    <button onClick={() => setSearch('')} >
+                      <MdClear />
+                    </button>
+                  </div>
+                }
 
                 <MdSearch onClick={() => clearSearch()} />
 
               </Search>
 
-              
+
 
               {/* FILTRAR */}
 
@@ -366,6 +394,15 @@ const Devices = () => {
             </div>
           </Features>
         </Header>
+        
+        <SearchInfo>
+          {
+            search && <><h3>Showing results for:&nbsp;</h3>
+            <p>{search}</p></>
+          }
+        </SearchInfo>
+        
+        {/* BODY */}
         <Body>
           {bodyLoading ?
             <LoadingArea>
@@ -384,6 +421,7 @@ const Devices = () => {
                     const devices = group.devices || []
                     const name = group.name || '-'
                     const group_id = group.id || ''
+
 
                     return (
                       <Group>
@@ -406,7 +444,7 @@ const Devices = () => {
 
                               return (
                                 <Card status={status}>
-                                  <div  onClick={() => history.push(`/devices/${id}`)}>
+                                  <div onClick={() => history.push(`/devices/${id}`)}>
                                     <div>
                                       <MdLens />
                                     </div>

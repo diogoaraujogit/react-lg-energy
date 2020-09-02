@@ -86,3 +86,40 @@ button {
 }
  
 `;
+
+export const Language = styled.div`
+  margin-top: 3rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 10rem;
+
+  button {
+    width: 4rem;
+    height: 3rem;
+    background-color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0px 5px 20px #0000001A;
+
+    &:first-child {
+      border: ${props => props.language === 'en'? '2px solid #C1C1C1' : ''}
+    }
+
+    &:last-child {
+      border: ${props => props.language === 'pt'? '2px solid #C1C1C1' : ''}
+    }
+
+
+    &:hover {
+      border: 2px solid #C1C1C1;
+    }
+
+  }
+
+  img {
+    width: 2rem;
+    height: 1.5rem;
+  }
+`;

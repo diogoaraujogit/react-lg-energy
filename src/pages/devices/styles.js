@@ -15,7 +15,7 @@ export const Header = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 0rem 7.7rem 0rem 6rem;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
 `;
 
 export const Info = styled.div`
@@ -415,6 +415,26 @@ export const Search = styled.div`
     &:hover {
       color: ${darken(0.2, '#707070')}
     }
+  }
+`;
+
+export const SearchInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  min-height: 2rem;
+  margin-bottom: 2rem;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+
+  h3 {
+    font-size: 1.4rem;
+    color: #707070;
+  }
+
+  p {
+    color: #222222;
+    font-weight: bold;
   }
 `;
 
