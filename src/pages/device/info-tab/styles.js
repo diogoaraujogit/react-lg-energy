@@ -12,7 +12,7 @@ export const Header = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 0rem 6rem 0rem 5rem;
-  margin-bottom: 5rem;
+  margin-bottom: 3rem;
 `;
 
 export const Info = styled.div`
@@ -33,7 +33,7 @@ export const Info = styled.div`
         border: none;
         border-bottom: 1px solid #222222;
         background-color: transparent;
-        padding-bottom: 0.5rem;
+        padding-bottom: 0rem;
         color: #222222;
         font-weight: 500;
         font-size: 2.2rem;
@@ -157,11 +157,78 @@ export const Features = styled.div`
 
 export const Boards = styled.div`
   width: 100%;
+  height: 28.4rem;
+  padding: 0rem 6rem 3rem 5rem;
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 3rem;
+
+  > div {
+    background-color: #ffffff;
+    width: 100%;
+    border-radius: 15px;
+    box-shadow: 0px 2px 5px #0000000D;
+    padding: 2.5rem;
+
+    &:first-child {
+      h4 {
+        color: #707070;
+        font-size: 1.6rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+      }
+
+      p {
+        color: #222222;
+        font-size: 1.6rem;
+        font-weight: 500;
+      }
+
+      textarea {
+        resize: none;
+        width: 100%;
+        height: 100%;
+        color: #222222;
+        font-size: 1.6rem;
+        font-weight: 500;
+        height: 15rem;
+        border: none;
+        background-color: #F8F8F8;
+        border-radius: 10px;
+        padding: 1rem;
+      }
+    }
+
+    &:last-child {
+      display: flex;
+      flex-direction: column;
+
+      > div {
+        display: flex;
+        flex-direction: column;
+        align-items: center
+      }
+
+      h4 {
+        color: #707070;
+        font-size: 1.6rem;
+        font-weight: 500;
+        margin-bottom: 2rem;
+      }
+
+      h2 {
+        color: #222222;
+        font-size: 3.2rem;
+        font-weight: 500;
+        margin-bottom: 2rem; 
+      }
+    }
+  }
 `;
 
 export const Values = styled.div`
   width: 100%;
-  margin: 0rem 6rem 3rem 5rem;
+  margin: 0rem 6rem 6rem 5rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   grid-gap: 3rem;
@@ -188,13 +255,13 @@ export const Values = styled.div`
       background-color: transparent;
       padding-bottom: 0.5rem;
       color: #222222;
-      font-weight: 400;
+      font-weight: 500;
       font-size: 1.6rem;
     }
 
     p {
       color: #222222;
-      font-weight: 400;
+      font-weight: 500;
       font-size: 1.6rem;
     }
   }
