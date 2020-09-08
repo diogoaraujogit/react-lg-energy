@@ -6,7 +6,7 @@ const SearchTab = () => {
 
   return (
     <Container>
-      RELAY
+      SEARCH
     </Container>
   );
 }

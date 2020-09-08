@@ -1,4 +1,5 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom'
 import Layout from '../../components/Layout'
 
 import { Container, Header, NavBack, NavTabs, LoadingArea, BodyMessage, Body } from './styles';
@@ -11,15 +12,24 @@ import TabsComponent from '../../components/Tabs';
 import Loading from '../../components/Loading'
 
 import { FiArrowLeft } from 'react-icons/fi'
+import api_crud from '../../services/api_crud';
+import { useDispatch, useSelector } from 'react-redux';
+import { setDevice } from '../../store/modules/device/actions';
+import { toast } from 'react-toastify';
 
 const Device = () => {
 
+  const dispatch = useDispatch()
 
   const tabs = useMemo(() => ['Search', 'Readings', 'Info', 'Settings', 'Relay'], [])
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(2)
 
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
+
+  const { id } = useParams()
+
+  // const { device } = useSelector(state => state.device)
 
   const renderTab = () => {
     switch (tab) {
@@ -39,6 +49,36 @@ const Device = () => {
 
   }
 
+  // FUNÇÕES
+
+  async function getDevice() {
+    setBodyLoading(true)
+    setBodyMessage('')
+
+    try {
+
+      const response = await api_crud.get(`/devices/${id}`)
+
+      if(response.data) {
+        console.log(response.data)
+        dispatch(setDevice(response.data))
+      } else {
+        setBodyMessage('Unable to get device')
+      }
+
+    } catch (e) {
+      toast.error('Unable to get device')
+      setBodyMessage('Unable to get device')
+    }
+
+    setBodyLoading(false)
+  }
+
+  // USE EFFECT
+
+  useEffect(() => {
+    getDevice()
+  }, [])
 
   return (
     <Layout title='Device'>
@@ -49,24 +89,24 @@ const Device = () => {
             <FiArrowLeft />
           </NavBack>
           <NavTabs>
-            <TabsComponent tabs={tabs} onTabChange={setTab} />
+            <TabsComponent tabs={tabs} onTabChange={setTab} initial={tab}/>
           </NavTabs>
 
         </Header>
 
         <Body>
           {
-            bodyLoading?
-            <LoadingArea>
-              <Loading />
-            </LoadingArea>
-            :
-            bodyMessage?
-            <BodyMessage>
-              {bodyMessage}
-            </BodyMessage>
-            :
-            renderTab()
+            bodyLoading ?
+              <LoadingArea>
+                <Loading />
+              </LoadingArea>
+              :
+              bodyMessage ?
+                <BodyMessage>
+                  {bodyMessage}
+                </BodyMessage>
+                :
+                renderTab()
           }
         </Body>
 

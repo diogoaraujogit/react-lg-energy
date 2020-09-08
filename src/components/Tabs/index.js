@@ -5,7 +5,7 @@ import { Container } from './styles';
 
 const TabsComponent = (props) => {
 
-  const [value, setValue] = useState(0)
+  const [value, setValue] = useState(props.initial || 0)
 
   const tabs = props.tabs
   const onTabChange = props.onTabChange

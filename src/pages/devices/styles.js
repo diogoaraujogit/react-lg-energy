@@ -267,7 +267,7 @@ export const AddFilter = styled.div`
   align-items: center;
   height: 100%;
   width: 100%;
-  padding: 3rem 5.9rem; 
+  padding: 3rem 0rem; 
   color: #222222;
 
   h2 {
@@ -276,7 +276,7 @@ export const AddFilter = styled.div`
   }
 
   select {
-    width: 25rem;
+    width: 100%;
     height: 4.5rem;
     padding: 0rem 0rem 0rem 2rem;
     font-size: 1.6rem;
@@ -292,6 +292,7 @@ export const AddFilter = styled.div`
   .filter-select {
     display: flex;
     flex-direction: row;
+    width: 25rem;
 
     img {
       margin-left: -3rem;
@@ -354,6 +355,7 @@ export const AddFilter = styled.div`
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-gap: 1rem;
+    width: 25rem;
 
     button {
       width: 12rem;
@@ -461,7 +463,7 @@ export const BodyMessage = styled.div`
   width: 100%;
   margin-top: 2rem;
   
-  color: #788195;
+  color: #707070;
   font-weight: 600;
   font-size: 1.8rem;
 `;
@@ -518,7 +520,7 @@ export const Card = styled.div`
   align-items: center;
   justify-content: space-between;
   height: 8rem;
-  padding: 2rem;
+  padding: 0rem 1rem 0rem 2rem;
   background-color: #ffffff;
   box-shadow: 0rem 0.3rem 0.6rem #00000029;
   border-radius: 10px;
@@ -536,8 +538,12 @@ export const Card = styled.div`
     flex-direction: row;
     align-items: center;
     overflow-wrap: break-word;
-    
+    height: 100%;
     word-break: break-word;
+
+    &:first-child {
+      width: 100%;
+    }
 
     > div {
       display: flex;
@@ -555,6 +561,10 @@ export const Card = styled.div`
       font-size: 1.5rem;
       color: ${props => props.status ? '#00D624' : '#ff0000'}
     }
+  }
+
+  .MuiFormControlLabel-root {
+    margin-right: 0rem;
   }
 
   .MuiSwitch-colorPrimary {
