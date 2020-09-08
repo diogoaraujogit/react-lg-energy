@@ -126,7 +126,7 @@ const Devices = () => {
 
     try {
 
-      const response = await api_crud.get('/groups')
+      const response = await api_crud.get('/groups/devices')
 
       if (response.data) {
         setGroups(response.data)
