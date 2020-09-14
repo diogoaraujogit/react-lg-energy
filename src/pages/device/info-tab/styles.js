@@ -155,6 +155,89 @@ export const Features = styled.div`
   }
 `;
 
+export const DelDevice = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  padding: 4.1rem 2.6rem 3.4rem 2.6rem; 
+  color: #222222;
+
+  > p {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+
+  div {
+    p {
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+  }
+
+    span {
+      color: red;
+    }
+    
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      margin-top: 2rem;
+    }
+
+      button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 12rem;
+        height: 4.2rem;
+        border: none;
+        border-radius: 5px;
+        color: #222222;
+        font-size: 1.8rem;
+        font-weight: 500;
+
+        &:first-child {
+          margin-right: 2rem;
+          background-color: transparent;
+        }
+
+        &:last-child {
+          color: #ffffff;
+          background-color: #FF0000;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: ${() => lighten(0.1, '#FF0000')}
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .MuiCircularProgress-root {
+          width: 1.4rem !important;
+          height: 1.4rem !important;
+          margin-left: 1rem;
+        }
+
+        .MuiCircularProgress-svg {
+          color: #ffffff;
+          opacity: 1;
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+      }
+    
+  
+`;
+
 export const LoadingArea = styled.div`
   display: flex;
   align-items: center;

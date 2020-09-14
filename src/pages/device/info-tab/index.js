@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { Container, Header, Info, Features, LoadingArea, BodyMessage, Body, Boards, Values } from './styles';
+import { Container, Header, Info, Features, DelDevice, LoadingArea, BodyMessage, Body, Boards, Values } from './styles';
 import { useSelector, useDispatch } from 'react-redux';
 import { MdLens, MdEdit } from 'react-icons/md';
 import Popup from 'reactjs-popup';
@@ -9,12 +9,14 @@ import { toast } from 'react-toastify';
 import SwitchLabels from '../../../components/Switch';
 import { setDevice } from '../../../store/modules/device/actions';
 import Loading from '../../../components/Loading';
+import { useHistory } from 'react-router-dom';
 
 const InfoTab = () => {
 
   const { device } = useSelector(state => state.device)
   const { id } = device
   const dispatch = useDispatch()
+  const history = useHistory()
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
   const [saving, setSaving] = useState(false)
@@ -39,6 +41,10 @@ const InfoTab = () => {
 
   const [onEdit, setOnEdit] = useState(false)
 
+  const [formError, setFormError] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
+
   const mask = useCallback((i, type) => {
     var v = i.value;
 
@@ -48,7 +54,7 @@ const InfoTab = () => {
 
     if (isNaN(v[v.length - 1]) || (v[v.length - 1]) === 'e') { // impede entrar outro caractere que não seja número
       i.value = v.substring(0, v.length - 1);
-      return parseInt(i.value);
+      return i.value;
     }
 
     return parseInt(i.value)
@@ -57,8 +63,16 @@ const InfoTab = () => {
 
 
   const handleCancel = () => {
+    setName(device.name)
+    setDescription(device.description)
+    setIsRelayEnabled(device.isRelayEnabled)
     setSwitchboard(device.switchboard)
     setNominalCurrent(device.nominalCurrent)
+    setRatedVoltage(device.ratedVoltage)
+    setCurrentTransformer(device.currentTransformer)
+    setPhase(device.phase)
+    setDiameter(device.diameter)
+    setFrameVoltage(device.frameVoltage)
     setOnEdit(false)
   }
 
@@ -88,7 +102,7 @@ const InfoTab = () => {
       const response = await api_crud.patch(`devices/${device.id}`, body)
 
       if (response.data) {
-        toast.success('Sucesso')
+        toast.success('Sucess')
         getDevice()
         setOnEdit(false)
       }
@@ -99,6 +113,28 @@ const InfoTab = () => {
 
     setSaving(false)
   }
+
+  const handleDelete = async () => {
+    setDeleting(true)
+    setFormError('')
+
+    try {
+
+      const response = await api_crud.delete(`devices/${device.id}`)
+
+      if (response) {
+        toast.info('Device was successfully deleted')
+        history.push('/devices')
+      }
+
+    } catch (e) {
+      toast.error('Error')
+      setFormError('Unable to delete this device')
+    }
+
+    setDeleting(false)
+  }
+
 
   async function getDevice() {
     setBodyLoading(true)
@@ -170,7 +206,7 @@ const InfoTab = () => {
             onOpen={() => {
             }}
 
-            contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
+            contentStyle={{ width: '53rem', height: '25rem', borderRadius: '1rem' }}
             trigger={
               <button className='add-device-button'>
                 DELETE DEVICE
@@ -179,35 +215,29 @@ const InfoTab = () => {
             modal
           >
             {
-              // close => {
-              //   return (
-              //     <AddDevice formError={formError} registering={registering}>
-              //       <p>New Device</p>
-              //       <div>
-              //         <span>{formError}</span>
-              //       </div>
-              //       <form onSubmit={(e) => handleSubmit(e, close)}>
-              //         <input
-              //           maxLength='20'
-              //           value={deviceName}
-              //           onChange={event => {
-              //             setFormError('')
-              //             setDeviceName(event.target.value);
-              //           }}
-              //           placeholder='Device name'
-              //         />
-              //         <div>
-              //           <button disabled={registering} onClick={() => close()}>
-              //             Cancel
-              //           </button>
-              //           <button disabled={registering} type='submit'>
-              //             Register {registering && <Loading />}
-              //           </button>
-              //         </div>
-              //       </form>
-              //     </AddDevice>
-              //   )
-              // }
+              close => {
+                return (
+                  <DelDevice formError={formError} deleting={deleting}>
+                    <p>Delete Device</p>
+                    <div>
+                      <span>{formError}</span>
+                    </div>
+                    <div>
+                      <p>
+                        Are you sure you want to delete this device?
+                      </p>
+                    </div>
+                    <div className='buttons'>
+                      <button disabled={deleting} onClick={() => close()}>
+                        Cancel
+                        </button>
+                      <button disabled={deleting} onClick={() => handleDelete()}>
+                        Delete {deleting && <Loading />}
+                      </button>
+                    </div>
+                  </DelDevice>
+                )
+              }
             }
 
           </Popup>

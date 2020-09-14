@@ -155,6 +155,27 @@ export const Features = styled.div`
   }
 `;
 
+export const LoadingArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+`;
+
+export const BodyMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
 export const Body = styled.div`
   width: 100%;
 `;
