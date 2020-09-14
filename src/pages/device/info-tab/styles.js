@@ -155,6 +155,31 @@ export const Features = styled.div`
   }
 `;
 
+export const LoadingArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+`;
+
+export const BodyMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const Body = styled.div`
+  width: 100%;
+`;
+
 export const Boards = styled.div`
   width: 100%;
   height: 28.4rem;
@@ -168,9 +193,10 @@ export const Boards = styled.div`
     width: 100%;
     border-radius: 15px;
     box-shadow: 0px 2px 5px #0000000D;
-    padding: 2.5rem;
+    
 
     &:first-child {
+      padding: 2.5rem;
       h4 {
         color: #707070;
         font-size: 1.6rem;
@@ -206,7 +232,18 @@ export const Boards = styled.div`
       > div {
         display: flex;
         flex-direction: column;
-        align-items: center
+        align-items: center;
+        height: 50%;
+
+        div {
+          margin-bottom: 0.2rem;
+          margin-top: 1rem;
+        }
+
+        &:first-child {
+          border-bottom: 1px solid #f8f8f8;
+          padding: 2.5rem;
+        }
       }
 
       h4 {
@@ -222,8 +259,32 @@ export const Boards = styled.div`
         font-weight: 500;
         margin-bottom: 2rem; 
       }
+
+      p {
+        color: #707070;
+        font-size: 1.6rem;
+        text-align: center;
+      }
     }
   }
+
+  .MuiFormControlLabel-root {
+    margin-right: 0rem;
+  }
+
+  .MuiSwitch-colorPrimary {
+    color: #C1C1C1;
+
+    &.Mui-checked {
+      color: #222222;
+    }
+
+    &.Mui-checked + .MuiSwitch-track {
+      background-color: #222222;
+      opacity: 0.8;
+    }
+  }
+
 `;
 
 export const Values = styled.div`

@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
 
 import { Container, Header, NavBack, NavTabs, LoadingArea, BodyMessage, Body } from './styles';
@@ -86,7 +86,9 @@ const Device = () => {
 
         <Header>
           <NavBack>
-            <FiArrowLeft />
+            <Link to='/devices'>
+              <FiArrowLeft />
+            </Link>
           </NavBack>
           <NavTabs>
             <TabsComponent tabs={tabs} onTabChange={setTab} initial={tab}/>

@@ -1,21 +1,27 @@
 import React, { useCallback, useState } from 'react';
 
-import { Container, Header, Info, Features, Boards, Values, Config } from './styles';
-import { useSelector } from 'react-redux';
+import { Container, Header, Info, Features, LoadingArea, BodyMessage, Body, Boards, Values } from './styles';
+import { useSelector, useDispatch } from 'react-redux';
 import { MdLens, MdEdit } from 'react-icons/md';
 import Popup from 'reactjs-popup';
 import api_crud from '../../../services/api_crud';
 import { toast } from 'react-toastify';
 import SwitchLabels from '../../../components/Switch';
+import { setDevice } from '../../../store/modules/device/actions';
+import Loading from '../../../components/Loading';
 
 const InfoTab = () => {
 
   const { device } = useSelector(state => state.device)
-  const { minCurrent, maxCurrent, minConsumption, maxConsumption, minActivePower, maxActivePower, minDemand, maxDemand } = device
+  const { id } = device
+  const dispatch = useDispatch()
+  const [bodyLoading, setBodyLoading] = useState(false)
+  const [bodyMessage, setBodyMessage] = useState('')
+  const [saving, setSaving] = useState(false)
+
 
   const [name, setName] = useState(device.name || '-')
 
-  const [idSubgroup, setIdSubgroup] = useState(device.idSubgroup)
   const [isRelayEnabled, setIsRelayEnabled] = useState(device.isRelayEnabled)
 
   const [description, setDescription] = useState(device.description)
@@ -36,10 +42,16 @@ const InfoTab = () => {
   const mask = useCallback((i, type) => {
     var v = i.value;
 
-    if (isNaN(v[v.length - 1])) { // impede entrar outro caractere que não seja número
-      i.value = v.substring(0, v.length - 1);
-      return;
+    if (!v) {
+      return null
     }
+
+    if (isNaN(v[v.length - 1]) || (v[v.length - 1]) === 'e') { // impede entrar outro caractere que não seja número
+      i.value = v.substring(0, v.length - 1);
+      return parseInt(i.value);
+    }
+
+    return parseInt(i.value)
 
   }, [])
 
@@ -51,7 +63,7 @@ const InfoTab = () => {
   }
 
   const handleSave = async () => {
-    setOnEdit(false)
+    setSaving(true)
 
     const body = {
       idLora,
@@ -66,29 +78,49 @@ const InfoTab = () => {
       frameVoltage,
       phase,
       isRelayEnabled,
-      minCurrent,
-      maxCurrent,
-      minConsumption,
-      maxConsumption,
-      minActivePower,
-      maxActivePower,
-      minDemand,
-      maxDemand,
-      idSubgroup: idSubgroup.id
     }
+
+    console.log('Body')
+    console.log(body)
 
     try {
 
-      const response = await api_crud.patch(`devices/{device.id}`, body)
+      const response = await api_crud.patch(`devices/${device.id}`, body)
 
       if (response.data) {
         toast.success('Sucesso')
-        console.log(response.data)
+        getDevice()
+        setOnEdit(false)
       }
 
     } catch (e) {
       toast.error('Erro')
     }
+
+    setSaving(false)
+  }
+
+  async function getDevice() {
+    setBodyLoading(true)
+    setBodyMessage('')
+
+    try {
+
+      const response = await api_crud.get(`/devices/${id}`)
+
+      if (response.data) {
+        console.log(response.data)
+        dispatch(setDevice(response.data))
+      } else {
+        setBodyMessage('Unable to get device')
+      }
+
+    } catch (e) {
+      toast.error('Unable to get device')
+      setBodyMessage('Unable to get device')
+    }
+
+    setBodyLoading(false)
   }
 
   return (
@@ -120,17 +152,17 @@ const InfoTab = () => {
               <div>
                 <button onClick={() => handleCancel()}>
                   Cancel
-                    </button>
+                </button>
 
-                <button onClick={() => handleSave()}>
-                  Save
-                    </button>
+                <button disabled={saving} onClick={() => handleSave()}>
+                  Save {saving && <Loading />}
+                </button>
               </div>
               :
               <button onClick={() => setOnEdit(true)}>
                 <MdEdit />
                     Edit
-                  </button>
+              </button>
           }
 
 
@@ -181,192 +213,200 @@ const InfoTab = () => {
           </Popup>
         </Features>
       </Header>
-      <Boards>
-        <div>
-          <h4>DESCRIPTION</h4>
-          <div>
-            {
-              onEdit ?
-                <textarea
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-                :
-                <p>{device.description}</p>
+      {
+        bodyLoading ?
+          <LoadingArea>
+            <Loading />
+          </LoadingArea>
+          :
+          bodyMessage ?
+            <BodyMessage>
+              {bodyMessage}
+            </BodyMessage>
+            :
+            <Body>
+              <Boards>
 
-            }
-          </div>
-        </div>
-        <div>
-          <div>
-            <h4>Added to the subgroup:</h4>
-            <h2>{ device.idSubgroup && device.idSubgroup.name }</h2>
-          </div>
-          <div>
-            <SwitchLabels label='' func={(checked, setChecked) => {
-              setChecked(!checked)
-              setIsRelayEnabled(!isRelayEnabled)
-            }} variable={isRelayEnabled}
-              fontSize={'2.4rem'} font480={'1.6rem'} size='medium'
-            />
-          </div>
-        </div>
-      </Boards>
-      <Values>
-        <div>
-          <h4>Switchboard</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                <div>
+                  <h4>DESCRIPTION</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <textarea
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                        :
+                        <p>{device.description}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Nominal Current</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  type='number'
-                  value={nominalCurrent}
-                  onChange={(e) => setNominalCurrent(mask(e.target, 'number'))}
-                />
-                :
-                <p>{device.nominalCurrent}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <div>
+                    <h4>Added to the subgroup:</h4>
+                    <h2>{device.idSubgroup && device.idSubgroup.name}</h2>
+                  </div>
+                  <div>
+                    <div>
+                      <SwitchLabels label='' func={(checked, setChecked) => {
+                        setOnEdit(true)
+                        setChecked(!checked)
+                        setIsRelayEnabled(!isRelayEnabled)
+                      }} variable={isRelayEnabled}
+                        fontSize={'2.4rem'} font480={'1.6rem'} size='medium'
+                      />
+                    </div>
+                    <p>
+                      {`The relay option is ${isRelayEnabled ? 'enabled' : 'disabled'}`}
+                      <br />
+                      {`Click to ${isRelayEnabled ? 'disable' : 'enable'}`}
+                    </p>
+                  </div>
+                </div>
+              </Boards>
+              <Values>
+                <div>
+                  <h4>Switchboard</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={switchboard}
+                          onChange={(e) => setSwitchboard(e.target.value)}
+                        />
+                        :
+                        <p>{device.switchboard}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Rated Voltage</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Nominal Current</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={nominalCurrent}
+                          onChange={(e) => setNominalCurrent(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.nominalCurrent}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Current Transformer</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Rated Voltage</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={ratedVoltage}
+                          onChange={(e) => setRatedVoltage(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.ratedVoltage}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Phase</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Current Transformer</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={currentTransformer}
+                          onChange={(e) => setCurrentTransformer(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.currentTransformer}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Diameter</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Phase</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={phase}
+                          onChange={(e) => setPhase(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.phase}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Frame Voltage</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Diameter</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={diameter}
+                          onChange={(e) => setDiameter(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.diameter}</p>
 
-            }
-          </div>
-        </div>
-      </Values>
-      <Values>
-        <div>
-          <h4>ID Lora</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Frame Voltage</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={frameVoltage}
+                          onChange={(e) => setFrameVoltage(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.frameVoltage}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>Mac Address</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+              </Values>
+              <Values>
+                <div>
+                  <h4>ID Lora</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={idLora}
+                          onChange={(e) => setIdLora(mask(e.target, 'number'))}
+                        />
+                        :
+                        <p>{device.idLora}</p>
 
-            }
-          </div>
-        </div>
-        <div>
-          <h4>IP</h4>
-          <div>
-            {
-              onEdit ?
-                <input
-                  value={switchboard}
-                  onChange={(e) => setSwitchboard(e.target.value)}
-                />
-                :
-                <p>{device.switchboard}</p>
+                    }
+                  </div>
+                </div>
+                <div>
+                  <h4>Mac Address</h4>
+                  <div>
+                    {
+                      onEdit ?
+                        <input
+                          value={macAddress}
+                          onChange={(e) => setMacAddress(e.target.value)}
+                        />
+                        :
+                        <p>{device.macAddress}</p>
 
-            }
-          </div>
-        </div>
-      </Values>
+                    }
+                  </div>
+                </div>
+
+              </Values>
+            </Body>
+      }
     </Container>
   );
 }
