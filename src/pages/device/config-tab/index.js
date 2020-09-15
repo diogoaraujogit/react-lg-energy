@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { Container, Header, Info, Features, LoadingArea, BodyMessage, Body, Values, Limits } from './styles';
 import { useDispatch, useSelector } from 'react-redux';
@@ -41,6 +41,11 @@ const ConfigTab = () => {
     setMinDemand(device.minDemand)
     setMaxDemand(device.maxDemand)
   }
+
+  useEffect(() => {
+    console.log('Min COnsumption')
+    console.log(minConsumption)
+  }, [minConsumption])
 
   const handleSave = async () => {
     setSaving(true)
@@ -165,7 +170,7 @@ const ConfigTab = () => {
                     <div>
                       <div>
                         <input
-                          value={minConsumption}
+                          value={minConsumption || ''}
                           onChange={(e) => {
                             setMinConsumption(mask(e.target, 'number'))
                             e.target.value !== device.minConsumption && setOnEdit(true)
@@ -175,7 +180,7 @@ const ConfigTab = () => {
                       </div>
                       <div>
                         <input
-                          value={maxConsumption}
+                          value={maxConsumption || ''}
                           onChange={(e) => {
                             setMaxConsumption(mask(e.target, 'number'))
                             e.target.value !== device.maxConsumption && setOnEdit(true)
@@ -190,7 +195,7 @@ const ConfigTab = () => {
                     <div>
                       <div>
                         <input
-                          value={minActivePower}
+                          value={minActivePower || ''}
                           onChange={(e) => {
                             setMinActivePower(mask(e.target, 'number'))
                             e.target.value !== device.minActivePower && setOnEdit(true)
@@ -200,7 +205,7 @@ const ConfigTab = () => {
                       </div>
                       <div>
                         <input
-                          value={maxActivePower}
+                          value={maxActivePower || ''}
                           onChange={(e) => {
                             setMaxActivePower(mask(e.target, 'number'))
                             e.target.value !== device.maxActivePower && setOnEdit(true)
@@ -215,7 +220,7 @@ const ConfigTab = () => {
                     <div>
                       <div>
                         <input
-                          value={minCurrent}
+                          value={minCurrent || ''}
                           onChange={(e) => {
                             setMinCurrent(mask(e.target, 'number'))
                             e.target.value !== device.minCurrent && setOnEdit(true)
@@ -225,7 +230,7 @@ const ConfigTab = () => {
                       </div>
                       <div>
                         <input
-                          value={maxCurrent}
+                          value={maxCurrent || ''}
                           onChange={(e) => {
                             setMaxCurrent(mask(e.target, 'number'))
                             e.target.value !== device.maxCurrent && setOnEdit(true)
@@ -240,7 +245,7 @@ const ConfigTab = () => {
                     <div>
                       <div>
                         <input
-                          value={minDemand}
+                          value={minDemand || ''}
                           onChange={(e) => {
                             setMinDemand(mask(e.target, 'number'))
                             e.target.value !== device.minDemand && setOnEdit(true)
@@ -250,7 +255,7 @@ const ConfigTab = () => {
                       </div>
                       <div>
                         <input
-                          value={maxDemand}
+                          value={maxDemand || ''}
                           onChange={(e) => {
                             setMaxDemand(mask(e.target, 'number'))
                             e.target.value !== device.maxDemand && setOnEdit(true)

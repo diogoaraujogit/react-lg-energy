@@ -4,6 +4,7 @@ import { Container, Header, Info, Features, Body, Schedules, Schedule } from './
 import { useSelector } from 'react-redux';
 import { MdLens } from 'react-icons/md';
 import BasicTimePicker from '../../../components/BasicTimePicker';
+import SwitchLabels from '../../../components/Switch'
 
 const RelayTab = () => {
 
@@ -28,7 +29,7 @@ const RelayTab = () => {
 
         </Features>
       </Header>
-      
+
       <Body>
         <Schedules>
           <Schedule>
@@ -37,12 +38,22 @@ const RelayTab = () => {
               <div>
                 <p>Time On</p>
                 <BasicTimePicker />
+                <SwitchLabels />
               </div>
               <div>
-
+                <p>Time Off</p>
+                <BasicTimePicker />
+                <SwitchLabels />
               </div>
             </div>
           </Schedule>
+
+          <Schedule></Schedule>
+          <Schedule></Schedule>
+          <Schedule></Schedule>
+          <Schedule></Schedule>
+          <Schedule></Schedule>
+          <Schedule></Schedule>
         </Schedules>
       </Body>
 

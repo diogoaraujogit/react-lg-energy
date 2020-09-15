@@ -2,8 +2,10 @@ import React, { Fragment, useState } from "react";
 import DateFnsUtils from '@date-io/date-fns';
 import { TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
-function BasicTimePicker() {
+function BasicTimePicker(props) {
   const [selectedDate, handleDateChange] = useState(new Date());
+
+  const label = props.label || ''
 
   return (
     <Fragment>
@@ -11,7 +13,7 @@ function BasicTimePicker() {
         <TimePicker
           clearable
           ampm={false}
-          label="24 hours"
+          label={label}
           value={selectedDate}
           onChange={handleDateChange}
         />

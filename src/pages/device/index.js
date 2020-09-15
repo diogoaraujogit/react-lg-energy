@@ -22,7 +22,7 @@ const Device = () => {
   const dispatch = useDispatch()
 
   const tabs = useMemo(() => ['Search', 'Readings', 'Info', 'Settings', 'Relay'], [])
-  const [tab, setTab] = useState(2)
+  const [tab, setTab] = useState(4)
 
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
