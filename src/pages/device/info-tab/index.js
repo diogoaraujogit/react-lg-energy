@@ -297,7 +297,7 @@ const InfoTab = () => {
               </Boards>
               <Values>
                 <div>
-                  <h4>Switchboard</h4>
+                  <h4>Electrical Switchboard</h4>
                   <div>
                     {
                       onEdit ?

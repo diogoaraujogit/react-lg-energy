@@ -1,23 +1,34 @@
 import React, { useState } from 'react';
 
-import { Container, Header, Info, Features, Body, Schedules, Schedule } from './styles';
+import { Container, Header, Info, Features, ManualRelay, Body, Schedules, Schedule } from './styles';
 import { useSelector } from 'react-redux';
 import { MdLens } from 'react-icons/md';
 import BasicTimePicker from '../../../components/BasicTimePicker';
 import SwitchLabels from '../../../components/Switch'
+import Loading from '../../../components/Loading';
 
 const RelayTab = () => {
 
   const { device } = useSelector(state => state.device)
 
-  const [name, setName] = useState(device.name || '-')
+  const months = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  const [onEdit, setOnEdit] = useState(true)
+  const [saving, setSaving] = useState(false)
+
+  const handleSave = () => {
+
+  }
+
+  const handleCancel = () => {
+
+  }
 
   return (
     <Container>
       <Header>
         <Info>
           <div>
-            <h2>{name}</h2>
+            <h2>{device.name}</h2>
           </div>
           <div>
             <MdLens />
@@ -26,34 +37,55 @@ const RelayTab = () => {
           </div>
         </Info>
         <Features>
+          {
+            onEdit &&
+            <div>
+              <button onClick={() => handleCancel()}>
+                Cancel
+              </button>
+
+              <button disabled={saving} onClick={() => handleSave()}>
+                Save {saving && <Loading />}
+              </button>
+            </div>
+
+          }
 
         </Features>
       </Header>
+      
+      <ManualRelay>
+        <p>On/Off Manual Relay</p>
+        <SwitchLabels />
+      </ManualRelay>
 
       <Body>
         <Schedules>
-          <Schedule>
-            <h4>Sunday</h4>
-            <div>
-              <div>
-                <p>Time On</p>
-                <BasicTimePicker />
-                <SwitchLabels />
-              </div>
-              <div>
-                <p>Time Off</p>
-                <BasicTimePicker />
-                <SwitchLabels />
-              </div>
-            </div>
-          </Schedule>
+          {
+            months.map(month => {
 
-          <Schedule></Schedule>
-          <Schedule></Schedule>
-          <Schedule></Schedule>
-          <Schedule></Schedule>
-          <Schedule></Schedule>
-          <Schedule></Schedule>
+              return (
+                <Schedule>
+                  <h4>{month}</h4>
+                  <div>
+                    <div>
+                      <p>Time On</p>
+                      <BasicTimePicker />
+                      <SwitchLabels size='small' />
+                      <span>Disable</span>
+                    </div>
+                    <div>
+                      <p>Time Off</p>
+                      <BasicTimePicker />
+                      <SwitchLabels size='small' />
+                      <span>DIsable</span>
+                    </div>
+                  </div>
+                </Schedule>
+              )
+            })
+
+          }
         </Schedules>
       </Body>
 

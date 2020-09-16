@@ -12,7 +12,7 @@ export const Header = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 0rem 6rem 0rem 5rem;
-  margin-bottom: 5.7rem;
+  margin-bottom: 2.7rem;
 `;
 
 export const Info = styled.div`
@@ -55,7 +55,138 @@ export const Info = styled.div`
 `;
 
 export const Features = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 4.2rem;
+    border-radius: 5px;
+    box-shadow: 0px 2px 5px #0000000D;
+    font-size: 1.8rem;
+    font-weight: 500;
+
+    &:first-child {
+      width: 12rem;
+      margin-right: 4rem;
+      color: #ffffff;
+      background-color: #222222;
+      transition: background-color 0.2s;
+
+      svg {
+        margin-right: 1rem;
+        font-size: 1.8rem;
+      }
+
+      &:hover {
+      background-color: ${() => lighten(0.1, '#222222')};
+      }
+    }
+
+    &:nth-child(2) {
+      width: 16rem;
+      color: #f00;
+      background-color: transparent;
+      transition: all 0.2s;
+      transition-property: color background-color;
+      border: 2px solid red;
+
+      &:hover {
+        color: #ffffff;
+        background-color: #f00;
+      }
+
+    }
+  }
+
+  > div:first-child {
+    display: flex;
+    margin-right: 2rem;
+
+      button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 12rem;
+        height: 4.2rem;
+        border: none;
+        border-radius: 5px;
+        color: #222222;
+        font-size: 1.8rem;
+        font-weight: 500;
+
+        &:first-child {
+          margin-right: 2rem;
+          background-color: transparent;
+        }
+
+        &:last-child {
+          color: #ffffff;
+          background-color: #222222;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: ${() => lighten(0.1, '#222222')}
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .MuiCircularProgress-root {
+          width: 1.4rem !important;
+          height: 1.4rem !important;
+          margin-left: 1rem;
+        }
+
+        .MuiCircularProgress-svg {
+          color: #ffffff;
+          opacity: 1;
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+      }
+  }
+
   
+`;
+
+export const ManualRelay = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  padding: 0rem 6.5rem;
+  margin-bottom: 2rem;
+
+  p {
+    margin-right: 2rem;
+    color: #707070;
+  }
+
+  .MuiFormControlLabel-root {
+    margin-right: 0rem;
+  }
+
+  .MuiSwitch-colorPrimary {
+    color: #C1C1C1;
+
+    &.Mui-checked {
+      color: #222222;
+    }
+
+    &.Mui-checked + .MuiSwitch-track {
+      background-color: #222222;
+      opacity: 0.8;
+    }
+  }
 `;
 
 export const Body = styled.div`
@@ -118,6 +249,10 @@ export const Schedule = styled.div`
         }
       }
     }
+  }
+
+  .MuiFormControlLabel-root {
+    margin-right: 0rem;
   }
 
   .MuiInputBase-input {

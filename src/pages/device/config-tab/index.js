@@ -40,6 +40,7 @@ const ConfigTab = () => {
     setMaxActivePower(device.maxActivePower)
     setMinDemand(device.minDemand)
     setMaxDemand(device.maxDemand)
+    setOnEdit(false)
   }
 
   useEffect(() => {
