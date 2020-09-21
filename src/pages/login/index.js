@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 
 import { Container, LoginContent, LogoArea, FormArea, Language } from './styles';
 
-import * as formik from 'formik'
-import * as yup from 'yup'
+import * as formik from 'formik';
+import * as yup from 'yup';
 
-import lg_logo from '../../assets/lg_logo.png'
-import Flag from 'react-flagkit' 
 import { useHistory } from 'react-router-dom';
+
+import lg_logo from '../../assets/lg_logo.png';
+import Flag from 'react-flagkit' ;
 
 const Login = () => {
 
@@ -35,9 +36,15 @@ const Login = () => {
   return (
     <Container>
       <LoginContent>
+
+      {/* LOGO */}
+
         <LogoArea>
           <img src={lg_logo} alt='LG Logo' />
         </LogoArea>
+
+        {/* FORM */}
+
         <FormArea>
           <Formik
             validateOnChange={false}
@@ -89,6 +96,8 @@ const Login = () => {
           </Formik>
 
         </FormArea>
+        
+        {/* LANGUAGE CONTROL */}
 
         <Language language={language}>
           <button onClick={() => setLanguage('en')}>

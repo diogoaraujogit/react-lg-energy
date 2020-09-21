@@ -13,7 +13,7 @@ import Loading from '../../components/Loading'
 
 import { FiArrowLeft } from 'react-icons/fi'
 import api_crud from '../../services/api_crud';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setDevice } from '../../store/modules/device/actions';
 import { toast } from 'react-toastify';
 
@@ -22,7 +22,7 @@ const Device = () => {
   const dispatch = useDispatch()
 
   const tabs = useMemo(() => ['Search', 'Readings', 'Info', 'Settings', 'Relay'], [])
-  const [tab, setTab] = useState(4)
+  const [tab, setTab] = useState(0)
 
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
@@ -78,6 +78,8 @@ const Device = () => {
 
   useEffect(() => {
     getDevice()
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   return (

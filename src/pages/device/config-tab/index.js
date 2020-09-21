@@ -6,7 +6,6 @@ import { MdLens } from 'react-icons/md';
 import Loading from '../../../components/Loading';
 import { toast } from 'react-toastify';
 import api_crud from '../../../services/api_crud';
-import { useHistory } from 'react-router-dom';
 import { setDevice } from '../../../store/modules/device/actions';
 
 const ConfigTab = () => {
@@ -14,7 +13,6 @@ const ConfigTab = () => {
   const { device } = useSelector(state => state.device)
   const { id } = device
   const dispatch = useDispatch()
-  const history = useHistory()
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
 

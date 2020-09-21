@@ -12,6 +12,11 @@ const RelayTab = () => {
   const { device } = useSelector(state => state.device)
 
   const months = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+  // const baseSchedules = 
+
+  // const [schedules, setSchedules] = useState({})
+
   const [onEdit, setOnEdit] = useState(true)
   const [saving, setSaving] = useState(false)
 

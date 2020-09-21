@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout'
 import { useHistory } from 'react-router-dom'
 
@@ -18,8 +18,6 @@ import api_crud from '../../services/api_crud';
 import SwitchLabels from '../../components/Switch';
 import { Link } from 'react-router-dom';
 import { base_device } from './base_device';
-
-import Fuse from 'fuse.js'
 
 import { MdSearch, MdClear } from 'react-icons/md'
 
@@ -47,6 +45,10 @@ const Devices = () => {
   const [groupsFiltered, setGroupsFiltered] = useState([])
 
   const [registering, setRegistering] = useState(false)
+
+  const [showSearchBar, setShowSearchBar] = useState(false)
+  const [search, setSearch] = useState('')
+
 
   // VARIÁVEIS
 
@@ -78,6 +80,28 @@ const Devices = () => {
     setGroupsFiltered(groups)
   }
 
+  function handlePowerDevice(checked, setChecked) {
+    //setSwitchDisabled(true)
+    setChecked(!checked)
+    // setDevicePower(!devicePower)
+  }
+
+
+  function clearSearch() {
+    setSearch('')
+    console.log(showSearchBar)
+    setShowSearchBar(!showSearchBar)
+  }
+
+  function handleKeyPress(event) {
+    if (event.keyCode === 27) {
+      clearSearch()
+    }
+  }
+
+
+  // API SEARCHES
+
   async function handleSubmit(e, close) {
     e.preventDefault()
     setRegistering(true)
@@ -107,14 +131,7 @@ const Devices = () => {
     }
 
     setRegistering(false)
-  }
-
-
-  function handlePowerDevice(checked, setChecked) {
-    //setSwitchDisabled(true)
-    setChecked(!checked)
-    // setDevicePower(!devicePower)
-  }
+  }  
 
   async function getGroups() {
 
@@ -148,6 +165,7 @@ const Devices = () => {
 
   useEffect(() => {
     getGroups()
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -171,22 +189,6 @@ const Devices = () => {
   }, [groupsArray])
 
 
-  const [showSearchBar, setShowSearchBar] = useState(false)
-  const [search, setSearch] = useState('')
-
-  // FUNÇÕES
-
-  function clearSearch() {
-    setSearch('')
-    console.log(showSearchBar)
-    setShowSearchBar(!showSearchBar)
-  }
-
-  function handleKeyPress(event) {
-    if (event.keyCode === 27) {
-      clearSearch()
-    }
-  }
 
   // FUZZY SEARCH
 
@@ -209,10 +211,6 @@ const Devices = () => {
     })
 
     const newGroups = searched.filter(group => group.devices.length > 0)
-
-    console.log('Resultados')
-    console.log(searched)
-    console.log(newGroups)
 
     setGroupsArray(newGroups)
   }, [search, groupsFiltered])
@@ -420,8 +418,7 @@ const Devices = () => {
 
                     const devices = group.devices || []
                     const name = group.name || '-'
-                    const group_id = group.id || ''
-
+                    // const group_id = group.id || ''
 
                     return (
                       <Group>

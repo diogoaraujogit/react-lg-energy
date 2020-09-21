@@ -4,6 +4,26 @@ import { lighten } from 'polished';
 export const Container = styled.div`
   width: 100%;
   height: 100%;
+  padding-bottom: 4rem;
+
+  
+  .MuiFormControlLabel-root {
+    margin-right: 0rem;
+  }
+
+  .MuiSwitch-colorPrimary {
+    color: #C1C1C1;
+
+    &.Mui-checked {
+      color: #222222;
+    }
+
+    &.Mui-checked + .MuiSwitch-track {
+      background-color: #222222;
+      opacity: 0.8;
+    }
+  }
+
 `;
 
 export const Header = styled.div`
@@ -170,23 +190,6 @@ export const ManualRelay = styled.div`
     margin-right: 2rem;
     color: #707070;
   }
-
-  .MuiFormControlLabel-root {
-    margin-right: 0rem;
-  }
-
-  .MuiSwitch-colorPrimary {
-    color: #C1C1C1;
-
-    &.Mui-checked {
-      color: #222222;
-    }
-
-    &.Mui-checked + .MuiSwitch-track {
-      background-color: #222222;
-      opacity: 0.8;
-    }
-  }
 `;
 
 export const Body = styled.div`
@@ -223,8 +226,8 @@ export const Schedule = styled.div`
   p {
     font-size: 1.4rem;
     color: #788195;
-
   }
+
 
   > div {
     display: flex;
@@ -236,6 +239,12 @@ export const Schedule = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
+
+        > span {
+          color: #788195;
+          font-size: 1.2rem;
+        }
+
 
       &:first-child {
         .MuiInputBase-input {
