@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { MdLens } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
@@ -10,6 +10,8 @@ import {
 
 import arrow_icon from '../../../assets/chevron-forward-outline.svg'
 import RadioButton from '../../../components/Radio';
+import CheckboxLabels from '../../../components/Checkbox';
+import BasicDatePicker from '../../../components/BasicDatePicker';
 
 const SearchTab = () => {
 
@@ -21,6 +23,8 @@ const SearchTab = () => {
 
   const [param, setParam] = useState('current')
   const [period, setPeriod] = useState('day')
+  const [periodAdvanced, setPeriodAdvanced] = useState('')
+  const [phase, setPhase] = useState('Phase A')
 
   const param_options = [
     {
@@ -41,8 +45,48 @@ const SearchTab = () => {
     }
   ]
 
-  const period_options = ['Day', 'Week', 'Month', 'Year']
+  const period_options = [
+    {
+      title: 'Day',
+      value: 'day'
+    },
+    {
+      title: 'Week',
+      value: 'week'
+    },
+    {
+      title: 'Month',
+      value: 'month'
+    },
+    {
+      title: 'Year',
+      value: 'year'
+    }
+  ]
 
+  const phases = ['Phase A', 'Phase B', 'Phase C', 'Total']
+
+  const show_period = useMemo(() => {
+
+    if (searchType === 'simple') {
+      const selected = period_options.filter(option => option.value === period)
+
+      return selected[0].title
+    } else {
+      const date = `01/01/2020 to 01/10/2020`
+
+      return date
+    }
+
+  }, [searchType, period, periodAdvanced])
+
+  const show_param = useMemo(() => {
+
+    const selected = param_options.filter(option => option.value === param)
+
+    return selected[0].title
+
+  }, [param])
 
   return (
     <Container>
@@ -60,7 +104,29 @@ const SearchTab = () => {
       </Header>
 
       <SearchInfo>
+        <div className='search-info'>
+          <div>
+            <p>Parameter:&nbsp;</p>
+            <span>{show_param}</span>
+          </div>
+          <div>
+            <p>Period:&nbsp;</p>
+            <span>{show_period}</span>
+          </div>
+        </div>
+        <div className='value'>
 
+        </div>
+        <div className='phases'>
+          {
+            phases.map(phase_option => {
+
+              return (
+                <CheckboxLabels value={phase_option} variable={phase} label={phase_option} func={setPhase} />
+              )
+            })
+          }
+        </div>
       </SearchInfo>
 
       {
@@ -78,20 +144,20 @@ const SearchTab = () => {
               <SearchBox>
                 <div className='search-select'>
                   <p>Parameter:</p>
-                  
-                    <select value={param} onChange={(e) => setParam(e.target.value)}>
-                      {
-                        param_options.map(param_option => {
 
-                          return (
-                            <option key={param_options.indexOf(param_option) + 1} value={param_option.value}>
-                              {param_option.title}
-                            </option>
-                          )
-                        })
-                      }
-                    </select>
-                  
+                  <select value={param} onChange={(e) => setParam(e.target.value)}>
+                    {
+                      param_options.map(param_option => {
+
+                        return (
+                          <option key={param_options.indexOf(param_option) + 1} value={param_option.value}>
+                            {param_option.title}
+                          </option>
+                        )
+                      })
+                    }
+                  </select>
+
                 </div>
                 <div className='search-radio'>
                   <RadioButton label='Period' value='simple' variable={searchType} func={setSearchType} />
@@ -105,8 +171,10 @@ const SearchTab = () => {
 
 
                           return (
-                            <button onClick={() => setPeriod(period_option.toLowerCase())} className={period === period_option.toLowerCase()? 'selected' : ''}>
-                              {period_option}
+                            <button onClick={() => setPeriod(period_option.value)}
+                              className={period === period_option.value ? 'selected' : ''}
+                            >
+                              {period_option.title}
                             </button>
                           )
                         })
@@ -114,11 +182,20 @@ const SearchTab = () => {
                     </div>
                     :
                     <div className='search-date'>
-
+                      <div>
+                        <p>Start</p>
+                        <BasicDatePicker />
+                      </div>
+                      <div>
+                        <p>Final</p>
+                        <BasicDatePicker />
+                      </div>
                     </div>
                 }
                 <div className='search-button'>
-
+                  <button>
+                    SEARCH
+                  </button>
                 </div>
               </SearchBox>
 

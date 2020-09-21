@@ -1,3 +1,4 @@
+import { lighten } from 'polished';
 import styled from 'styled-components'
 
 import arrow_icon from '../../../assets/chevron-forward-outline.svg' 
@@ -14,7 +15,7 @@ export const Header = styled.div`
   justify-content: space-between;
   width: 100%;
   padding: 0rem 6rem 0rem 5rem;
-  margin-bottom: 2.7rem;
+  margin-bottom: 1rem;
 `;
 
 export const Info = styled.div`
@@ -57,7 +58,45 @@ export const Info = styled.div`
 `;
 
 export const SearchInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
   width: 100%;
+  padding: 0rem 10rem;
+  margin-bottom: 1rem;
+
+  .search-info {
+    display: flex;
+
+    > div {
+      display: flex;
+      margin-right: 2rem;
+      font-size: 1.6rem;
+      color: #707070;
+      font-weight: 400;
+    }
+
+    span {
+      color: #222222;
+      font-weight: 500;
+    }
+  }
+
+  .values {
+
+  }
+
+  .phases {
+    .MuiTypography-body1 {
+      font-size: 1.4rem;
+      color: #222222;
+    }
+
+    .MuiCheckbox-colorSecondary.Mui-checked {
+      color: #222222;
+    }
+  }
 `;
 
 export const LoadingArea = styled.div`
@@ -86,11 +125,14 @@ export const Body = styled.div`
 `;
 
 export const SearchBox = styled.div`
+  display: flex;
+  flex-direction: column;
   width: 27rem;
   height: 46.9rem;
   background-color: #ffffff;
   box-shadow: 0px 2px 5px #0000000D;
   border-radius: 10px;
+  padding-bottom: 3rem;
 
   .search-select {
     padding: 1.6rem 2rem;
@@ -154,9 +196,11 @@ export const SearchBox = styled.div`
       font-size: 1.6rem;
       border: 1px solid #B3B3B3;
       border-radius: 5px;
+      transition: all 0.2s;
+      transition-property: color border-color;
     }
 
-    .selected {
+    .selected, button:hover {
       color: #222222;
       font-weight: 600;
       border: 2px solid #222222;
@@ -164,11 +208,52 @@ export const SearchBox = styled.div`
   }
 
   .search-date {
+    
+    > div {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
 
+    p {
+      color: #B3B3B3;
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .MuiInputBase-input {
+      font-size: 1.6rem;
+      text-align: center;
+      /* border: 1px solid red;
+      border-radius: 5px; */
+    }
+
+    .MuiInput-underline:hover:not(.Mui-disabled):before {
+
+    }
+
+    
   }
 
   .search-button {
+    padding: 0rem 2rem;
+    margin-top: auto;
 
+    button {
+      width: 100%;
+      height: 5rem;
+      background-color: #222222;
+      color: #ffffff;
+      font-size: 1.8rem;
+      transition: background-color 0.2s;
+      border: none;
+      border-radius: 5px;
+
+      &:hover {
+      background-color: ${() => lighten(0.1, '#222222')}
+      }
+    }
   }
 `;
 
