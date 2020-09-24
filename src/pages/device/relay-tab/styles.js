@@ -64,8 +64,11 @@ export const Info = styled.div`
       display: flex;
       flex-direction: row;
       color: #707070;
-      font-size: 1.6rem;
       align-items: center;
+
+      span, svg {  
+        font-size: 1.6rem;  
+      }
 
       svg {
         color: #00D624;

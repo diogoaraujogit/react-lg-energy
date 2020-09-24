@@ -5,13 +5,14 @@ import Loading from '../../../components/Loading';
 
 import {
   Container, Header, Info, SearchInfo, LoadingArea, BodyMessage, Body,
-  SearchBox, BodyContent, BodyData
+  SearchBox, BodyContent
 } from './styles';
 
 import arrow_icon from '../../../assets/chevron-forward-outline.svg'
 import RadioButton from '../../../components/Radio';
 import CheckboxLabels from '../../../components/Checkbox';
 import BasicDatePicker from '../../../components/BasicDatePicker';
+import BodyData from './BodyData';
 
 const SearchTab = () => {
 
@@ -66,6 +67,20 @@ const SearchTab = () => {
 
   const phases = ['Phase A', 'Phase B', 'Phase C', 'Total']
 
+  // API`S CALLS
+
+  // async function getAnalytics() {
+
+  //   try {
+
+  //     const response = await 
+
+  //   } catch(e) {
+
+  //   }
+  // }
+
+
   const show_period = useMemo(() => {
 
     if (searchType === 'simple') {
@@ -78,6 +93,7 @@ const SearchTab = () => {
       return date
     }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchType, period, periodAdvanced])
 
   const show_param = useMemo(() => {
@@ -86,6 +102,7 @@ const SearchTab = () => {
 
     return selected[0].title
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [param])
 
   return (
@@ -184,11 +201,15 @@ const SearchTab = () => {
                     <div className='search-date'>
                       <div>
                         <p>Start</p>
-                        <BasicDatePicker />
+                        <div>
+                          <BasicDatePicker />
+                        </div>
                       </div>
                       <div>
                         <p>Final</p>
-                        <BasicDatePicker />
+                        <div>
+                          <BasicDatePicker />
+                        </div>
                       </div>
                     </div>
                 }

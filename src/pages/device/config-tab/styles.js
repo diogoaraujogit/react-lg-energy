@@ -47,6 +47,10 @@ export const Info = styled.div`
       font-size: 1.6rem;
       align-items: center;
 
+      span, svg {  
+        font-size: 1.6rem;  
+      }
+
       svg {
         color: #00D624;
       }

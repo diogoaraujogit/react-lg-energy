@@ -1,7 +1,7 @@
 import { lighten } from 'polished';
 import styled from 'styled-components'
 
-import arrow_icon from '../../../assets/chevron-forward-outline.svg' 
+import arrow_icon from '../../../assets/chevron-forward-outline.svg'
 
 export const Container = styled.div`
   width: 100%;
@@ -20,7 +20,7 @@ export const Header = styled.div`
 
 export const Info = styled.div`
 
-  div {
+  > div {
 
     &:first-child {
       height: 3.5rem;
@@ -30,6 +30,8 @@ export const Info = styled.div`
         color: #222222;
         font-weight: 500;
       }
+
+      
 
       input {
         height: 100%;
@@ -47,11 +49,15 @@ export const Info = styled.div`
       display: flex;
       flex-direction: row;
       color: #707070;
-      font-size: 1.6rem;
       align-items: center;
+
+      span {
+        font-size: 1.6rem;
+      }
 
       svg {
         color: #00D624;
+        font-size: 1.6rem;
       }
     }
   }
@@ -63,7 +69,7 @@ export const SearchInfo = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0rem 10rem;
+  padding: 0rem 6rem 0rem 10rem;
   margin-bottom: 1rem;
 
   .search-info {
@@ -71,7 +77,11 @@ export const SearchInfo = styled.div`
 
     > div {
       display: flex;
-      margin-right: 2rem;
+      margin-left: 2rem;
+      
+    }
+
+    p, span {
       font-size: 1.6rem;
       color: #707070;
       font-weight: 400;
@@ -122,6 +132,8 @@ export const BodyMessage = styled.div`
 export const Body = styled.div`
   width: 100%;
   padding: 0rem 6rem 5rem 5rem;
+  display: flex;
+  flex-direction: row;
 `;
 
 export const SearchBox = styled.div`
@@ -133,6 +145,7 @@ export const SearchBox = styled.div`
   box-shadow: 0px 2px 5px #0000000D;
   border-radius: 10px;
   padding-bottom: 3rem;
+  margin-right: 2rem;
 
   .search-select {
     padding: 1.6rem 2rem;
@@ -208,12 +221,22 @@ export const SearchBox = styled.div`
   }
 
   .search-date {
+    padding: 0rem 2rem;
     
     > div {
       display: flex;
       flex-direction: column;
       align-items: center;
       margin-bottom: 2rem;
+
+      > div {
+        display: flex;
+        justify-content: center;
+        border: 1px solid #B3B3B3;
+        padding: 0.5rem 0rem;
+        border-radius: 5px;
+        width: 100%;
+      }
     }
 
     p {
@@ -225,14 +248,23 @@ export const SearchBox = styled.div`
     .MuiInputBase-input {
       font-size: 1.6rem;
       text-align: center;
+      font-weight: 500;
       /* border: 1px solid red;
       border-radius: 5px; */
     }
 
     .MuiInput-underline:hover:not(.Mui-disabled):before {
-
+      border: none;
     }
 
+    .MuiInput-underline:before {
+      border: none;
+      transition: none;
+    }
+
+    .MuiInput-underline:after {
+      border: none;
+    }
     
   }
 
@@ -258,12 +290,9 @@ export const SearchBox = styled.div`
 `;
 
 export const BodyContent = styled.div`
-  
+  flex: 1;
 `;
 
-export const BodyData = styled.div`
-  
-`;
 
 
 
