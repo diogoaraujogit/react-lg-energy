@@ -125,39 +125,21 @@ const BarChart = ({/* data  see data tab */ }) => {
         padding={0.3}
         colors={{ scheme: 'nivo' }}
         defs={[
-            {
-                id: 'dots',
-                type: 'patternDots',
-                background: 'inherit',
-                color: '#38bcb2',
-                size: 4,
-                padding: 1,
-                stagger: true
-            },
-            {
-                id: 'lines',
-                type: 'patternLines',
-                background: 'inherit',
-                color: '#eed312',
-                rotation: -45,
-                lineWidth: 6,
-                spacing: 10
-            }
-        ]}
-        fill={[
-            {
-                match: {
-                    id: 'fries'
-                },
-                id: 'dots'
-            },
-            {
-                match: {
-                    id: 'sandwich'
-                },
-                id: 'lines'
-            }
-        ]}
+
+          {
+              id: 'gradient',
+              type: 'linearGradient',
+              colors: [
+                  { offset: 0, color: '#7d0a39' },
+                  { offset: 100, color: '#C5004F' },
+              ],
+          },
+          
+      ]}
+      fill={[
+          
+          { match: d => d, id: 'gradient' },
+      ]}
         borderColor={{ from: 'color', modifiers: [ [ 'darker', 1.6 ] ] }}
         axisTop={null}
         axisRight={null}

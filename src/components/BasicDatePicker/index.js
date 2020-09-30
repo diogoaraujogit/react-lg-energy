@@ -3,8 +3,10 @@ import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import DateFnsUtils from "@date-io/date-fns";
 
 function BasicDatePicker(props) {
-  const [selectedDate, handleDateChange] = useState(new Date());
 
+  const value = props.value 
+  const handleChange = props.handleChange
+  const [selectedDate, handleDateChange] = useState(new Date());
 
   return (
     <Fragment>
@@ -14,8 +16,8 @@ function BasicDatePicker(props) {
           openTo="year"
           format="dd/MM/yyyy"
           views={["year", "month", "date"]}
-          value={selectedDate}
-          onChange={handleDateChange}
+          value={value}
+          onChange={handleChange}
         />
       </MuiPickersUtilsProvider>
     </Fragment>

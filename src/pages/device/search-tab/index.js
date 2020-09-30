@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { MdLens } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
 import Loading from '../../../components/Loading';
@@ -13,19 +13,33 @@ import RadioButton from '../../../components/Radio';
 import CheckboxLabels from '../../../components/Checkbox';
 import BasicDatePicker from '../../../components/BasicDatePicker';
 import BodyData from './BodyData';
+import api_analytics from '../../../services/api_analytics';
+import { toast } from 'react-toastify';
+import { format } from 'date-fns';
 
 const SearchTab = () => {
 
   const { device } = useSelector(state => state.device)
+  const id = device.idLora
   const dispatch = useDispatch()
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
-  const [searchType, setSearchType] = useState('simple')
+  const [chartLoading, setChartLoading] = useState(false)
+  const [chartMessage, setChartMessage] = useState('')
 
+
+  const [searchType, setSearchType] = useState('simple')
   const [param, setParam] = useState('current')
-  const [period, setPeriod] = useState('day')
-  const [periodAdvanced, setPeriodAdvanced] = useState('')
+  const [period, setPeriod] = useState('daily')
   const [phase, setPhase] = useState('Phase A')
+
+  const [startDate, setStartDate] = useState(new Date())
+  const [endDate, setEndDate] = useState(new Date())
+  const [startFormatted, setStartFormatted] = useState()
+  const [endFormatted, setEndFormatted] = useState()
+
+  const [barData, setBarData] = useState([])
+  const [lineData, setLineData] = useState([])
 
   const param_options = [
     {
@@ -49,19 +63,19 @@ const SearchTab = () => {
   const period_options = [
     {
       title: 'Day',
-      value: 'day'
+      value: 'daily'
     },
     {
       title: 'Week',
-      value: 'week'
+      value: 'weekly'
     },
     {
       title: 'Month',
-      value: 'month'
+      value: 'monthly'
     },
     {
       title: 'Year',
-      value: 'year'
+      value: 'yearly'
     }
   ]
 
@@ -69,17 +83,55 @@ const SearchTab = () => {
 
   // API`S CALLS
 
-  // async function getAnalytics() {
+  async function getAnalytics(type, body) {
+    setChartLoading(true)
 
-  //   try {
+    try {
 
-  //     const response = await 
+      const response = await api_analytics.get(`/search/devices/${id}/${type}`, body)
 
-  //   } catch(e) {
+      if (response.data) {
+        toast.success('Chegou')
+      }
 
-  //   }
-  // }
+    } catch (e) {
+      toast.error('Error')
+    }
 
+    setChartLoading(false)
+  }
+
+  // HANDLE FUNCTIONS
+
+  const handleSearch = () => {
+    const analytics_type = searchType === 'advanced' ? 'advanced' : period
+    const body = searchType === 'advanced' ?
+      {
+        id,
+        greatness: param,
+        start: startFormatted,
+        end: endFormatted
+      } :
+      {
+        id,
+        greatness: param
+      }
+
+    if (period !== 'daily') {
+      getAnalytics(analytics_type, body)
+      console.log(body)
+    }
+
+  }
+
+  // USE EFFECTS
+
+  useEffect(() => {
+    id && handleSearch()
+  }, [param, period, startFormatted, endFormatted])
+
+
+  // FUNCTIONS TO FORMAT INFOS TO BE SHOWED
 
   const show_period = useMemo(() => {
 
@@ -88,13 +140,18 @@ const SearchTab = () => {
 
       return selected[0].title
     } else {
-      const date = `01/01/2020 to 01/10/2020`
+      const start = format(startDate, 'dd/MM/yyyy')
+      const end = format(endDate, 'dd/MM/yyyy')
+      setStartFormatted(start)
+      setEndFormatted(end)
+
+      const date = `${start} to ${end}`
 
       return date
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchType, period, periodAdvanced])
+  }, [searchType, period, startDate, endDate])
 
   const show_param = useMemo(() => {
 
@@ -202,28 +259,38 @@ const SearchTab = () => {
                       <div>
                         <p>Start</p>
                         <div>
-                          <BasicDatePicker />
+                          <BasicDatePicker value={startDate} handleChange={setStartDate} />
                         </div>
                       </div>
                       <div>
                         <p>Final</p>
                         <div>
-                          <BasicDatePicker />
+                          <BasicDatePicker value={endDate} handleChange={setEndDate} />
                         </div>
                       </div>
                     </div>
                 }
                 <div className='search-button'>
-                  <button>
+                  <button onClick={() => handleSearch()}>
                     SEARCH
                   </button>
                 </div>
               </SearchBox>
 
               <BodyContent>
-                <BodyData>
-
-                </BodyData>
+                {
+                  chartLoading ?
+                    <LoadingArea>
+                      <Loading />
+                    </LoadingArea>
+                    :
+                    chartMessage ?
+                      <BodyMessage>
+                        {chartMessage}
+                      </BodyMessage>
+                      :
+                      <BodyData />
+                }
               </BodyContent>
             </Body>
 
