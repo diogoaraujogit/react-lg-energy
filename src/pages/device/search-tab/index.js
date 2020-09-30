@@ -38,8 +38,8 @@ const SearchTab = () => {
   const [startFormatted, setStartFormatted] = useState()
   const [endFormatted, setEndFormatted] = useState()
 
-  const [barData, setBarData] = useState([])
-  const [lineData, setLineData] = useState([])
+  const [analytics, setAnalytics] = useState([])
+  const [logs, setLogs] = useState([])
 
   const param_options = [
     {
@@ -83,15 +83,15 @@ const SearchTab = () => {
 
   // API`S CALLS
 
-  async function getAnalytics(type, body) {
+  async function getAnalytics(type, query) {
     setChartLoading(true)
 
     try {
 
-      const response = await api_analytics.get(`/search/devices/${id}/${type}`, body)
+      const response = await api_analytics.get(`/search/devices/${id}/${type}?${query}`)
 
       if (response.data) {
-        toast.success('Chegou')
+        setAnalytics(response.data)
       }
 
     } catch (e) {
@@ -105,21 +105,12 @@ const SearchTab = () => {
 
   const handleSearch = () => {
     const analytics_type = searchType === 'advanced' ? 'advanced' : period
-    const body = searchType === 'advanced' ?
-      {
-        id,
-        greatness: param,
-        start: startFormatted,
-        end: endFormatted
-      } :
-      {
-        id,
-        greatness: param
-      }
+    const query = searchType === 'advanced' ?
+      `greatness=${param}&start=${startFormatted}&end=${endFormatted}` :
+      `greatness=${param}`
 
-    if (period !== 'daily') {
-      getAnalytics(analytics_type, body)
-      console.log(body)
+    if (period !== 'daily' || searchType === 'advanced') {
+      getAnalytics(analytics_type, query)
     }
 
   }
@@ -289,7 +280,13 @@ const SearchTab = () => {
                         {chartMessage}
                       </BodyMessage>
                       :
-                      <BodyData />
+                      <BodyData 
+                        analytics={analytics} 
+                        phase={phase} 
+                        searchType={searchType}
+                        period={period}
+                        param={show_param}
+                      />
                 }
               </BodyContent>
             </Body>
