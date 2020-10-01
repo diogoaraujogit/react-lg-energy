@@ -1,5 +1,5 @@
 import { format, parse, parseISO } from 'date-fns';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { MdEqualizer, MdShowChart } from 'react-icons/md';
 import { useSelector } from 'react-redux';
 import { date } from 'yup';
@@ -10,9 +10,13 @@ import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './sty
 
 const BodyData = ({ analytics, phase, searchType, period, param }) => {
 
-  const { barSelection } = useSelector(state => state.analytics)
-  
+  const { barSelection, lineSelection } = useSelector(state => state.analytics)
+  console.log(lineSelection)
+
   const [chartType, setChartType] = useState(true)
+  const [selected, setSelected] = useState(false)
+  const [selectedValue, setSelectedValue] = useState()
+  const [selectedDate, setSelectedDate] = useState()
 
   const relPhases = {
     'Phase A': 'a',
@@ -37,8 +41,6 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
   }
 
   const formatDate = (date, chartLegend) => {
-
-
 
     if (searchType === 'simple' && period === 'yearly') {
       return relMonths[date.slice(3, 5)]
@@ -66,11 +68,14 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
     const b_value = biggest ? biggest.value : ''
     const b_date = biggest && biggest.date ? formatDate(biggest.date) : ''
 
-    const s_value = smallest ? smallest.value : ''
-    const s_date = smallest && smallest.date ? formatDate(smallest.date) : ''
+    const l_value = smallest ? smallest.value : ''
+    const l_date = smallest && smallest.date ? formatDate(smallest.date) : ''
 
     const a_value = average ? average.value : ''
     const a_date = average && average.date ? formatDate(average.date) : ''
+
+    const s_value = selectedValue
+    const s_date = selectedDate
 
     return (
       [
@@ -82,9 +87,9 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
         },
         {
           title: 'Lowest',
-          date: s_date || '02 SET 2020',
+          date: l_date || '02 SET 2020',
           un: 'A',
-          value: s_value || 206
+          value: l_value || 206
         },
         {
           title: 'Average',
@@ -94,13 +99,13 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
         },
         {
           title: 'Selected',
-          date: '02 SET 2020',
+          date: s_date || '-',
           un: 'A',
-          value: 206
+          value: s_value || '-'
         },
       ]
     )
-  }, [analytics, phase])
+  }, [analytics, phase, selectedValue, selectedDate])
 
 
 
@@ -118,58 +123,174 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
       })
       :
       [
-        {
-          "date": "AD",
-          [phase]: 173,
-        },
-        {
-          "date": "AE",
-          [phase]: 46,
-        },
-        {
-          "date": "AF",
-          [phase]: 173,
-        },
-        {
-          "date": "AG",
-          [phase]: 49,
-        },
-        {
-          "date": "AI",
-          [phase]: 18,
-        },
-        {
-          "date": "AL",
-          [phase]: 84,
-        },
-        {
-          "date": "AM",
-          [phase]: 85,
-        }
+
       ]
-    
-    const maxBar = useMemo(() => {
 
-      let max = 0
+  const baseLine = [
+    {
+      "id": "japan",
+      "color": "hsl(68, 70%, 50%)",
+      "data": [
+        {
+          "x": "plane",
+          "y": 292
+        },
+        {
+          "x": "helicopter",
+          "y": 258
+        },
+        {
+          "x": "boat",
+          "y": 174
+        },
+        
+      ]
+    },
+    {
+      "id": "france",
+      "color": "hsl(35, 70%, 50%)",
+      "data": [
+        {
+          "x": "plane",
+          "y": 55
+        },
+        {
+          "x": "helicopter",
+          "y": 63
+        },
+        {
+          "x": "boat",
+          "y": 190
+        },
+        
+      ]
+    },
+    {
+      "id": "us",
+      "color": "hsl(32, 70%, 50%)",
+      "data": [
+        {
+          "x": "plane",
+          "y": 202
+        },
+        {
+          "x": "helicopter",
+          "y": 212
+        },
+        {
+          "x": "boat",
+          "y": 58
+        },
+      ]
+    },
+    {
+      "id": "germany",
+      "color": "hsl(168, 70%, 50%)",
+      "data": [
+        {
+          "x": "plane",
+          "y": 172
+        },
+        {
+          "x": "helicopter",
+          "y": 277
+        },
+        {
+          "x": "boat",
+          "y": 291
+        },
+      ]
+    },
+    {
+      "id": "norway",
+      "color": "hsl(113, 70%, 50%)",
+      "data": [
+        {
+          "x": "plane",
+          "y": 55
+        },
+        {
+          "x": "helicopter",
+          "y": 34
+        },
+        {
+          "x": "boat",
+          "y": 6
+        },
+        
+      ]
+    }
+  ]
 
-      barData && Array.isArray(barData) && barData.map(point => {
-         max = Math.max(max, point[phase])
+  const lineData = period === 'daily' || period === 'weekly' ?
+  baseLine
+  :
+  [
+    {
+      id: phase,
+      data: analytics && analytics.data && analytics.data.length ?
+      analytics.data.map(data => {
+
+        let point = {}
+
+        point.y = data[relPhases[phase]]
+        point.x = formatDate(data.createdAt, true)
+        point.full = formatDate(data.createdAt)
+
+        return point
       })
+      :
+      [
 
-      return max + 5
-    }, [barData])
+      ]
+    }
+  ]
 
-    const minBar = useMemo(() => {
+  const maxBar = useMemo(() => {
 
-      let min = 0
+    let max = 0
 
-      barData && Array.isArray(barData) && barData.map(point => {
-         min = Math.min(min, point[phase])
-      })
+    barData && Array.isArray(barData) && barData.map(point => {
+      max = Math.max(max, point[phase])
+    })
 
-      return min
-    }, [barData])
+    return max
+  }, [barData])
 
+  const minBar = useMemo(() => {
+
+    let min = 0
+
+    barData && Array.isArray(barData) && barData.map(point => {
+      min = Math.min(min, point[phase])
+    })
+
+    return min
+  }, [barData])
+
+
+
+  useEffect(() => {
+
+    if (barSelection.data) {
+      setSelected(true)
+      setSelectedValue(barSelection.data[phase])
+      setSelectedDate(barSelection.data.full)
+      setTimeout(() => setSelected(false), 1000)
+    }
+
+  }, [barSelection])
+
+  useEffect(() => {
+
+    if (lineSelection.data) {
+      setSelected(true)
+      setSelectedValue(lineSelection.data.y)
+      setSelectedDate(lineSelection.data.full)
+      setTimeout(() => setSelected(false), 1000)
+    }
+
+  }, [lineSelection])
 
 
   return (
@@ -179,7 +300,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
           cards.map(card => {
 
             return (
-              <Card>
+              <Card selected={selected}>
                 <div>
                   <p>{card.title}</p>
                   <h3>{card.date}</h3>
@@ -215,7 +336,11 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
                 minValue={minBar}
               />
               :
-              <LineChart />
+              <LineChart 
+                data={lineData}
+                xLegend='Date'
+                yLegend={param}
+              />
           }
         </ChartBody>
       </ChartArea>

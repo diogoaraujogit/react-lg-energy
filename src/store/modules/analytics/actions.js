@@ -5,3 +5,11 @@ export function setBarSelection(barSelection) {
     payload: { barSelection }
   }
 }
+
+export function setLineSelection(lineSelection) {
+
+  return {
+    type: '@analytics/SET_LINE_SELECTION',
+    payload: { lineSelection }
+  }
+}

@@ -16,6 +16,7 @@ import BodyData from './BodyData';
 import api_analytics from '../../../services/api_analytics';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import { setBarSelection, setLineSelection } from '../../../store/modules/analytics/actions';
 
 const SearchTab = () => {
 
@@ -30,7 +31,7 @@ const SearchTab = () => {
 
   const [searchType, setSearchType] = useState('simple')
   const [param, setParam] = useState('current')
-  const [period, setPeriod] = useState('daily')
+  const [period, setPeriod] = useState('weekly')
   const [phase, setPhase] = useState('Phase A')
 
   const [startDate, setStartDate] = useState(new Date())
@@ -48,7 +49,7 @@ const SearchTab = () => {
     },
     {
       title: 'Consumption',
-      value: 'consumption'
+      value: 'powerConsumption'
     },
     {
       title: 'Active Power',
@@ -85,6 +86,8 @@ const SearchTab = () => {
 
   async function getAnalytics(type, query) {
     setChartLoading(true)
+    setChartMessage('')
+    setAnalytics({})
 
     try {
 
@@ -95,7 +98,16 @@ const SearchTab = () => {
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error('An error occurred')
+      const error = e.response?.data
+      if(error) {
+        if(error.statusCode === 400) {
+          setChartMessage('Invalid search')
+        }
+        if(error.statusCode === 500) {
+          setChartMessage('An unexpected error occurred')
+        }
+      }
     }
 
     setChartLoading(false)
@@ -113,13 +125,22 @@ const SearchTab = () => {
       getAnalytics(analytics_type, query)
     }
 
+    dispatch(setBarSelection({}))
+    dispatch(setLineSelection({}))
+
   }
 
   // USE EFFECTS
 
   useEffect(() => {
     id && handleSearch()
-  }, [param, period, startFormatted, endFormatted])
+  }, [param, period, startFormatted, endFormatted, searchType])
+
+  useEffect(() => {
+    if((period === 'daily' && searchType === 'simple') || (analytics && analytics.data && !analytics.data.length)) {
+      setChartMessage('There is no data for this search')
+    }
+  }, [analytics, period, searchType])
 
 
   // FUNCTIONS TO FORMAT INFOS TO BE SHOWED

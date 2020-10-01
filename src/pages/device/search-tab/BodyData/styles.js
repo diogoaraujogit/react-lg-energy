@@ -71,6 +71,11 @@ export const Card = styled.div`
       color: #FF0000;
     }
   }
+
+  &:last-child {
+    transition: box-shadow 1s;
+    box-shadow: ${props => props.selected? '0px 0px 10px 2px #C5004F': '' }
+  }
 `;
 
 export const ChartArea = styled.div`

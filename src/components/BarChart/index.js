@@ -14,40 +14,13 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue })
 
   return (
     <ResponsiveBar
-      theme={{
-        axis: {
-          ticks: {
-
-            text: {
-              fill: "#788195"
-            }
-          },
-          legend: {
-            text: {
-              fill: "#788195",
-              fontWeight: '600',
-            }
-          },
-        },
-        grid: {
-          line: {
-            opacity: '0.5'
-          }
-        },
-
-        legends: {
-          text: {
-            fill: "#788195 !important",
-          }
-        }
-      }}
-      onClick={(data) => dispatch(setBarSelection(data))}
       data={data}
+      onClick={(data) => dispatch(setBarSelection(data))}
       keys={[keys]}
       indexBy={indexBy}
       margin={{ top: 10, right: 130, bottom: 50, left: 60 }}
       maxValue={maxValue || 'auto'}
-      minValue={minValue > 0? 'auto' : minValue}
+      minValue={minValue > 0 ? 'auto' : minValue}
       padding={padding}
       colors='#C5004F'
       defs={[
@@ -68,11 +41,11 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue })
       onMouseEnter={(_data, event) => {
         event.target.style.cursor = 'pointer'
         event.target.style.fill = '#7D0A39'
-    }}
+      }}
 
-    onMouseLeave={(_data, event) => {
+      onMouseLeave={(_data, event) => {
         event.target.style.fill = ''
-    }}
+      }}
       axisBottom={{
         tickSize: 5,
         tickPadding: 5,
@@ -119,6 +92,33 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue })
       animate={true}
       motionStiffness={90}
       motionDamping={15}
+      theme={{
+        axis: {
+          ticks: {
+
+            text: {
+              fill: "#788195"
+            }
+          },
+          legend: {
+            text: {
+              fill: "#788195",
+              fontWeight: '600',
+            }
+          },
+        },
+        grid: {
+          line: {
+            opacity: '0.5'
+          }
+        },
+
+        legends: {
+          text: {
+            fill: "#788195 !important",
+          }
+        }
+      }}
     />
   )
 }
