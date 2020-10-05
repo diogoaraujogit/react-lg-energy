@@ -105,7 +105,9 @@ const SearchTab = () => {
 
     } catch (e) {
       toast.error('An error occurred')
+      setChartMessage('Unable to connect to server')
       const error = e.response?.data
+
       if(error) {
         if(error.statusCode === 400) {
           setChartMessage('Invalid search')
@@ -113,9 +115,7 @@ const SearchTab = () => {
         else if(error.statusCode === 500) {
           setChartMessage('An unexpected error occurred')
         }
-        else {
-          setChartMessage('Unable to connect to server')
-        }
+        
       }
     }
 
@@ -139,15 +139,15 @@ const SearchTab = () => {
     } catch (e) {
       toast.error('An error occurred')
       const error = e.response?.data
+      
+      setChartMessage('Unable to connect to server')
+
       if(error) {
         if(error.statusCode === 400) {
           setChartMessage('Invalid search')
         }
         else if(error.statusCode === 500) {
           setChartMessage('An unexpected error occurred')
-        }
-        else {
-          setChartMessage('Unable to connect to server')
         }
       }
     }
