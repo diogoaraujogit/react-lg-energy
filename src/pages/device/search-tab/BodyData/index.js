@@ -16,7 +16,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
   const [selected, setSelected] = useState(false)
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
-  const isAnalytics = period === 'monthly' || period === 'yearly' || (period === 'weekly' ) || searchType === 'advanced'
+  const isAnalytics = period === 'monthly' || period === 'yearly' || (period === 'weekly' && chartType) || searchType === 'advanced'
 
   const relPhases = {
     'Phase A': 'a',
@@ -118,7 +118,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
       ]
     )
 
-  }, [analytics, logs, phase, selectedValue, selectedDate])
+  }, [analytics, logs, phase, selectedValue, selectedDate, chartType])
 
 
   // DADOS DOS GRÁFICOS DE BARRA
@@ -163,7 +163,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
     logs.data.map(day => {
       let line = {}
 
-      line.id = ''
+      line.id = day.date
       line.data = day && day.data && day.data.length ?
       day.data.map(data => {
 

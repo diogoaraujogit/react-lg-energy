@@ -36,7 +36,7 @@ const LineChart = ({ data, xLegend, yLegend }) => {
         legendOffset: -40,
         legendPosition: 'middle'
       }}
-      colors={['#C5004F', '#94DCFE', '#1F2431', '#E9E9E9', '#008F2F', '#5BFF77', '#C2C2C2']}
+      colors={['#C5004F', '#A72773', '#7B3F85', '#4F4A83', '#304C71', '#2F4858', '#574144']}
       pointSize={10}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}

@@ -167,9 +167,9 @@ const SearchTab = () => {
     if (period !== 'daily' || searchType === 'advanced') {
       getAnalytics(search_type, query)
 
-      // if (period === 'weekly') {
-      //   getLogs(log_search, query)
-      // }
+      if (period === 'weekly') {
+        getLogs(log_search, query)
+      }
     }  else {
       getLogs(log_search, query)
     }
