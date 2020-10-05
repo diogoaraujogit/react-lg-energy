@@ -14,6 +14,7 @@ import CheckboxLabels from '../../../components/Checkbox';
 import BasicDatePicker from '../../../components/BasicDatePicker';
 import BodyData from './BodyData';
 import api_analytics from '../../../services/api_analytics';
+import api_logs from '../../../services/api_logs';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { setBarSelection, setLineSelection } from '../../../store/modules/analytics/actions';
@@ -39,8 +40,8 @@ const SearchTab = () => {
   const [startFormatted, setStartFormatted] = useState()
   const [endFormatted, setEndFormatted] = useState()
 
-  const [analytics, setAnalytics] = useState([])
-  const [logs, setLogs] = useState([])
+  const [analytics, setAnalytics] = useState({})
+  const [logs, setLogs] = useState({})
 
   const param_options = [
     {
@@ -104,8 +105,44 @@ const SearchTab = () => {
         if(error.statusCode === 400) {
           setChartMessage('Invalid search')
         }
-        if(error.statusCode === 500) {
+        else if(error.statusCode === 500) {
           setChartMessage('An unexpected error occurred')
+        }
+        else {
+          setChartMessage('Unable to connect to server')
+        }
+      }
+    }
+
+    setChartLoading(false)
+  }
+
+  async function getLogs(type, query) {
+    setChartLoading(true)
+    setChartMessage('')
+    setAnalytics({})
+    setLogs({})
+
+    try {
+
+      const response = await api_logs.get(`/captures/devices/${id}/${type}?${query}`)
+
+      if (response.data) {
+        setLogs(response.data)
+      }
+
+    } catch (e) {
+      toast.error('An error occurred')
+      const error = e.response?.data
+      if(error) {
+        if(error.statusCode === 400) {
+          setChartMessage('Invalid search')
+        }
+        else if(error.statusCode === 500) {
+          setChartMessage('An unexpected error occurred')
+        }
+        else {
+          setChartMessage('Unable to connect to server')
         }
       }
     }
@@ -116,13 +153,16 @@ const SearchTab = () => {
   // HANDLE FUNCTIONS
 
   const handleSearch = () => {
-    const analytics_type = searchType === 'advanced' ? 'advanced' : period
+    const search_type = searchType === 'advanced' ? 'advanced' : period
+    const log_search = period === 'daily'? 'today' : ''
     const query = searchType === 'advanced' ?
       `greatness=${param}&start=${startFormatted}&end=${endFormatted}` :
       `greatness=${param}`
 
     if (period !== 'daily' || searchType === 'advanced') {
-      getAnalytics(analytics_type, query)
+      getAnalytics(search_type, query)
+    }  else {
+      getLogs(log_search, query)
     }
 
     dispatch(setBarSelection({}))
@@ -137,10 +177,10 @@ const SearchTab = () => {
   }, [param, period, startFormatted, endFormatted, searchType])
 
   useEffect(() => {
-    if((period === 'daily' && searchType === 'simple') || (analytics && analytics.data && !analytics.data.length)) {
+    if((logs && logs.data && !logs.data.length) && (analytics && analytics.data && !analytics.data.length)) {
       setChartMessage('There is no data for this search')
     }
-  }, [analytics, period, searchType])
+  }, [analytics, logs, period, searchType])
 
 
   // FUNCTIONS TO FORMAT INFOS TO BE SHOWED
@@ -303,6 +343,7 @@ const SearchTab = () => {
                       :
                       <BodyData 
                         analytics={analytics} 
+                        logs={logs}
                         phase={phase} 
                         searchType={searchType}
                         period={period}

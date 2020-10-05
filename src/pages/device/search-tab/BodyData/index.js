@@ -8,7 +8,7 @@ import LineChart from '../../../../components/LineChart';
 
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
-const BodyData = ({ analytics, phase, searchType, period, param }) => {
+const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
 
   const { barSelection, lineSelection } = useSelector(state => state.analytics)
   console.log(lineSelection)
@@ -17,6 +17,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
   const [selected, setSelected] = useState(false)
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
+  const isAnalytics = period !== 'daily' || (period === 'weekly' && chartType) || searchType === 'advanced'
 
   const relPhases = {
     'Phase A': 'a',
@@ -40,11 +41,15 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
     '12': 'December'
   }
 
-  const formatDate = (date, chartLegend) => {
+  const formatDate = (date, chartLegend, average) => {
 
     if (searchType === 'simple' && period === 'yearly') {
       return relMonths[date.slice(3, 5)]
-    } else {
+    }
+    else if (!isAnalytics) {
+      return date.slice(-5)
+    }
+    else {
       if (chartLegend) {
         return date.slice(0, 5)
       } else {
@@ -55,14 +60,22 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
 
   const cards = useMemo(() => {
 
-    const biggest = analytics && analytics.biggest && analytics.biggest[relPhases[phase]] ?
-      analytics.biggest[relPhases[phase]] : false
+    let data_type
 
-    const smallest = analytics && analytics.smallest && analytics.smallest[relPhases[phase]] ?
-      analytics.smallest[relPhases[phase]] : false
+    if (isAnalytics) {
+      data_type = analytics
+    } else {
+      data_type = logs
+    }
 
-    const average = analytics && analytics.average && analytics.average[relPhases[phase]] ?
-      analytics.average[relPhases[phase]] : false
+    const biggest = data_type && data_type.biggest && data_type.biggest[relPhases[phase]] ?
+      data_type.biggest[relPhases[phase]] : false
+
+    const smallest = data_type && data_type.smallest && data_type.smallest[relPhases[phase]] ?
+      data_type.smallest[relPhases[phase]] : false
+
+    const average = data_type && data_type.average && data_type.average[relPhases[phase]] ?
+      data_type.average[relPhases[phase]] : false
 
 
     const b_value = biggest ? biggest.value : ''
@@ -72,7 +85,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
     const l_date = smallest && smallest.date ? formatDate(smallest.date) : ''
 
     const a_value = average ? average.value : ''
-    const a_date = average && average.date ? formatDate(average.date) : ''
+    const a_date = '-'  //average && average.date ? formatDate(average.date, false, true) : ''
 
     const s_value = selectedValue
     const s_date = selectedDate
@@ -105,11 +118,28 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
         },
       ]
     )
-  }, [analytics, phase, selectedValue, selectedDate])
+
+  }, [analytics, logs, phase, selectedValue, selectedDate])
 
 
 
-  const barData =
+  const barData = !isAnalytics ?
+    logs && logs.data && logs.data.length ?
+      logs.data.map(data => {
+
+        let point = {}
+
+        point[phase] = data[relPhases[phase]]
+        point.date = formatDate(data.date, true)
+        point.full = formatDate(data.date)
+
+        return point
+      })
+      :
+      [
+
+      ]
+    :
     analytics && analytics.data && analytics.data.length ?
       analytics.data.map(data => {
 
@@ -143,7 +173,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
           "x": "boat",
           "y": 174
         },
-        
+
       ]
     },
     {
@@ -162,7 +192,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
           "x": "boat",
           "y": 190
         },
-        
+
       ]
     },
     {
@@ -217,34 +247,53 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
           "x": "boat",
           "y": 6
         },
-        
-      ]
-    }
-  ]
-
-  const lineData = period === 'daily' || period === 'weekly' ?
-  baseLine
-  :
-  [
-    {
-      id: phase,
-      data: analytics && analytics.data && analytics.data.length ?
-      analytics.data.map(data => {
-
-        let point = {}
-
-        point.y = data[relPhases[phase]]
-        point.x = formatDate(data.createdAt, true)
-        point.full = formatDate(data.createdAt)
-
-        return point
-      })
-      :
-      [
 
       ]
     }
   ]
+
+  const lineData = !isAnalytics ?
+    [
+      {
+        id: phase,
+        data: logs && logs.data && logs.data.length ?
+          logs.data.map(data => {
+
+            let point = {}
+
+            point.y = data[relPhases[phase]]
+            point.x = formatDate(data.date, true)
+            point.full = formatDate(data.date)
+
+            return point
+          })
+          :
+          [
+
+          ]
+      }
+    ]
+    :
+    [
+      {
+        id: phase,
+        data: analytics && analytics.data && analytics.data.length ?
+          analytics.data.map(data => {
+
+            let point = {}
+
+            point.y = data[relPhases[phase]]
+            point.x = formatDate(data.createdAt, true)
+            point.full = formatDate(data.createdAt)
+
+            return point
+          })
+          :
+          [
+
+          ]
+      }
+    ]
 
   const maxBar = useMemo(() => {
 
@@ -336,7 +385,7 @@ const BodyData = ({ analytics, phase, searchType, period, param }) => {
                 minValue={minBar}
               />
               :
-              <LineChart 
+              <LineChart
                 data={lineData}
                 xLegend='Date'
                 yLegend={param}
