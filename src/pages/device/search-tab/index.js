@@ -8,7 +8,6 @@ import {
   SearchBox, BodyContent
 } from './styles';
 
-import arrow_icon from '../../../assets/chevron-forward-outline.svg'
 import RadioButton from '../../../components/Radio';
 import CheckboxLabels from '../../../components/Checkbox';
 import BasicDatePicker from '../../../components/BasicDatePicker';
@@ -32,6 +31,7 @@ const SearchTab = () => {
 
   const [searchType, setSearchType] = useState('simple')
   const [param, setParam] = useState('current')
+  const [un, setUn] = useState('A')
   const [period, setPeriod] = useState('weekly')
   const [phase, setPhase] = useState('Phase A')
 
@@ -46,19 +46,23 @@ const SearchTab = () => {
   const param_options = [
     {
       title: 'Current',
-      value: 'current'
+      value: 'current',
+      un: 'A'
     },
     {
       title: 'Consumption',
-      value: 'powerConsumption'
+      value: 'powerConsumption',
+      un: 'kWh'
     },
     {
       title: 'Active Power',
-      value: 'activePower'
+      value: 'activePower',
+      un: 'kW'
     },
     {
       title: 'Demand',
-      value: 'demand'
+      value: 'demand',
+      un: 'kWh'
     }
   ]
 
@@ -89,6 +93,7 @@ const SearchTab = () => {
     setChartLoading(true)
     setChartMessage('')
     setAnalytics({})
+    setLogs({})
 
     try {
 
@@ -154,13 +159,17 @@ const SearchTab = () => {
 
   const handleSearch = () => {
     const search_type = searchType === 'advanced' ? 'advanced' : period
-    const log_search = period === 'daily'? 'today' : ''
+    const log_search = period === 'daily'? 'today' : period
     const query = searchType === 'advanced' ?
       `greatness=${param}&start=${startFormatted}&end=${endFormatted}` :
       `greatness=${param}`
 
     if (period !== 'daily' || searchType === 'advanced') {
       getAnalytics(search_type, query)
+
+      // if (period === 'weekly') {
+      //   getLogs(log_search, query)
+      // }
     }  else {
       getLogs(log_search, query)
     }
@@ -177,6 +186,9 @@ const SearchTab = () => {
   }, [param, period, startFormatted, endFormatted, searchType])
 
   useEffect(() => {
+
+    
+
     if((logs && logs.data && !logs.data.length) && (analytics && analytics.data && !analytics.data.length)) {
       setChartMessage('There is no data for this search')
     }
@@ -208,6 +220,7 @@ const SearchTab = () => {
   const show_param = useMemo(() => {
 
     const selected = param_options.filter(option => option.value === param)
+    setUn(selected[0].un)
 
     return selected[0].title
 
@@ -348,6 +361,7 @@ const SearchTab = () => {
                         searchType={searchType}
                         period={period}
                         param={show_param}
+                        un={un}
                       />
                 }
               </BodyContent>

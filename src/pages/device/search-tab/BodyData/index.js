@@ -8,16 +8,15 @@ import LineChart from '../../../../components/LineChart';
 
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
-const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
+const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
 
   const { barSelection, lineSelection } = useSelector(state => state.analytics)
-  console.log(lineSelection)
 
   const [chartType, setChartType] = useState(true)
   const [selected, setSelected] = useState(false)
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
-  const isAnalytics = period !== 'daily' || (period === 'weekly' && chartType) || searchType === 'advanced'
+  const isAnalytics = period === 'monthly' || period === 'yearly' || (period === 'weekly' ) || searchType === 'advanced'
 
   const relPhases = {
     'Phase A': 'a',
@@ -95,25 +94,25 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
         {
           title: 'Highest',
           date: b_date || '02 SET 2020',
-          un: 'A',
+          un: un || 'A',
           value: b_value || 206
         },
         {
           title: 'Lowest',
           date: l_date || '02 SET 2020',
-          un: 'A',
+          un: un || 'A',
           value: l_value || 206
         },
         {
           title: 'Average',
           date: a_date || '02 SET 2020',
-          un: 'A',
+          un: un || 'A',
           value: a_value || 206
         },
         {
           title: 'Selected',
           date: s_date || '-',
-          un: 'A',
+          un: un || 'A',
           value: s_value || '-'
         },
       ]
@@ -122,6 +121,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
   }, [analytics, logs, phase, selectedValue, selectedDate])
 
 
+  // DADOS DOS GRÁFICOS DE BARRA
 
   const barData = !isAnalytics ?
     logs && logs.data && logs.data.length ?
@@ -156,103 +156,33 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
 
       ]
 
-  const baseLine = [
-    {
-      "id": "japan",
-      "color": "hsl(68, 70%, 50%)",
-      "data": [
-        {
-          "x": "plane",
-          "y": 292
-        },
-        {
-          "x": "helicopter",
-          "y": 258
-        },
-        {
-          "x": "boat",
-          "y": 174
-        },
-
-      ]
-    },
-    {
-      "id": "france",
-      "color": "hsl(35, 70%, 50%)",
-      "data": [
-        {
-          "x": "plane",
-          "y": 55
-        },
-        {
-          "x": "helicopter",
-          "y": 63
-        },
-        {
-          "x": "boat",
-          "y": 190
-        },
-
-      ]
-    },
-    {
-      "id": "us",
-      "color": "hsl(32, 70%, 50%)",
-      "data": [
-        {
-          "x": "plane",
-          "y": 202
-        },
-        {
-          "x": "helicopter",
-          "y": 212
-        },
-        {
-          "x": "boat",
-          "y": 58
-        },
-      ]
-    },
-    {
-      "id": "germany",
-      "color": "hsl(168, 70%, 50%)",
-      "data": [
-        {
-          "x": "plane",
-          "y": 172
-        },
-        {
-          "x": "helicopter",
-          "y": 277
-        },
-        {
-          "x": "boat",
-          "y": 291
-        },
-      ]
-    },
-    {
-      "id": "norway",
-      "color": "hsl(113, 70%, 50%)",
-      "data": [
-        {
-          "x": "plane",
-          "y": 55
-        },
-        {
-          "x": "helicopter",
-          "y": 34
-        },
-        {
-          "x": "boat",
-          "y": 6
-        },
-
-      ]
-    }
-  ]
-
+  
   const lineData = !isAnalytics ?
+    period === 'weekly' ?
+    logs && logs.data && logs.data.length ?
+    logs.data.map(day => {
+      let line = {}
+
+      line.id = ''
+      line.data = day && day.data && day.data.length ?
+      day.data.map(data => {
+
+        let point = {}
+
+        point.y = data[relPhases[phase]]
+        point.x = formatDate(data.date, true)
+        point.full = formatDate(data.date)
+
+        return point
+      })
+      :
+      []
+
+      return line
+    })
+    :
+    []
+    :
     [
       {
         id: phase,
@@ -295,6 +225,9 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
       }
     ]
 
+
+  // MAX AND MIN VALUES FUNCTIONS
+
   const maxBar = useMemo(() => {
 
     let max = 0
@@ -318,6 +251,8 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
   }, [barData])
 
 
+
+  // USE EFFECT FUNCTIONS
 
   useEffect(() => {
 
@@ -380,15 +315,15 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param }) => {
                 keys={phase}
                 indexBy='date'
                 xLegend='Date'
-                yLegend={param}
+                yLegend={`${param} (${un})`}
                 maxValue={maxBar}
                 minValue={minBar}
               />
               :
               <LineChart
                 data={lineData}
-                xLegend='Date'
-                yLegend={param}
+                xLegend={isAnalytics? 'Date' : 'Time'}
+                yLegend={`${param} (${un})`}
               />
           }
         </ChartBody>

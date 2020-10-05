@@ -18,26 +18,26 @@ export default function SwitchLabels(props) {
 
 
 
-	return (
+    return (
         <ThemeProvider >
-		<FormGroup row>
-			<FormControlLabel
-				control={
-					<Switch
-						checked={checked}
-						onChange={(e) => {
-                           func && func(checked, setChecked)
-                        }}
-                        value="checked"
-                        disabled={disabled}
-                        color="primary"
-                        size={size}
-					/>
-				}
-				label={label}
-			/>
+            <FormGroup row>
+                <FormControlLabel
+                    control={
+                        <Switch
+                            checked={checked}
+                            onChange={(e) => {
+                                func && func(checked, setChecked)
+                            }}
+                            value="checked"
+                            disabled={disabled}
+                            color="primary"
+                            size={size}
+                        />
+                    }
+                    label={label}
+                />
 
-		</FormGroup>
+            </FormGroup>
         </ThemeProvider>
-	);
+    );
 }

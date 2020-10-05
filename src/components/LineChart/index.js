@@ -2,12 +2,8 @@ import React from 'react'
 
 import { ResponsiveLine } from '@nivo/line'
 import { useDispatch } from 'react-redux'
-import { setBarSelection, setLineSelection } from '../../store/modules/analytics/actions'
-// make sure parent container have a defined height when using
-// responsive component, otherwise height will be 0 and
-// no chart will be rendered.
-// website examples showcase many properties,
-// you'll often use just a few of them.
+import { setLineSelection } from '../../store/modules/analytics/actions'
+
 const LineChart = ({ data, xLegend, yLegend }) => {
 
   const dispatch = useDispatch()
