@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { date } from 'yup';
 import BarChart from '../../../../components/BarChart';
 import LineChart from '../../../../components/LineChart';
-
+import { setBarSelection, setLineSelection } from '../../../../store/modules/analytics/actions';
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
 const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
@@ -318,12 +318,14 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
                 yLegend={`${param} (${un})`}
                 maxValue={maxBar}
                 minValue={minBar}
+                setSelection={setBarSelection}
               />
               :
               <LineChart
                 data={lineData}
                 xLegend={isAnalytics? 'Date' : 'Time'}
                 yLegend={`${param} (${un})`}
+                setSelection={setLineSelection}
               />
           }
         </ChartBody>

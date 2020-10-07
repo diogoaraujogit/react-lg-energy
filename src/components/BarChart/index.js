@@ -1,8 +1,7 @@
 import React from 'react'
 import { ResponsiveBar } from '@nivo/bar'
 import { useDispatch } from 'react-redux'
-import { setBarSelection } from '../../store/modules/analytics/actions';
-const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue }) => {
+const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue, setSelection }) => {
 
   const dispatch = useDispatch()
   const padding = (data.length <= 10 ? 29 / 30 - data.length / 15 : 0.25)
@@ -10,7 +9,7 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue })
   return (
     <ResponsiveBar
       data={data}
-      onClick={(data) => dispatch(setBarSelection(data))}
+      onClick={(data) => dispatch(setSelection(data))}
       keys={[keys]}
       indexBy={indexBy}
       margin={{ top: 10, right: 130, bottom: 50, left: 60 }}

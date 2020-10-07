@@ -2,16 +2,15 @@ import React from 'react'
 
 import { ResponsiveLine } from '@nivo/line'
 import { useDispatch } from 'react-redux'
-import { setLineSelection } from '../../store/modules/analytics/actions'
 
-const LineChart = ({ data, xLegend, yLegend }) => {
+const LineChart = ({ data, xLegend, yLegend, setSelection }) => {
 
   const dispatch = useDispatch()
 
   return (
     <ResponsiveLine
       data={data}
-      onClick={(data) => dispatch(setLineSelection(data))}
+      onClick={(data) => dispatch(setSelection(data))}
       margin={{ top: 10, right: 130, bottom: 50, left: 60 }}
       xScale={{ type: 'point' }}
       yScale={{ type: 'linear', min: 0, max: 'auto' }}
@@ -37,7 +36,7 @@ const LineChart = ({ data, xLegend, yLegend }) => {
         legendPosition: 'middle'
       }}
       colors={['#C5004F', '#A72773', '#7B3F85', '#4F4A83', '#304C71', '#2F4858', '#574144']}
-      pointSize={10}
+      pointSize={2}
       pointColor={{ theme: 'background' }}
       pointBorderWidth={2}
       pointBorderColor={{ from: 'serieColor' }}
