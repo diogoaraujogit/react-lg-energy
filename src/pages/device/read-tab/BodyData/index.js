@@ -16,13 +16,14 @@ const BodyData = ({ logs, phase, param, un }) => {
     'Phase A': 'a',
     'Phase B': 'b',
     'Phase C': 'c',
+    'Average': 'avg',
     'Total': 'total'
   }
 
 
   const formatDate = (date, chartLegend, average) => {
 
-      return date.slice(-5)
+      return date.slice(-8)
   }
 
   const cards = useMemo(() => {
@@ -161,6 +162,7 @@ const BodyData = ({ logs, phase, param, un }) => {
                 xLegend={'Time'}
                 yLegend={`${param} (${un})`}
                 setSelection={setLogSelection}
+                readings={true}
               />
           }
         </ChartBody>

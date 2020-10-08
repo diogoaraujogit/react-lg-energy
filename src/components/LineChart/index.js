@@ -3,9 +3,30 @@ import React from 'react'
 import { ResponsiveLine } from '@nivo/line'
 import { useDispatch } from 'react-redux'
 
-const LineChart = ({ data, xLegend, yLegend, setSelection }) => {
+const LineChart = ({ data, xLegend, yLegend, setSelection, readings }) => {
 
   const dispatch = useDispatch()
+  
+
+  const days = data && data[0] && data[0].data ? data[0].data.length : 0
+  const ticks = 5
+  const arr = [...Array(ticks).keys()]
+  const ticketValues = readings? days ? arr.map(n => {
+    let actualPos = parseInt(days * n / (ticks - 1)) - 1
+    let actualIdx = actualPos >= 0 ? actualPos : 0
+    let actualItem = data[0].data[actualIdx] && data[0].data[actualIdx].x
+    let actualValue = actualItem ? actualItem : ''
+
+    return actualValue
+  }) : []
+  :
+  ''
+
+  console.log('Array de tick values')
+    console.log(data)
+    console.log(ticketValues)
+    console.log(days)
+    console.log(arr)
 
   return (
     <ResponsiveLine
@@ -19,6 +40,7 @@ const LineChart = ({ data, xLegend, yLegend, setSelection }) => {
       axisBottom={{
         orient: 'bottom',
         tickSize: 5,
+        tickValues: ticketValues,
         tickPadding: 5,
         tickRotation: 0,
         legend: xLegend,
