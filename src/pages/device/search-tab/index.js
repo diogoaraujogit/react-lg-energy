@@ -85,13 +85,55 @@ const SearchTab = () => {
     }
   ]
 
-  const phases = ['Phase A', 'Phase B', 'Phase C', 'Total']
+  const phases = useMemo(() => {
+
+    const lastOption = param === 'current' ?
+      {
+        title: 'Average',
+        value: 'Average'
+      } :
+      {
+        title: 'Total',
+        value: 'Total'
+      }
+
+    if (param === 'current' && phase === 'Total') {
+      setPhase('Average')
+    } else if (param !== 'current' && phase === 'Average') {
+      setPhase('Total')
+    }
+
+    if (param === 'demand') {
+      setPhase('Total')
+      return [
+        {
+          title: 'Total',
+          value: 'Total'
+        }
+      ]
+    }
+
+    return [
+      {
+        title: 'Phase A',
+        value: 'Phase A'
+      },
+      {
+        title: 'Phase B',
+        value: 'Phase B'
+      },
+      {
+        title: 'Phase C',
+        value: 'Phase C'
+      },
+      lastOption
+    ]
+  }, [param])
 
   // API`S CALLS
 
   async function getAnalytics(type, query) {
     setChartLoading(true)
-    setChartMessage('')
     setAnalytics({})
     setLogs({})
 
@@ -100,6 +142,7 @@ const SearchTab = () => {
       const response = await api_analytics.get(`/search/devices/${id}/${type}?${query}`)
 
       if (response.data) {
+        setChartMessage('')
         setAnalytics(response.data)
       }
 
@@ -108,23 +151,23 @@ const SearchTab = () => {
       setChartMessage('Unable to connect to server')
       const error = e.response?.data
 
-      if(error) {
-        if(error.statusCode === 400) {
+      if (error) {
+        if (error.statusCode === 400) {
           setChartMessage('Invalid search')
         }
-        else if(error.statusCode === 500) {
+        else if (error.statusCode === 500) {
           setChartMessage('An unexpected error occurred')
         }
-        
+
       }
     }
 
     setChartLoading(false)
   }
 
-  async function getLogs(type, query) {
+  async function getLogs(type, query, toAnalytics) {
     setChartLoading(true)
-    setChartMessage('')
+
     setAnalytics({})
     setLogs({})
 
@@ -133,20 +176,30 @@ const SearchTab = () => {
       const response = await api_logs.get(`/captures/devices/${id}/${type}?${query}`)
 
       if (response.data) {
-        setLogs(response.data)
+        setChartMessage('')
+        if (toAnalytics) {
+          if (period === 'weekly') {
+            setLogs(response.data.byHours)
+            setAnalytics(response.data.byDays)
+          } else {
+            setAnalytics(response.data)
+          }
+        } else {
+          setLogs(response.data)
+        }
       }
 
     } catch (e) {
       toast.error('An error occurred')
       const error = e.response?.data
-      
+
       setChartMessage('Unable to connect to server')
 
-      if(error) {
-        if(error.statusCode === 400) {
+      if (error) {
+        if (error.statusCode === 400) {
           setChartMessage('Invalid search')
         }
-        else if(error.statusCode === 500) {
+        else if (error.statusCode === 500) {
           setChartMessage('An unexpected error occurred')
         }
       }
@@ -158,40 +211,47 @@ const SearchTab = () => {
   // HANDLE FUNCTIONS
 
   const handleSearch = () => {
-    const search_type = searchType === 'advanced' ? 'advanced' : period
-    const log_search = period === 'daily'? 'today' : period
-    const query = searchType === 'advanced' ?
-      `greatness=${param}&start=${startFormatted}&end=${endFormatted}` :
-      `greatness=${param}`
+    if (id) {
+      const search_type = searchType === 'advanced' ? 'advanced' : period
+      const log_search = period === 'daily' ? 'today' : period
+      const query = searchType === 'advanced' ?
+        `greatness=${param}&start=${startFormatted}&end=${endFormatted}` :
+        `greatness=${param}`
 
-    if (period !== 'daily' || searchType === 'advanced') {
-      getAnalytics(search_type, query)
+      if (period !== 'daily' || searchType === 'advanced') {
 
-      if (period === 'weekly') {
+        if (param === 'demand') {
+          getLogs(log_search, query, true)
+        } else {
+          getAnalytics(search_type, query)
+
+          if (period === 'weekly') {
+            getLogs(log_search, query)
+          }
+        }
+      } else {
         getLogs(log_search, query)
       }
-    }  else {
-      getLogs(log_search, query)
-    }
 
-    dispatch(setBarSelection({}))
-    dispatch(setLineSelection({}))
+      dispatch(setBarSelection({}))
+      dispatch(setLineSelection({}))
+    } else {
+      setChartMessage('Invalid ID')
+    }
 
   }
 
   // USE EFFECTS
 
   useEffect(() => {
-    id && handleSearch()
+    handleSearch()
   }, [param, period, startFormatted, endFormatted, searchType])
 
   useEffect(() => {
 
-    
-
-    if((logs && logs.data && !logs.data.length) && (analytics && analytics.data && !analytics.data.length)) {
+    if (id && !(logs && logs.data && logs.data.length) && !(analytics && analytics.data && analytics.data.length)) {
       setChartMessage('There is no data for this search')
-    }
+    } 
   }, [analytics, logs, period, searchType])
 
 
@@ -261,7 +321,7 @@ const SearchTab = () => {
             phases.map(phase_option => {
 
               return (
-                <CheckboxLabels value={phase_option} variable={phase} label={phase_option} func={setPhase} />
+                <CheckboxLabels value={phase_option.value} variable={phase} label={phase_option.title} func={setPhase} />
               )
             })
           }
@@ -354,10 +414,10 @@ const SearchTab = () => {
                         {chartMessage}
                       </BodyMessage>
                       :
-                      <BodyData 
-                        analytics={analytics} 
+                      <BodyData
+                        analytics={analytics}
                         logs={logs}
-                        phase={phase} 
+                        phase={phase}
                         searchType={searchType}
                         period={period}
                         param={show_param}

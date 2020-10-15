@@ -59,13 +59,55 @@ const ReadTab = () => {
   ]
 
 
-  const phases = ['Phase A', 'Phase B', 'Phase C', 'Total']
+  const phases = useMemo(() => {
+
+    const lastOption = param === 'current' ?
+      {
+        title: 'Average',
+        value: 'Average'
+      } :
+      {
+        title: 'Total',
+        value: 'Total'
+      }
+
+    if (param === 'current' && phase === 'Total') {
+      setPhase('Average')
+    } else if (param !== 'current' && phase === 'Average') {
+      setPhase('Total')
+    }
+
+    if (param === 'demand') {
+      setPhase('Total')
+      return [
+        {
+          title: 'Total',
+          value: 'Total'
+        }
+      ]
+    }
+
+    return [
+      {
+        title: 'Phase A',
+        value: 'Phase A'
+      },
+      {
+        title: 'Phase B',
+        value: 'Phase B'
+      },
+      {
+        title: 'Phase C',
+        value: 'Phase C'
+      },
+      lastOption
+    ]
+  }, [param])
 
   // API`S CALLS
 
   async function getLogs(type, query) {
     setChartLoading(true)
-    setChartMessage('')
     setLogs({})
 
     try {
@@ -73,6 +115,8 @@ const ReadTab = () => {
       const response = await api_logs.get(`/captures/devices/${id}/${type}?${query}`)
 
       if (response.data) {
+
+        setChartMessage('')
         setLogs(response.data)
       }
 
@@ -98,24 +142,28 @@ const ReadTab = () => {
   // HANDLE FUNCTIONS
 
   const handleSearch = () => {
-    const search_type = 'advanced'
-    const query = `greatness=${param}&date=${startFormatted}`
+    if (id) {
+      const search_type = 'advanced'
+      const query = `greatness=${param}&date=${startFormatted}`
 
-    getLogs(search_type, query)
+      getLogs(search_type, query)
 
-    dispatch(setLogSelection({}))
+      dispatch(setLogSelection({}))
+    } else {
+      setChartMessage('Set a valid ID')
+    }
 
   }
 
   // USE EFFECTS
 
   useEffect(() => {
-    id && handleSearch()
+    handleSearch()
   }, [param, startFormatted])
 
   useEffect(() => {
 
-    if ((logs && logs.data && !logs.data.length)) {
+    if (id && !(logs && logs.data && logs.data.length)) {
       setChartMessage('There is no data for this search')
     }
   }, [logs])
@@ -125,12 +173,12 @@ const ReadTab = () => {
 
   const show_period = useMemo(() => {
 
-      const start = format(startDate, 'dd/MM/yyyy')
-      setStartFormatted(start)
+    const start = format(startDate, 'dd/MM/yyyy')
+    setStartFormatted(start)
 
-      const date = `${start}`
+    const date = `${start}`
 
-      return date
+    return date
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [startDate])
@@ -179,7 +227,7 @@ const ReadTab = () => {
             phases.map(phase_option => {
 
               return (
-                <CheckboxLabels value={phase_option} variable={phase} label={phase_option} func={setPhase} />
+                <CheckboxLabels value={phase_option.value} variable={phase} label={phase_option.title} func={setPhase} />
               )
             })
           }
@@ -219,22 +267,22 @@ const ReadTab = () => {
                 <div className='search-radio'>
 
                 </div>
-                
-                    <div className='search-date'>
-                      <div>
-                        <p>Date</p>
-                        <div>
-                          <BasicDatePicker value={startDate} handleChange={setStartDate} />
-                        </div>
-                      </div>
-                      {/* <div>
+
+                <div className='search-date'>
+                  <div>
+                    <p>Date</p>
+                    <div>
+                      <BasicDatePicker value={startDate} handleChange={setStartDate} />
+                    </div>
+                  </div>
+                  {/* <div>
                         <p>Final</p>
                         <div>
                           <BasicDatePicker value={endDate} handleChange={setEndDate} />
                         </div>
                       </div> */}
-                    </div>
-                
+                </div>
+
                 <div className='search-button'>
                   <button onClick={() => handleSearch()}>
                     SEARCH

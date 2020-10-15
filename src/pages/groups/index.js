@@ -4,7 +4,7 @@ import { useHistory } from 'react-router-dom'
 
 import {
   Container, Header, Info, Features, AddDevice, AddFilter, Search, SearchInfo,
-  Body, LoadingArea, BodyMessage, GroupGrid, GroupHeader, Cards, Card
+  Body, LoadingArea, BodyMessage, GroupGrid, Group,
 } from './styles';
 
 import { MdLens } from 'react-icons/md'
@@ -35,12 +35,7 @@ const Groups = () => {
   const [deviceName, setDeviceName] = useState('')
   const [formError, setFormError] = useState(false)
 
-  const [filterSelect, setFilterSelect] = useState('all')
-  const [filterOption, setFilterOption] = useState('')
-  const [isFiltered, setIsFiltered] = useState(false)
-
   const [groupsArray, setGroupsArray] = useState([])
-  const [groupsFiltered, setGroupsFiltered] = useState([])
 
   const [registering, setRegistering] = useState(false)
 
@@ -53,36 +48,6 @@ const Groups = () => {
   const history = useHistory()
 
   // FUNÇÕES
-
-  const handleFilter = (close) => {
-
-    if (!filterOption && filterSelect === 'all') {
-      removeFilter()
-    }
-
-    if (filterOption) {
-      setIsFiltered(true)
-      const filteredGroups = groups.filter(group => group.name === filterOption)
-      setGroupsArray(filteredGroups)
-      setGroupsFiltered(filteredGroups)
-    }
-
-    close()
-  }
-
-  const removeFilter = () => {
-    setFilterOption('')
-    setFilterSelect('all')
-    setIsFiltered(false)
-    setGroupsArray(groups)
-    setGroupsFiltered(groups)
-  }
-
-  function handlePowerDevice(checked, setChecked) {
-    //setSwitchDisabled(true)
-    setChecked(!checked)
-    // setDevicePower(!devicePower)
-  }
 
 
   function clearSearch() {
@@ -108,8 +73,9 @@ const Groups = () => {
 
       try {
 
-        const response = await api_crud.post('/devices', {
-          ...base_device, name: deviceName
+        const response = await api_crud.post('/groups', {
+          name: deviceName,
+          subgroups: []
         })
 
         if (response.data) {
@@ -121,33 +87,44 @@ const Groups = () => {
         }
 
       } catch (e) {
-        toast.error('Erro')
+        toast.error('An error occurred')
+        const error = e.response?.data
+
+        setFormError('Unable to connect to server')
+
+        if (error) {
+          if (error.statusCode === 409) {
+            setFormError('Group name already exists')
+          }
+          else if (error.statusCode === 500) {
+            setFormError('An unexpected error occurred')
+          }
+        }
       }
 
     } else {
-      setFormError('Device name is required')
+      setFormError('Group name is required')
     }
 
     setRegistering(false)
-  }  
+  }
 
   async function getGroups() {
 
     setBodyLoading(true)
     setBodyMessage('')
-    removeFilter()
+
     setSearch('')
     setShowSearchBar(false)
 
     try {
 
-      const response = await api_crud.get('/groups/devices')
+      const response = await api_crud.get('/groups')
 
       if (response.data) {
+        console.log(response.data)
         setGroups(response.data)
         setGroupsArray(response.data)
-        setGroupsFiltered(response.data)
-        
       }
 
     } catch (e) {
@@ -163,23 +140,17 @@ const Groups = () => {
 
   useEffect(() => {
     getGroups()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
 
-    let count = 0
-
-    groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
-      const devices = group.devices.length
-      count = count + devices
-      return count
-    })
+    let count = groupsArray?.length
 
     setDevicesLength(count)
 
-    if (count < 1) {
-      setBodyMessage('Nenhum dispositivo cadastrado')
+    if (!count || count < 1) {
+      setBodyMessage('No groups found')
     } else {
       setBodyMessage('')
     }
@@ -193,26 +164,10 @@ const Groups = () => {
 
   useEffect(() => {
 
-    const groupsArray_copy = [...groupsFiltered]
-
-    const searched = groupsArray_copy.map(group => {
-
-      let obj = Object.assign({}, group)
-
-      const result_devices = obj.devices.filter(device =>
-        device.name.toLowerCase().includes(search.toLowerCase())  
-      )
-
-      obj.devices = result_devices
-
-      return obj
-    })
-
-    const newGroups = searched.filter(group => group.devices.length > 0)
+    const newGroups = groups.filter(group => group.name.toLowerCase().includes(search.toLowerCase()))
 
     setGroupsArray(newGroups)
-  }, [search, groupsFiltered])
-
+  }, [search])
 
 
 
@@ -223,11 +178,11 @@ const Groups = () => {
           <Info>
             <div>
               <h2>Groups</h2>
-              <span>{`${devicesLength} Devices`}</span>
+              <span>{`${devicesLength} Groups`}</span>
             </div>
-            
+
           </Info>
-          <Features filtered={isFiltered}>
+          <Features>
             <div>
               <Search>
                 {
@@ -251,76 +206,6 @@ const Groups = () => {
 
               </Search>
 
-
-
-              {/* FILTRAR */}
-
-              <Popup
-                onOpen={() => {
-                }}
-
-                contentStyle={{ width: '37rem', height: '36rem', borderRadius: '1rem' }}
-                trigger={
-                  <button className='filter-button'>
-                    <RiFilterFill />
-                    <span>filter</span>
-                  </button>
-                }
-                modal
-              >
-                {
-                  close => {
-                    return (
-                      <AddFilter>
-                        <h2>Filter</h2>
-                        <div className='filter-select'>
-                          <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
-                            <option key={0} value=''>
-                              Select a group
-                            </option>
-                            {
-                              groups && Array.isArray(groups) && groups.map(group => {
-
-                                return (
-                                  <option key={groups.indexOf(group) + 1} value={group.name}>
-                                    {group.name}
-                                  </option>
-                                )
-                              })
-                            }
-                          </select>
-                          <img src={arrow_icon} alt='' />
-                        </div>
-
-                        <div className='filter-options'>
-                          <button className={filterSelect === 'all' && 'filter-selected'} onClick={() => setFilterSelect('all')}>
-                            ALL
-                          </button>
-                          <button className={filterSelect === 'on' && 'filter-selected'} onClick={() => setFilterSelect('on')}>
-                            ON
-                          </button>
-                          <button className={filterSelect === 'off' && 'filter-selected'} onClick={() => setFilterSelect('off')}>
-                            OFF
-                          </button>
-                        </div>
-                        <button onClick={() => removeFilter()}>
-                          REMOVE FILTER
-                        </button>
-                        <div className='filter-buttons'>
-                          <button onClick={() => close()}>
-                            Cancel
-                          </button>
-                          <button onClick={() => handleFilter(close)}>
-                            Filter
-                          </button>
-                        </div>
-                      </AddFilter>
-                    )
-                  }
-                }
-
-              </Popup>
-
               {/* ADICIONAR DEVICE */}
               <Popup
                 onOpen={() => {
@@ -331,7 +216,7 @@ const Groups = () => {
                 contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
                 trigger={
                   <button className='add-device-button'>
-                    New Device
+                    New Group
                   </button>
                 }
                 modal
@@ -340,7 +225,7 @@ const Groups = () => {
                   close => {
                     return (
                       <AddDevice formError={formError} registering={registering}>
-                        <p>New Device</p>
+                        <p>New Group</p>
                         <div>
                           <span>{formError}</span>
                         </div>
@@ -352,7 +237,7 @@ const Groups = () => {
                               setFormError('')
                               setDeviceName(event.target.value);
                             }}
-                            placeholder='Device name'
+                            placeholder='Group name'
                           />
                           <div>
                             <button disabled={registering} onClick={() => close()}>
@@ -372,14 +257,14 @@ const Groups = () => {
             </div>
           </Features>
         </Header>
-        
+
         <SearchInfo>
           {
             search && <><h3>Showing results for:&nbsp;</h3>
-            <p>{search}</p></>
+              <p>{search}</p></>
           }
         </SearchInfo>
-        
+
         {/* BODY */}
         <Body>
           {bodyLoading ?
@@ -393,7 +278,27 @@ const Groups = () => {
               </BodyMessage>
               :
               <GroupGrid>
+                {
+                  groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
+                    const id = group.id
 
+                    return (
+                      <Group onClick={() => history.push(`/groups/${id}`)}>
+                        <h2>{group.name}</h2>
+                        <div>
+                          <div>
+                            <h4>{group.totalDevices}</h4>
+                            <p>&nbsp;Devices</p>
+                          </div>
+                          <div>
+                            <h4>{group.totalSubgroups}</h4>
+                            <p>&nbsp;Subgroups</p>
+                          </div>
+                        </div>
+                      </Group>
+                    )
+                  })
+                }
               </GroupGrid>
           }
         </Body>

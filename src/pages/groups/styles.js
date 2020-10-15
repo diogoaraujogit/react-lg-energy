@@ -390,7 +390,7 @@ export const SearchInfo = styled.div`
 
 export const Body = styled.div`
   width: 100%;
-  padding: 0rem 5.8rem 0rem 3.8rem;
+  padding: 0rem 7.7rem 0rem 6rem;
 `;
 
 export const LoadingArea = styled.div`
@@ -415,16 +415,53 @@ export const BodyMessage = styled.div`
 
 export const GroupGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 3fr)
-
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 3rem 2.5rem;
 `;
 
 export const Group = styled.div`
-  margin-bottom: 3rem;
-  width: 100%;
-  border: solid 0.5px #707070;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 12rem;
+  padding: 2.8rem 4.3rem;
+  background-color: #ffffff;
+  box-shadow: 0rem 0.3rem 0.6rem #00000029;
   border-radius: 10px;
-  padding: 2rem 2rem 4rem 2rem;
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0rem 0.5rem 3rem #78819566;
+  }
+
+  > div {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    div {
+      display: flex;
+      flex-direction: row;
+    }
+  }
+
+  h2 {
+    font-size: 1.8rem;
+    color: #C5004F;
+    font-weight: 700;
+  }
+  h4 {
+    font-size: 1.8rem;
+    color: #222222;
+    font-weight: 700;
+  }
+  p {
+    color: #707070;
+    font-size: 1.8rem;
+    font-weight: 400;
+  }
+
 `;
 
 export const GroupHeader = styled.div`

@@ -16,14 +16,14 @@ const BodyData = ({ logs, phase, param, un }) => {
     'Phase A': 'a',
     'Phase B': 'b',
     'Phase C': 'c',
-    'Average': 'avg',
+    'Average': 'average',
     'Total': 'total'
   }
 
 
   const formatDate = (date, chartLegend, average) => {
 
-      return date.slice(-8)
+      return date.slice(-8,-3)
   }
 
   const cards = useMemo(() => {

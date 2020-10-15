@@ -123,7 +123,19 @@ const Devices = () => {
         }
 
       } catch (e) {
-        toast.error('Erro')
+        toast.error('An error occurred')
+        const error = e.response?.data
+
+        setFormError('Unable to connect to server')
+
+        if (error) {
+          if (error.statusCode === 409) {
+            setFormError('Device name already exists')
+          }
+          else if (error.statusCode === 500) {
+            setFormError('An unexpected error occurred')
+          }
+        }
       }
 
     } else {
@@ -154,7 +166,7 @@ const Devices = () => {
 
     } catch (e) {
 
-      setBodyMessage('Houve um erro ao carregar os dispositivos')
+      setBodyMessage('Unable to load devices')
 
     }
 

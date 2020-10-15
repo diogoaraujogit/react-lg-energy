@@ -22,6 +22,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
     'Phase A': 'a',
     'Phase B': 'b',
     'Phase C': 'c',
+    'Average': 'average',
     'Total': 'total'
   }
 
@@ -39,6 +40,10 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
     '11': 'November',
     '12': 'December'
   }
+
+  console.log('----> Analytics e Logs')
+  console.log(analytics)
+  console.log(logs)
 
   const formatDate = (date, chartLegend, average) => {
 
@@ -142,12 +147,12 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
     :
     analytics && analytics.data && analytics.data.length ?
       analytics.data.map(data => {
-
+        const date = data.createdAt || data.date
         let point = {}
 
         point[phase] = data[relPhases[phase]]
-        point.date = formatDate(data.createdAt, true)
-        point.full = formatDate(data.createdAt)
+        point.date = formatDate(date, true)
+        point.full = formatDate(date)
 
         return point
       })
@@ -209,12 +214,12 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
         id: phase,
         data: analytics && analytics.data && analytics.data.length ?
           analytics.data.map(data => {
-
+            const date = data.createdAt || data.date
             let point = {}
 
             point.y = data[relPhases[phase]]
-            point.x = formatDate(data.createdAt, true)
-            point.full = formatDate(data.createdAt)
+            point.x = formatDate(date, true)
+            point.full = formatDate(date)
 
             return point
           })
