@@ -12,7 +12,13 @@ export default function CheckboxLabels(props) {
 
   const handleChange = (event) => {
     if(multiple) {
-
+      if(variable.includes(value)) {
+        const newArray = variable.filter(vari => vari !== value)
+        func(newArray)
+      } else {
+        const newArray = variable.concat(value)
+        func(newArray)
+      }
     } else {
       func(value)
     }
@@ -22,7 +28,7 @@ export default function CheckboxLabels(props) {
     <FormControlLabel
       control={
         <Checkbox
-          checked={variable === value}
+          checked={multiple? variable.includes(value) :  variable === value}
           onChange={handleChange}
         />
       }

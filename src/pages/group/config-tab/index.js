@@ -5,7 +5,7 @@ import { useHistory } from 'react-router-dom'
 import {
   Container, Header, Info, Features, AddDevice, AddFilter, Search, SearchInfo,
   Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card,
-  DelDevice, EditSave
+  DelDevice, EditSave, EditSub
 } from './styles';
 
 import { MdDelete, MdEdit, MdLens } from 'react-icons/md'
@@ -22,6 +22,7 @@ import { base_device } from './base_device';
 
 import { MdSearch, MdClear } from 'react-icons/md'
 import { useSelector } from 'react-redux';
+import CheckboxLabels from '../../../components/Checkbox';
 
 
 const ConfigTab = () => {
@@ -32,13 +33,18 @@ const ConfigTab = () => {
   console.log(group)
   // ESTADOS INTERNOS
 
-  const [groupName, setGroupName] = useState(group.name || '-')
+  const groupName = group.name || '-'
+  const [actualSub, setActualSub] = useState('')
 
   const [bodyLoading, setBodyLoading] = useState(true)
   const [bodyMessage, setBodyMessage] = useState('')
   const [groups, setGroups] = useState([])
 
-  const [switchDisabled, setSwitchDisabled] = useState(false)
+  const [allDevices, setAllDevices] = useState([])
+  const [selectedsDevices, setSelectedsDevices] = useState([])
+  const [devicesArray, setDevicesArray] = useState([])
+  const [searchDevice, setSearchDevice] = useState('')
+
   const [devicesLength, setDevicesLength] = useState(0)
 
   const [deviceName, setDeviceName] = useState('')
@@ -88,11 +94,6 @@ const ConfigTab = () => {
     setGroupsFiltered(groups)
   }
 
-  function handlePowerDevice(checked, setChecked) {
-    //setSwitchDisabled(true)
-    setChecked(!checked)
-    // setDevicePower(!devicePower)
-  }
 
 
   function clearSearch() {
@@ -100,6 +101,7 @@ const ConfigTab = () => {
     console.log(showSearchBar)
     setShowSearchBar(!showSearchBar)
   }
+
 
   function handleKeyPress(event) {
     if (event.keyCode === 27) {
@@ -109,6 +111,33 @@ const ConfigTab = () => {
 
 
   // API SEARCHES
+
+  async function handleRemoveDevice(id) {
+
+    try {
+
+      // const response = await 
+
+    } catch (e) {
+
+    }
+  }
+
+  async function getDevices() {
+
+    try {
+
+      const response = await api_crud.get('/devices')
+
+      if (response.data) {
+        setAllDevices(response.data)
+        setDevicesArray(response.data)
+      }
+
+    } catch (e) {
+
+    }
+  }
 
   async function handleSubmit(e, close) {
     e.preventDefault()
@@ -185,6 +214,7 @@ const ConfigTab = () => {
 
   useEffect(() => {
     getGroups()
+    getDevices()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -235,6 +265,17 @@ const ConfigTab = () => {
     setGroupsArray(newGroups)
   }, [search, groupsFiltered])
 
+  useEffect(() => {
+
+    const devicesArray_copy = [...allDevices]
+
+    const result_devices = devicesArray_copy.filter(device =>
+      device.name.toLowerCase().includes(searchDevice.toLowerCase())
+    )
+
+    setDevicesArray(result_devices)
+
+  }, [searchDevice])
 
 
 
@@ -357,7 +398,7 @@ const ConfigTab = () => {
               contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
               trigger={
                 <button className='add-device-button'>
-                  New Device
+                  New Subgroup
                   </button>
               }
               modal
@@ -366,7 +407,7 @@ const ConfigTab = () => {
                 close => {
                   return (
                     <AddDevice formError={formError} registering={registering}>
-                      <p>New Device</p>
+                      <p>New Subgroup</p>
                       <div>
                         <span>{formError}</span>
                       </div>
@@ -434,9 +475,80 @@ const ConfigTab = () => {
                       <GroupHeader>
                         <h2>{name}</h2>
                         <div>
-                          <Link to='/groups'>
-                            See Group
-                            </Link>
+                          <Popup
+                            onOpen={() => setActualSub(name)}
+                            contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
+                            trigger={
+                              <p>
+                                Edit Group
+                              </p>
+                            }
+                            modal
+                          >
+                            {
+                              close => {
+                                return (
+                                  <EditSub>
+                                    <h3>Add Subgroup</h3>
+                                    <div className='name'>
+                                      <span>Subgroup name</span>
+                                      <input
+                                        value={actualSub}
+                                        onChange={e => setActualSub(e.target.value)}
+                                      />
+                                    </div>
+                                    <div className='search'>
+                                      <Search>
+                                        <div>
+                                          <input
+                                            type='text'
+                                            maxlength='20'
+                                            autoFocus
+                                            value={searchDevice}
+                                            onChange={event => setSearchDevice(event.target.value)}
+                                          />
+                                          <button onClick={() => setSearchDevice('')} >
+                                            <MdClear />
+                                          </button>
+                                        </div>
+
+                                      </Search>
+                                    </div>
+                                    <div className='devices'>
+                                      {
+                                        devicesArray && devicesArray.map(device => {
+
+                                          return (
+                                            <div>
+                                              <CheckboxLabels
+                                                label={device.name}
+                                                variable={selectedsDevices}
+                                                value={device.id}
+                                                func={setSelectedsDevices}
+                                                multiple
+                                              />
+                                            </div>
+                                          )
+                                        })
+                                      }
+                                    </div>
+                                    <div className='buttons'>
+                                      <button onClick={() => close()}>
+                                        Cancel
+                                      </button>
+                                      <button 
+                                      // onClick={() => handleEditSub(close)}
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  </EditSub>
+                                )
+                              }
+                            }
+
+                          </Popup>
+
                         </div>
                       </GroupHeader>
                       <Cards>
@@ -456,7 +568,7 @@ const ConfigTab = () => {
                                   </div>
                                   <p>{name}</p>
                                 </div>
-                                <MdDelete onClick={() => alert('Excluir?')} />
+                                {/* <MdDelete onClick={() => handleRemoveDevice(id)} /> */}
                               </Card>
                             )
                           })

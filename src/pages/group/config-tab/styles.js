@@ -520,88 +520,6 @@ export const EditSave = styled.div`
 `;
 
 
-export const DelDevice = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-  padding: 4.1rem 2.6rem 3.4rem 2.6rem; 
-  color: #222222;
-
-  > p {
-    font-size: 2rem;
-    font-weight: 500;
-  }
-
-  div {
-    p {
-      font-size: 1.6rem;
-      font-weight: 500;
-    }
-  }
-
-    span {
-      color: red;
-    }
-    
-    .buttons {
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      margin-top: 2rem;
-    }
-
-      button {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        width: 12rem;
-        height: 4.2rem;
-        border: none;
-        border-radius: 5px;
-        color: #222222;
-        font-size: 1.8rem;
-        font-weight: 500;
-
-        &:first-child {
-          margin-right: 2rem;
-          background-color: transparent;
-        }
-
-        &:last-child {
-          color: #ffffff;
-          background-color: #FF0000;
-          transition: background-color 0.2s;
-
-          &:hover {
-            background-color: ${() => lighten(0.1, '#FF0000')}
-          }
-        }
-
-        &:disabled {
-          cursor: not-allowed;
-          opacity: 0.6;
-        }
-
-        .MuiCircularProgress-root {
-          width: 1.4rem !important;
-          height: 1.4rem !important;
-          margin-left: 1rem;
-        }
-
-        .MuiCircularProgress-svg {
-          color: #ffffff;
-          opacity: 1;
-          width: 1.4rem;
-          height: 1.4rem;
-        }
-      }
-`;
-
-
 
 // BODY
 
@@ -659,12 +577,112 @@ export const GroupHeader = styled.div`
 
   
 
-  a {
+  p {
     color: #C5004F;
     font-size: 1.6rem;
     font-weight: 600;
+    cursor: pointer;
+
     &:hover {
       border-bottom: 1.5px solid #C5004F;
+    }
+  }
+`;
+
+export const EditSub = styled.div`
+
+  display: flex;
+  flex-direction: column;
+  padding: 3rem;
+
+  h3 {
+    font-size: 2rem;
+    color: #707070;
+    font-weight: 500;
+    margin-bottom: 1rem;
+  }
+
+  .name {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 3rem;
+
+    span {
+      font-size: 1.4rem;
+      color: #B3B3B3;
+      font-weight: 300;
+      margin-bottom: 5px;
+    }
+
+    input {
+      border: none;
+      border-bottom: 1px solid #B3B3B3;
+      padding-bottom: 5px;
+      font-size: 1.8rem;
+      font-weight: 500;
+    }
+  }
+
+  .search {
+    margin-bottom: 2rem;
+    width: 100%;
+    height: 3rem;
+
+    div {
+      height: 100%;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding: 0rem 2rem;
+    }
+
+    svg {
+      font-size: 2rem;
+    }
+  }
+
+  .devices {
+    height: 25rem;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+
+    .MuiTypography-body1 {
+      font-size: 1.6rem;
+      color: #222222;
+    }
+
+    .MuiCheckbox-colorSecondary.Mui-checked {
+      color: #222222;
+    }
+
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 1rem;
+    width: 25rem;
+    margin: 0 auto;
+
+    button {
+      width: 12rem;
+      height: 4.2rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.8rem;
+      font-weight: 500;
+
+      &:first-child {
+        background-color: #F8F8F8;
+        color: #222222;
+      }
+
+      &:last-child {
+        background-color: #222222;
+        color: #ffffff;
+      }
     }
   }
 `;
