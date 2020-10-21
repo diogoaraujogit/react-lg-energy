@@ -2,6 +2,8 @@ import styled from 'styled-components'
 
 import { shade, lighten, darken } from 'polished'
 
+import arrow_icon from '../../assets/chevron-forward-outline.svg'
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -284,7 +286,9 @@ export const AddFilter = styled.div`
     border-radius: 5px;
     color: #222222;
     font-weight: 500;
-
+    background: url(${arrow_icon}) no-repeat right;
+    background-position-x: 95%;
+    
     -moz-appearance: none;
     -webkit-appearance: none;
   }

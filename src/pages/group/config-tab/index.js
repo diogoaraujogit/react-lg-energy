@@ -35,6 +35,9 @@ const ConfigTab = () => {
 
   const groupName = group.name || '-'
   const [actualSub, setActualSub] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+
 
   const [bodyLoading, setBodyLoading] = useState(true)
   const [bodyMessage, setBodyMessage] = useState('')
@@ -45,12 +48,11 @@ const ConfigTab = () => {
   const [devicesArray, setDevicesArray] = useState([])
   const [searchDevice, setSearchDevice] = useState('')
 
-  const [devicesLength, setDevicesLength] = useState(0)
+  // const [devicesLength, setDevicesLength] = useState(0)
 
-  const [deviceName, setDeviceName] = useState('')
+  const [subName, setSubName] = useState('')
   const [formError, setFormError] = useState(false)
 
-  const [disableSchedules, setDisableSchedules] = useState(false)
   const [filterSelect, setFilterSelect] = useState('all')
   const [filterOption, setFilterOption] = useState('')
   const [isFiltered, setIsFiltered] = useState(false)
@@ -112,16 +114,50 @@ const ConfigTab = () => {
 
   // API SEARCHES
 
-  async function handleRemoveDevice(id) {
+  async function handleEditSub(sub) {
+    setSaving(true)
 
     try {
 
-      // const response = await 
+      const response = await api_crud.patch(`groups/${id}/subgroups/${sub.id}`, {
+        name: actualSub, devices: selectedsDevices
+      })
+
+      if (response.data) {
+        toast.success('Saved')
+        getGroups()
+        getDevices()
+      }
 
     } catch (e) {
-
+      toast.error('Error trying to save')
     }
+
+    setSaving(false)
   }
+
+  async function handleRemoveDevice(device) {
+    setDeleting(true)
+
+    try {
+
+      const response = await api_crud.patch(`devices/${device.id}`, {
+        idSubgroup: null
+      })
+
+      if (response.data) {
+        toast.info('Device removed')
+        getGroups()
+        getDevices()
+      }
+
+    } catch (e) {
+      toast.error('Error trying to remove device')
+    }
+
+    setDeleting(false)
+  }
+
 
   async function getDevices() {
 
@@ -143,12 +179,12 @@ const ConfigTab = () => {
     e.preventDefault()
     setRegistering(true)
 
-    if (deviceName) {
+    if (subName) {
 
       try {
 
-        const response = await api_crud.post('/devices', {
-          ...base_device, name: deviceName
+        const response = await api_crud.post(`/groups/${id}/subgroups`, {
+          devices: [], name: subName
         })
 
         if (response.data) {
@@ -167,7 +203,7 @@ const ConfigTab = () => {
 
         if (error) {
           if (error.statusCode === 409) {
-            setFormError('Device name already exists')
+            setFormError('Subgroup name already exists')
           }
           else if (error.statusCode === 500) {
             setFormError('An unexpected error occurred')
@@ -176,7 +212,7 @@ const ConfigTab = () => {
       }
 
     } else {
-      setFormError('Device name is required')
+      setFormError('Subgroup name is required')
     }
 
     setRegistering(false)
@@ -220,18 +256,18 @@ const ConfigTab = () => {
 
   useEffect(() => {
 
-    let count = 0
+    // let count = 0
 
-    groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
-      const devices = group.devices.length
-      count = count + devices
-      return count
-    })
+    // groupsArray && Array.isArray(groupsArray) && groupsArray.map(group => {
+    //   const devices = group.devices.length
+    //   count = count + devices
+    //   return count
+    // })
 
-    setDevicesLength(count)
+    // setDevicesLength(count)
 
-    if (count < 1) {
-      setBodyMessage('Nenhum dispositivo cadastrado')
+    if (groupsArray && Array.isArray(groupsArray) && groupsArray.length < 1) {
+      setBodyMessage('No subgroups found')
     } else {
       setBodyMessage('')
     }
@@ -245,24 +281,31 @@ const ConfigTab = () => {
 
   useEffect(() => {
 
-    const groupsArray_copy = [...groupsFiltered]
+    if (search) {
+      const groupsArray_copy = [...groupsFiltered]
 
-    const searched = groupsArray_copy.map(group => {
+      const searched = groupsArray_copy.map(group => {
 
-      let obj = Object.assign({}, group)
+        let obj = Object.assign({}, group)
 
-      const result_devices = obj.devices.filter(device =>
-        device.name.toLowerCase().includes(search.toLowerCase())
-      )
+        const result_devices = obj.devices.filter(device =>
+          device.name.toLowerCase().includes(search.toLowerCase())
+        )
 
-      obj.devices = result_devices
+        obj.devices = result_devices
 
-      return obj
-    })
+        return obj
+      })
 
-    const newGroups = searched.filter(group => group.devices.length > 0)
+      const newGroups = searched.filter(group => group.devices.length > 0)
 
-    setGroupsArray(newGroups)
+      setGroupsArray(newGroups)
+
+    } else {
+      setGroupsArray(groupsFiltered)
+    }
+
+
   }, [search, groupsFiltered])
 
   useEffect(() => {
@@ -294,7 +337,7 @@ const ConfigTab = () => {
             <p>&nbsp;Inactive</p>
           </div>
         </Info>
-        <Features disableSchedules={disableSchedules} filtered={isFiltered}>
+        <Features filtered={isFiltered}>
           <div>
             <Search>
               {
@@ -326,7 +369,7 @@ const ConfigTab = () => {
               onOpen={() => {
               }}
 
-              contentStyle={{ width: '37rem', height: '36rem', borderRadius: '1rem' }}
+              contentStyle={{ width: '37rem', height: '30rem', borderRadius: '1rem' }}
               trigger={
                 <button className='filter-button'>
                   <RiFilterFill />
@@ -356,20 +399,9 @@ const ConfigTab = () => {
                             })
                           }
                         </select>
-                        <img src={arrow_icon} alt='' />
                       </div>
 
-                      <div className='filter-options'>
-                        <button className={filterSelect === 'all' && 'filter-selected'} onClick={() => setFilterSelect('all')}>
-                          ALL
-                          </button>
-                        <button className={filterSelect === 'on' && 'filter-selected'} onClick={() => setFilterSelect('on')}>
-                          ON
-                          </button>
-                        <button className={filterSelect === 'off' && 'filter-selected'} onClick={() => setFilterSelect('off')}>
-                          OFF
-                          </button>
-                      </div>
+          
                       <button onClick={() => removeFilter()}>
                         REMOVE FILTER
                         </button>
@@ -391,7 +423,7 @@ const ConfigTab = () => {
             {/* ADICIONAR DEVICE */}
             <Popup
               onOpen={() => {
-                setDeviceName('')
+                setSubName('')
                 setFormError(false)
               }}
 
@@ -414,12 +446,12 @@ const ConfigTab = () => {
                       <form onSubmit={(e) => handleSubmit(e, close)}>
                         <input
                           maxLength='20'
-                          value={deviceName}
+                          value={subName}
                           onChange={event => {
                             setFormError('')
-                            setDeviceName(event.target.value);
+                            setSubName(event.target.value);
                           }}
-                          placeholder='Device name'
+                          placeholder='Subgroup name'
                         />
                         <div>
                           <button disabled={registering} onClick={() => close()}>
@@ -468,6 +500,7 @@ const ConfigTab = () => {
 
                   const devices = group.devices || []
                   const name = group.name || '-'
+                  const subID = group.id
                   // const group_id = group.id || ''
 
                   return (
@@ -476,11 +509,14 @@ const ConfigTab = () => {
                         <h2>{name}</h2>
                         <div>
                           <Popup
-                            onOpen={() => setActualSub(name)}
+                            onOpen={() => {
+                              setActualSub(name)
+                              setSelectedsDevices(devices)
+                            }}
                             contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                             trigger={
                               <p>
-                                Edit Group
+                                Edit Subgroup
                               </p>
                             }
                             modal
@@ -489,7 +525,7 @@ const ConfigTab = () => {
                               close => {
                                 return (
                                   <EditSub>
-                                    <h3>Add Subgroup</h3>
+                                    <h3>Edit Subgroup</h3>
                                     <div className='name'>
                                       <span>Subgroup name</span>
                                       <input
@@ -526,7 +562,13 @@ const ConfigTab = () => {
                                                 value={device.id}
                                                 func={setSelectedsDevices}
                                                 multiple
+                                                notRemove
                                               />
+                                              <p>
+                                                {
+                                                  device.idSubgroup?.name
+                                                }
+                                              </p>
                                             </div>
                                           )
                                         })
@@ -536,10 +578,11 @@ const ConfigTab = () => {
                                       <button onClick={() => close()}>
                                         Cancel
                                       </button>
-                                      <button 
-                                      // onClick={() => handleEditSub(close)}
+                                      <button
+                                        disabled={saving}
+                                        onClick={() => handleEditSub(group, close)}
                                       >
-                                        Save
+                                        Save {saving && <Loading />}
                                       </button>
                                     </div>
                                   </EditSub>
@@ -557,7 +600,6 @@ const ConfigTab = () => {
 
                             const status = true
                             const name = device.name || '-'
-                            const relay_status = false
                             const id = device.id
 
                             return (
@@ -567,8 +609,16 @@ const ConfigTab = () => {
                                     <MdLens />
                                   </div>
                                   <p>{name}</p>
+
                                 </div>
-                                {/* <MdDelete onClick={() => handleRemoveDevice(id)} /> */}
+                                <section>
+                                  {
+                                    deleting ?
+                                      <Loading />
+                                      :
+                                      <MdDelete onClick={() => handleRemoveDevice(device)} />
+                                  }
+                                </section>
                               </Card>
                             )
                           })

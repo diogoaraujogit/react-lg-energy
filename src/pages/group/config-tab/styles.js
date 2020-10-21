@@ -2,6 +2,9 @@ import styled from 'styled-components'
 
 import { shade, lighten, darken } from 'polished'
 
+import arrow_icon from '../../../assets/chevron-forward-outline.svg'
+
+
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -260,6 +263,9 @@ export const AddFilter = styled.div`
     border-radius: 5px;
     color: #222222;
     font-weight: 500;
+    background: url(${arrow_icon}) no-repeat right;
+    background-position-x: 95%;
+    
 
     -moz-appearance: none;
     -webkit-appearance: none;
@@ -270,9 +276,6 @@ export const AddFilter = styled.div`
     flex-direction: row;
     width: 25rem;
 
-    img {
-      margin-left: -3rem;
-    }
 
     select::-ms-expand {
       display: none;
@@ -648,6 +651,12 @@ export const EditSub = styled.div`
     overflow-y: auto;
     margin-bottom: 2rem;
 
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
     .MuiTypography-body1 {
       font-size: 1.6rem;
       color: #222222;
@@ -667,6 +676,10 @@ export const EditSub = styled.div`
     margin: 0 auto;
 
     button {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
       width: 12rem;
       height: 4.2rem;
       border: none;
@@ -682,8 +695,30 @@ export const EditSub = styled.div`
       &:last-child {
         background-color: #222222;
         color: #ffffff;
+
+        &:hover {
+            background-color: ${() => lighten(0.1, '#222222')}
+          }
       }
     }
+
+    &:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .MuiCircularProgress-root {
+          width: 1.4rem !important;
+          height: 1.4rem !important;
+          margin-left: 1rem;
+        }
+
+        .MuiCircularProgress-svg {
+          color: #ffffff;
+          opacity: 1;
+          width: 1.4rem;
+          height: 1.4rem;
+        }
   }
 `;
 
@@ -743,16 +778,34 @@ export const Card = styled.div`
     }
   }
 
-  > svg {
+  > section {
+    display: flex;
+    justify-content: center;
+    width: 3.5rem;
+    margin-right: 1rem;
+
+    > svg {
     font-size: 3rem;
     color: #707070;
     transition: color 0.2s;
-    margin-right: 1rem;
 
     &:hover{
       color: red;
     }
   }
+  }
 
+        .MuiCircularProgress-root {
+          width: 2rem !important;
+          height: 2rem !important;
+          
+        }
+
+        .MuiCircularProgress-svg {
+          color: #C5004f;
+          opacity: 1;
+          width: 2rem;
+          height: 2rem;
+        }
   
 `;

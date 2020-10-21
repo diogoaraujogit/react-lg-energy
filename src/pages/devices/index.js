@@ -309,7 +309,6 @@ const Devices = () => {
                               })
                             }
                           </select>
-                          <img src={arrow_icon} alt='' />
                         </div>
 
                         <div className='filter-options'>

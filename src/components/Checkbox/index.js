@@ -9,14 +9,20 @@ export default function CheckboxLabels(props) {
   const func = props.func
   const multiple = props.multiple
   const label = props.label
+  const notRemove = props.notRemove
 
   const handleChange = (event) => {
-    if(multiple) {
-      if(variable.includes(value)) {
-        const newArray = variable.filter(vari => vari !== value)
-        func(newArray)
+    if (multiple) {
+      if (variable.filter(elem => elem.id === value).length) {
+        if (notRemove) {
+
+        } else {
+          const newArray = variable.filter(vari => vari.id !== value)
+          func(newArray)
+        }
+
       } else {
-        const newArray = variable.concat(value)
+        const newArray = variable.concat({ id: value })
         func(newArray)
       }
     } else {
@@ -28,7 +34,7 @@ export default function CheckboxLabels(props) {
     <FormControlLabel
       control={
         <Checkbox
-          checked={multiple? variable.includes(value) :  variable === value}
+          checked={multiple ? variable.filter(elem => elem.id === value).length : variable === value}
           onChange={handleChange}
         />
       }
