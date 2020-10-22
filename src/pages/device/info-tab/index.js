@@ -108,7 +108,7 @@ const InfoTab = () => {
       }
 
     } catch (e) {
-      toast.error('Erro')
+      toast.error('Error trying to save')
     }
 
     setSaving(false)
@@ -128,7 +128,7 @@ const InfoTab = () => {
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error('Error trying to delete')
       setFormError('Unable to delete this device')
     }
 

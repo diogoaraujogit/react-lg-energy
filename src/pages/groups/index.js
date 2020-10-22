@@ -79,11 +79,11 @@ const Groups = () => {
         })
 
         if (response.data) {
-          toast.info('Sucesso')
+          toast.info('Group created')
           getGroups()
           close()
         } else {
-          toast.error('Erro')
+          toast.error('Error trying to create group')
         }
 
       } catch (e) {
@@ -129,7 +129,7 @@ const Groups = () => {
 
     } catch (e) {
 
-      setBodyMessage('Houve um erro ao carregar os dispositivos')
+      setBodyMessage('Error trying to load groups')
 
     }
 

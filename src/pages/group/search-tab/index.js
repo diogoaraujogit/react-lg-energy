@@ -17,11 +17,12 @@ import api_logs from '../../../services/api_logs';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { setBarSelection, setLineSelection } from '../../../store/modules/analytics/actions';
+import { FaWeebly } from 'react-icons/fa';
 
 const SearchTab = () => {
 
-  const { device } = useSelector(state => state.device)
-  const id = device.idLora
+  const { group } = useSelector(state => state.group)
+  const id = group.id
   const dispatch = useDispatch()
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
@@ -30,7 +31,10 @@ const SearchTab = () => {
 
 
   const [searchType, setSearchType] = useState('simple')
-  const [param, setParam] = useState('current')
+  const [param, setParam] = useState('powerConsumption')
+  const [selectedSub, setSelectedSub] = useState()
+  const [subOptions, setSubOptions] = useState([])
+
   const [un, setUn] = useState('A')
   const [period, setPeriod] = useState('weekly')
   const [phase, setPhase] = useState('Phase A')
@@ -45,26 +49,12 @@ const SearchTab = () => {
 
   const param_options = [
     {
-      title: 'Current',
-      value: 'current',
-      un: 'A'
-    },
-    {
       title: 'Consumption',
       value: 'powerConsumption',
       un: 'kWh'
-    },
-    {
-      title: 'Active Power',
-      value: 'activePower',
-      un: 'kW'
-    },
-    {
-      title: 'Demand',
-      value: 'demand',
-      un: 'kWh'
     }
   ]
+
 
   const period_options = [
     {
@@ -132,14 +122,14 @@ const SearchTab = () => {
 
   // API`S CALLS
 
-  async function getAnalytics(type, query) {
+  async function getAnalytics(type, query, subID) {
     setChartLoading(true)
     setAnalytics({})
     setLogs({})
 
     try {
 
-      const response = await api_analytics.get(`/search/devices/${id}/${type}?${query}`)
+      const response = await api_analytics.get(`/search/groups/${id}/subgroup/${subID}/${type}?${query}`)
 
       if (response.data) {
         setChartMessage('')
@@ -165,7 +155,7 @@ const SearchTab = () => {
     setChartLoading(false)
   }
 
-  async function getLogs(type, query, toAnalytics) {
+  async function getLogs(type, query, subID, toAnalytics) {
     setChartLoading(true)
 
     setAnalytics({})
@@ -211,7 +201,11 @@ const SearchTab = () => {
   // HANDLE FUNCTIONS
 
   const handleSearch = () => {
-    if (id) {
+    
+    const subID = selectedSub
+    console.log(selectedSub)
+
+    if (id && subID) {
       const search_type = searchType === 'advanced' ? 'advanced' : period
       const log_search = period === 'daily' ? 'today' : period
       const query = searchType === 'advanced' ?
@@ -221,22 +215,22 @@ const SearchTab = () => {
       if (period !== 'daily' || searchType === 'advanced') {
 
         if (param === 'demand') {
-          getLogs(log_search, query, true)
+          getLogs(log_search, query, subID, true)
         } else {
-          getAnalytics(search_type, query)
+          getAnalytics(search_type, query, subID)
 
           if (period === 'weekly') {
-            getLogs(log_search, query)
+            getLogs(log_search, query, subID)
           }
         }
       } else {
-        getLogs(log_search, query)
+        getLogs(log_search, query, subID)
       }
 
       dispatch(setBarSelection({}))
       dispatch(setLineSelection({}))
     } else {
-      setChartMessage('Invalid ID')
+      subID? setChartMessage('Invalid ID') : setChartMessage('Invalid subgroup')
     }
 
   }
@@ -244,14 +238,36 @@ const SearchTab = () => {
   // USE EFFECTS
 
   useEffect(() => {
+    let sub_options = group.subgroups && group.subgroups.map(sub => {
+      let obj = {}
+      obj.title = sub.name
+      obj.value = sub.id
+
+
+      return obj
+    })
+
+    setSelectedSub(sub_options && sub_options[0]?.value)
+    
+    setSubOptions(sub_options)
+
+  }, [group])
+
+  useEffect(() => {
     handleSearch()
-  }, [param, period, startFormatted, endFormatted, searchType])
+  }, [selectedSub, param, period, startFormatted, endFormatted, searchType])
 
   useEffect(() => {
 
-    if (id && !(logs && logs.data && logs.data.length) && !(analytics && analytics.data && analytics.data.length)) {
+    if(period === 'weekly') {
+      if (id && selectedSub && (!(logs && logs.data && logs.data.length) || !(analytics && analytics.data && analytics.data.length))) {
+        setChartMessage('There is no data for this search')
+      }  
+    }
+
+    if (id && selectedSub && !(logs && logs.data && logs.data.length) && !(analytics && analytics.data && analytics.data.length)) {
       setChartMessage('There is no data for this search')
-    } 
+    }
   }, [analytics, logs, period, searchType])
 
 
@@ -292,12 +308,9 @@ const SearchTab = () => {
       {/* <Header>
         <Info>
           <div>
-            <h2>{device.name}</h2>
+            <h2>{group.name}</h2>
           </div>
           <div>
-            <MdLens />
-            <span>&nbsp;Online time:&nbsp;</span>
-            <span>00:00:00</span>
           </div>
         </Info>
       </Header>
@@ -351,6 +364,21 @@ const SearchTab = () => {
                         return (
                           <option key={param_options.indexOf(param_option) + 1} value={param_option.value}>
                             {param_option.title}
+                          </option>
+                        )
+                      })
+                    }
+                  </select>
+
+                  <p>Subgroup:</p>
+
+                  <select value={selectedSub} onChange={(e) => setSelectedSub(e.target.value)}>
+                    {
+                      subOptions && subOptions.map(sub_option => {
+
+                        return (
+                          <option key={subOptions.indexOf(sub_option) + 1} value={sub_option.value}>
+                            {sub_option.title}
                           </option>
                         )
                       })

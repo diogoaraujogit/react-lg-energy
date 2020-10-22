@@ -5,7 +5,9 @@ import { useSelector } from 'react-redux';
 import { date } from 'yup';
 import BarChart from '../../../../components/BarChart';
 import LineChart from '../../../../components/LineChart';
+import { hours } from '../../../../config';
 import { setBarSelection, setLineSelection } from '../../../../store/modules/analytics/actions';
+import { BodyMessage } from '../styles';
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
 const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
@@ -13,6 +15,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
   const { barSelection, lineSelection } = useSelector(state => state.analytics)
 
   const [chartType, setChartType] = useState(true)
+  const [groupDetails, setGroupDetails] = useState(false)
   const [selected, setSelected] = useState(false)
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
@@ -161,53 +164,60 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
 
       ]
 
-  
+
   const lineData = !isAnalytics ?
     period === 'weekly' ?
-    logs && logs.data && logs.data.length ?
-    logs.data.map(day => {
-      let line = {}
+      logs && logs.data && logs.data.length ?
+        logs.data.map(day => {
+          let line = {}
 
-      line.id = day.date
-      line.data = day && day.data && day.data.length ?
-      day.data.map(data => {
+          line.id = day.date
+          line.data = day && day.data && day.data.length ?
+            hours.map(hour => {
 
-        let point = {}
+              let point = {}
+              point.x = hour
+              point.y = null
 
-        point.y = data[relPhases[phase]]
-        point.x = formatDate(data.date, true)
-        point.full = formatDate(data.date)
+              day.data.map((data, idx) => {
+                let x = formatDate(data.date, true)
 
-        return point
-      })
+                if (x === hour) {
+                  point.y = data[relPhases[phase]]
+                  point.full = formatDate(data.date)
+                }
+              })
+
+              return point
+            })
+            :
+            []
+
+          return line
+        })
+        :
+        []
       :
-      []
+      [
+        {
+          id: phase,
+          data: logs && logs.data && logs.data.length ?
+            logs.data.map(data => {
 
-      return line
-    })
-    :
-    []
-    :
-    [
-      {
-        id: phase,
-        data: logs && logs.data && logs.data.length ?
-          logs.data.map(data => {
+              let point = {}
 
-            let point = {}
+              point.y = data[relPhases[phase]]
+              point.x = formatDate(data.date, true)
+              point.full = formatDate(data.date)
 
-            point.y = data[relPhases[phase]]
-            point.x = formatDate(data.date, true)
-            point.full = formatDate(data.date)
+              return point
+            })
+            :
+            [
 
-            return point
-          })
-          :
-          [
-
-          ]
-      }
-    ]
+            ]
+        }
+      ]
     :
     [
       {
@@ -305,12 +315,29 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
       </Cards>
       <ChartArea>
         <ChartHeader>
-          <button onClick={() => setChartType(true)} className={chartType ? 'selected' : ''}>
+          <button onClick={() => {
+            setChartType(true)
+            setGroupDetails(false)
+          }} 
+          className={!groupDetails && chartType ? 'selected' : ''}>
             <MdEqualizer />
           </button>
-          <button onClick={() => setChartType(false)} className={!chartType ? 'selected' : ''}>
+          <button onClick={() => {
+            setChartType(false)
+            setGroupDetails(false)
+          }} 
+          className={!groupDetails && !chartType ? 'selected' : ''}>
             <MdShowChart />
           </button>
+          <div>
+            <button 
+            onClick={() => {
+              setGroupDetails(true)
+            }}
+            className={groupDetails ? 'selected' : ''}>
+                Details
+            </button>
+          </div>
         </ChartHeader>
         <ChartBody>
           {
@@ -328,7 +355,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
               :
               <LineChart
                 data={lineData}
-                xLegend={isAnalytics? 'Date' : 'Time'}
+                xLegend={isAnalytics ? 'Date' : 'Time'}
                 yLegend={`${param} (${un})`}
                 setSelection={setLineSelection}
               />

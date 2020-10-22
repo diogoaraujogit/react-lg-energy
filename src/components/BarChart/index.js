@@ -12,7 +12,7 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue, s
       onClick={(data) => dispatch(setSelection(data))}
       keys={[keys]}
       indexBy={indexBy}
-      margin={{ top: 10, right: 130, bottom: 50, left: 60 }}
+      margin={{ top: 10, right: 130, bottom: 50, left: 70 }}
       maxValue={maxValue || 'auto'}
       minValue={minValue > 0 ? 'auto' : minValue}
       padding={padding}
@@ -54,7 +54,7 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue, s
         tickRotation: 0,
         legend: yLegend || '',
         legendPosition: 'middle',
-        legendOffset: -40
+        legendOffset: -50
       }}
       labelSkipWidth={12}
       labelTextColor={'#C1C1C1'}

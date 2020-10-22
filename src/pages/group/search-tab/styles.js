@@ -150,8 +150,8 @@ export const SearchBox = styled.div`
   .search-select {
     padding: 1.6rem 2rem;
     border-bottom: 0.5px solid #F1F1F1;
-    height: 10rem;
-    margin-bottom: 1rem;
+    height:18rem;
+    margin-bottom: 0.5rem;
 
     p {
       color: #B3B3B3;
@@ -167,6 +167,7 @@ export const SearchBox = styled.div`
       color: #707070;
       font-size: 1.6rem;
       padding: 0rem 1rem;
+      margin-bottom: 1.2rem;
       background: url(${arrow_icon}) no-repeat right;
       -moz-appearance: none;
       -webkit-appearance: none;
@@ -183,7 +184,7 @@ export const SearchBox = styled.div`
     display: flex;
     justify-content: space-between;
     padding: 0rem 5rem;
-    margin-bottom: 3rem;
+    margin-bottom: 1rem;
 
     .MuiTypography-body1 {
       font-size: 1.6rem;
@@ -227,7 +228,7 @@ export const SearchBox = styled.div`
       display: flex;
       flex-direction: column;
       align-items: center;
-      margin-bottom: 2rem;
+      margin-bottom: 1rem;
 
       > div {
         display: flex;

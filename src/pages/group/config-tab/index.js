@@ -124,7 +124,7 @@ const ConfigTab = () => {
       })
 
       if (response.data) {
-        toast.success('Saved')
+        toast.success('Success')
         getGroups()
         getDevices()
       }
@@ -188,11 +188,11 @@ const ConfigTab = () => {
         })
 
         if (response.data) {
-          toast.info('Sucesso')
+          toast.info('Sucess')
           getGroups()
           close()
         } else {
-          toast.error('Erro')
+          toast.error('Error trying to create subgroup')
         }
 
       } catch (e) {

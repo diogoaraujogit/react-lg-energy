@@ -117,6 +117,12 @@ export const ChartHeader = styled.div`
   svg {
     font-size: 2rem;
   }
+
+  div {
+    button {
+      width: 10rem;
+    }
+  }
 `;
 
 export const ChartBody = styled.div`

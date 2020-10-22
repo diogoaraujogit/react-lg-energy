@@ -115,11 +115,11 @@ const Devices = () => {
         })
 
         if (response.data) {
-          toast.info('Sucesso')
+          toast.info('Device created')
           getGroups()
           close()
         } else {
-          toast.error('Erro')
+          toast.error('Error trying to create device')
         }
 
       } catch (e) {
@@ -193,7 +193,7 @@ const Devices = () => {
     setDevicesLength(count)
 
     if (count < 1) {
-      setBodyMessage('Nenhum dispositivo cadastrado')
+      setBodyMessage('No devices')
     } else {
       setBodyMessage('')
     }
@@ -429,14 +429,14 @@ const Devices = () => {
 
                     const devices = group.devices || []
                     const name = group.name || '-'
-                    // const group_id = group.id || ''
+                    const group_id = group.id || ''
 
                     return (
                       <Group>
                         <GroupHeader>
                           <h2>{name}</h2>
                           <div>
-                            <Link to='/groups'>
+                            <Link to={`/groups/${group_id}`}>
                               See Group
                             </Link>
                           </div>
