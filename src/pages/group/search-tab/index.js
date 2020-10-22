@@ -17,6 +17,7 @@ import api_logs from '../../../services/api_logs';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { setBarSelection, setLineSelection } from '../../../store/modules/analytics/actions';
+import { FaWeebly } from 'react-icons/fa';
 
 const SearchTab = () => {
 
@@ -257,6 +258,12 @@ const SearchTab = () => {
   }, [selectedSub, param, period, startFormatted, endFormatted, searchType])
 
   useEffect(() => {
+
+    if(period === 'weekly') {
+      if (id && selectedSub && (!(logs && logs.data && logs.data.length) || !(analytics && analytics.data && analytics.data.length))) {
+        setChartMessage('There is no data for this search')
+      }  
+    }
 
     if (id && selectedSub && !(logs && logs.data && logs.data.length) && !(analytics && analytics.data && analytics.data.length)) {
       setChartMessage('There is no data for this search')

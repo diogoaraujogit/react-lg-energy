@@ -7,6 +7,7 @@ import BarChart from '../../../../components/BarChart';
 import LineChart from '../../../../components/LineChart';
 import { hours } from '../../../../config';
 import { setBarSelection, setLineSelection } from '../../../../store/modules/analytics/actions';
+import { BodyMessage } from '../styles';
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
 const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
@@ -334,7 +335,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
               setGroupDetails(true)
             }}
             className={groupDetails ? 'selected' : ''}>
-              Details
+                Details
             </button>
           </div>
         </ChartHeader>

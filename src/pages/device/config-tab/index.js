@@ -71,7 +71,7 @@ const ConfigTab = () => {
       }
 
     } catch (e) {
-      toast.error('Erro')
+      toast.error('Error trying to save')
     }
 
     setSaving(false)

@@ -43,7 +43,7 @@ const InfoTab = () => {
       })
 
       if (response.data) {
-        toast.success('Saved')
+        toast.success('Success')
         getGroup()
         setOnEdit(false)
       }
@@ -69,8 +69,8 @@ const InfoTab = () => {
       }
 
     } catch (e) {
-      toast.error('Error')
-      setFormError('Unable to delete this group')
+      toast.error('Error trying to delete this group')
+      setFormError('Error trying to delete this group')
     }
 
     setDeleting(false)
