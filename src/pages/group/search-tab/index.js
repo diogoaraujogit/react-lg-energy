@@ -289,7 +289,7 @@ const SearchTab = () => {
 
   return (
     <Container>
-      <Header>
+      {/* <Header>
         <Info>
           <div>
             <h2>{device.name}</h2>
@@ -427,7 +427,7 @@ const SearchTab = () => {
               </BodyContent>
             </Body>
 
-      }
+      } */}
     </Container>
   );
 }
