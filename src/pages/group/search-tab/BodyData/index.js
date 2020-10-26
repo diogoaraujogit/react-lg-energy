@@ -8,7 +8,7 @@ import LineChart from '../../../../components/LineChart';
 import { hours } from '../../../../config';
 import { setBarSelection, setLineSelection } from '../../../../store/modules/analytics/actions';
 import { BodyMessage } from '../styles';
-import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
+import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody, GroupDetails } from './styles';
 
 const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
 
@@ -20,6 +20,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
   const isAnalytics = period === 'monthly' || period === 'yearly' || (period === 'weekly' && chartType) || searchType === 'advanced'
+  const devicesDetails = analytics?.devicesDetails
 
   const relPhases = {
     'Phase A': 'a',
@@ -294,7 +295,8 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
 
   return (
     <Container>
-      <Cards>
+{
+     !groupDetails && <Cards>
         {
           cards.map(card => {
 
@@ -313,6 +315,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
           })
         }
       </Cards>
+      }
       <ChartArea>
         <ChartHeader>
           <button onClick={() => {
@@ -339,6 +342,28 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
             </button>
           </div>
         </ChartHeader>
+        
+        {groupDetails?
+        <GroupDetails>
+          <div className='table'>
+            <div className='table-header'>
+              <p>Device</p>
+              <p>Total (kWh)</p>
+            </div>
+            {
+              devicesDetails && devicesDetails.map(device => {
+
+                return (
+                  <div className='table-row'>
+                    <p>{device.name}</p>
+                    <p>{device.total}</p>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </GroupDetails>
+        :
         <ChartBody>
           {
             chartType ?
@@ -361,6 +386,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
               />
           }
         </ChartBody>
+}        
       </ChartArea>
     </Container>
   );

@@ -130,3 +130,38 @@ export const ChartBody = styled.div`
   height: 31rem;
 `;
 
+export const GroupDetails = styled.div`
+  width: 100%;
+  flex: 1;
+  padding: 2rem 0rem 0rem 2rem;
+
+  p {
+     width: 25rem;
+     text-align: center;
+
+     &:first-child {
+       text-align: start;
+     }
+  }
+
+  .table-header {
+    display: flex;
+    margin-bottom: 2.5rem;
+
+    p {
+      font-size: 1.6rem;
+      color: #B3B3B3;
+    }
+  }
+
+  .table-row {
+    display: flex;
+    margin-bottom: 2rem;
+
+    p {
+      color: #222222;
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+  }
+`;

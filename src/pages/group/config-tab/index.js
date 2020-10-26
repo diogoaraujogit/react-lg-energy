@@ -561,6 +561,7 @@ const ConfigTab = () => {
                                                 variable={selectedsDevices}
                                                 value={device.id}
                                                 func={setSelectedsDevices}
+                                                disabled={devices.filter(dev => dev.name === device.name).length}
                                                 multiple
                                                 notRemove
                                               />

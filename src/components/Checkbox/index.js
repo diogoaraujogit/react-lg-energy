@@ -10,16 +10,15 @@ export default function CheckboxLabels(props) {
   const multiple = props.multiple
   const label = props.label
   const notRemove = props.notRemove
+  const disabled = props.disabled
 
   const handleChange = (event) => {
     if (multiple) {
       if (variable.filter(elem => elem.id === value).length) {
-        if (notRemove) {
-
-        } else {
+        
           const newArray = variable.filter(vari => vari.id !== value)
           func(newArray)
-        }
+        
 
       } else {
         const newArray = variable.concat({ id: value })
@@ -32,10 +31,12 @@ export default function CheckboxLabels(props) {
 
   return (
     <FormControlLabel
+      disabled={disabled}
       control={
         <Checkbox
           checked={multiple ? variable.filter(elem => elem.id === value).length : variable === value}
           onChange={handleChange}
+          
         />
       }
       label={label}

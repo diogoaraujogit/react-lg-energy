@@ -655,6 +655,7 @@ export const EditSub = styled.div`
       display: flex;
       align-items: center;
       justify-content: space-between;
+      padding: 0rem 1rem;
     }
 
     .MuiTypography-body1 {
@@ -666,6 +667,9 @@ export const EditSub = styled.div`
       color: #222222;
     }
 
+    .Mui-disabled {
+      opacity: 0.6;
+    }
   }
 
   .buttons {
