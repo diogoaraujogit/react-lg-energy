@@ -20,7 +20,7 @@ const Group = () => {
   const dispatch = useDispatch()
 
   const tabs = useMemo(() => ['Search', 'Settings', 'Info'], [])
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(1)
 
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
