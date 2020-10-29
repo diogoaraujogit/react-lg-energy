@@ -94,7 +94,24 @@ export const SearchInfo = styled.div`
   }
 
   .values {
+    display: flex;
 
+    > div {
+      display: flex;
+      margin-left: 2rem;
+      
+    }
+
+    p, span {
+      font-size: 1.6rem;
+      color: #707070;
+      font-weight: 400;
+    }
+
+    span {
+      color: #222222;
+      font-weight: 500;
+    }
   }
 
   .phases {
