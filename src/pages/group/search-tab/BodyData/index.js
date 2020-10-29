@@ -20,7 +20,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
   const [selectedValue, setSelectedValue] = useState()
   const [selectedDate, setSelectedDate] = useState()
   const isAnalytics = period === 'monthly' || period === 'yearly' || (period === 'weekly' && chartType) || searchType === 'advanced'
-  const devicesDetails = analytics?.devicesDetails
+  const devicesDetails = analytics?.devicesDetails || logs?.devicesDetails
 
   const relPhases = {
     'Phase A': 'a',

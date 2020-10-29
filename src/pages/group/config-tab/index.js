@@ -386,7 +386,7 @@ const ConfigTab = () => {
                       <div className='filter-select'>
                         <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
                           <option key={0} value=''>
-                            Select a group
+                            Select a subgroup
                             </option>
                           {
                             groups && Array.isArray(groups) && groups.map(group => {
