@@ -6,6 +6,8 @@ function BasicDatePicker(props) {
 
   const value = props.value 
   const handleChange = props.handleChange
+  const format = props.format || "dd/MM/yyyy"
+  const views = props.views || ["year", "month", "date"]
 
   return (
     <Fragment>
@@ -13,8 +15,8 @@ function BasicDatePicker(props) {
         <DatePicker
           disableFuture
           openTo="date"
-          format="dd/MM/yyyy"
-          views={["year", "month", "date"]}
+          format={format}
+          views={views}
           value={value}
           onChange={handleChange}
         />
