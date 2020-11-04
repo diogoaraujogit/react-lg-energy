@@ -100,27 +100,47 @@ export const AddDevice = styled.div`
 `;
 
 export const CurrentDevices = styled.div`
-  height: 31rem;
 
   > p {
     margin-bottom: 2rem;
+    font-size: 1.6rem;
+    color: #222222;
   }
 
   > div {
-    overflow-y: auto;
-    height: 100%;
 
     div {
       display: flex;
       justify-content: space-between;
       align-items: center;
       margin-bottom: 1.5rem;
-      padding-right: 1rem;
+
+      p {
+        font-size: 1.8rem;
+        font-weight: 500;
+      }
+
+      svg {
+        color: #B3B3B3;
+        font-size: 2rem;
+        margin-right: 2rem;
+        transition: color 0.2s;
+        cursor: pointer;
+
+        &:hover {
+          color: #ff0000;
+        }
+      }
     }
   }
 `;
 
-export const Scroll = styled(PerfectScrollbar)
+export const Scroll = styled(PerfectScrollbar)`
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 29rem;
+`;
 
 export const DataBox = styled.div`
   flex: 1;
@@ -128,4 +148,40 @@ export const DataBox = styled.div`
   background: #FFFFFF 0% 0% no-repeat padding-box;
   box-shadow: 0px 2px 5px #0000000D;
   border-radius: 10px;
+
+  .tabs {
+
+  }
+
+  .body {
+
+    .header {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+
+      > div {
+        text-align: center;
+
+        &:first-child {
+          text-align: left;
+        }
+      }
+    }
+
+    .table {
+      > div {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+
+        > div {
+          text-align: center;
+
+          &:first-child {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+  }
 `;
