@@ -1,12 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { MdDelete, MdDevices } from 'react-icons/md';
+import { MdClear, MdDelete, MdDevices } from 'react-icons/md';
 import Popup from 'reactjs-popup';
 import BasicDatePicker from '../../components/BasicDatePicker';
+import CheckboxLabels from '../../components/Checkbox';
 import Layout from '../../components/Layout'
+import Loading from '../../components/Loading';
 import RadioButton from '../../components/Radio';
 import TabsComponent from '../../components/Tabs';
+import { Search } from '../group/config-tab/styles';
 
-import { Container, Content, FeaturesBox, Period, AddDevice, CurrentDevices, Scroll, DataBox } from './styles';
+import { Container, Content, FeaturesBox, Period, AddDevice, AddDeviceModal, CurrentDevices, Scroll, DataBox } from './styles';
 
 const Comparatives = () => {
 
@@ -19,8 +22,16 @@ const Comparatives = () => {
   const [monthDate, setMonthDate] = useState(new Date())
   const [param, setParam] = useState('powerConsumption')
 
-  const selectedsDevices = [{idLora: 1, name: 'Device 01'}, {idLora: 0, name: 'Device 02'}, {idLora: 0, name: 'Device 03'}, {idLora: 0, name: 'Device 04'}, ]
-  const tableLabels = [{title: 'Devices', value: 'name'}, {title: 'Phase A', value: 'a'}, {title: 'Phase B', value: 'b'}, {title: 'Phase C', value: 'c'}, {title: 'Media', value: 'average'}, {title: 'Total', value: 'total'}]
+  const selectedsDevices_base = [{ idLora: 1, name: 'Device 01' }, { idLora: 0, name: 'Device 02' }, { idLora: 0, name: 'Device 03' }, { idLora: 0, name: 'Device 04' },]
+
+  const [searchDevice, setSearchDevice] = useState('')
+  const [devicesArray, setDevicesArray] = useState([])
+  const [allDevices, setAllDevices] = useState([])
+  const [saving, setSaving] = useState(false)
+  const [selectedsDevices, setSelectedsDevices] = useState(selectedsDevices_base)
+
+
+  const tableLabels = [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
   const devices = [
     {
       "idLora": 1,
@@ -104,6 +115,10 @@ const Comparatives = () => {
             </Period>
             <AddDevice>
               <Popup
+                onOpen={() => {
+                  // setSelectedsDevices(devices)
+                }}
+                contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                 trigger={
                   <button>
                     Add Device
@@ -115,9 +130,58 @@ const Comparatives = () => {
                   close => {
 
                     return (
-                      <div>
-                        Teste
-                      </div>
+                      <AddDeviceModal>
+                        {/* <h3>Edit Subgroup</h3>
+
+                        <div className='search'>
+                          <Search>
+                            <div>
+                              <input
+                                type='text'
+                                maxlength='20'
+                                autoFocus
+                                value={searchDevice}
+                                onChange={event => setSearchDevice(event.target.value)}
+                              />
+                              <button onClick={() => setSearchDevice('')} >
+                                <MdClear />
+                              </button>
+                            </div>
+
+                          </Search>
+                        </div>
+                        <div className='devices'>
+                          {
+                            devicesArray && devicesArray.map(device => {
+
+                              return (
+                                <div>
+                                  <CheckboxLabels
+                                    label={device.name}
+                                    variable={selectedsDevices}
+                                    value={device.id}
+                                    func={setSelectedsDevices}
+                                    multiple
+                                    notRemove
+                                  />
+
+                                </div>
+                              )
+                            })
+                          }
+                        </div>
+                        <div className='buttons'>
+                          <button onClick={() => close()}>
+                            Cancel
+                                      </button>
+                          <button
+                            disabled={saving}
+                            // onClick={() => handleEditSub(group, close)}
+                          >
+                            Save {saving && <Loading />}
+                          </button>
+                        </div> */}
+                      </AddDeviceModal>
                     )
                   }
                 }
@@ -166,16 +230,14 @@ const Comparatives = () => {
                     return (
                       <div>
                         {
-                          tableLabels.map((label, idx) => {
+                          tableLabels.map(label => {
 
                             let value
 
-                            if(idx === 0) {
+                            if (label.value === 'name') {
                               value = selected.name
                             } else {
                               value = device && device[`${param}_${label.value}`]
-                              console.log(`${param}_${label.value}`)
-                              console.log(device)
                             }
 
                             return (

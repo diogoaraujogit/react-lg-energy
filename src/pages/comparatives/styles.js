@@ -99,6 +99,10 @@ export const AddDevice = styled.div`
 
 `;
 
+export const AddDeviceModal = styled.div`
+  
+`;
+
 export const CurrentDevices = styled.div`
 
   > p {
@@ -148,8 +152,44 @@ export const DataBox = styled.div`
   background: #FFFFFF 0% 0% no-repeat padding-box;
   box-shadow: 0px 2px 5px #0000000D;
   border-radius: 10px;
+  padding: 2rem;
 
   .tabs {
+    height: 4rem;
+    margin-bottom: 3rem;
+
+.MuiTabs-root {
+  max-height: 4rem;
+  min-height: 4rem;
+}
+
+.MuiTabs-flexContainer {
+  max-height: 4rem;
+  min-height: 4rem;
+}
+
+.MuiButtonBase-root {
+  max-height: 4rem;
+  min-height: 4rem;
+  max-width: 14rem;
+  min-width: 14rem;
+
+  > span {
+    color: #818181;
+    font-size: 1.4rem;
+  }
+}
+
+.Mui-selected {
+  > span {
+    color: #222222;
+    font-weight: 500;
+  }
+}
+
+.MuiTabs-indicator {
+  background-color: #222222;
+}  
 
   }
 
@@ -161,6 +201,9 @@ export const DataBox = styled.div`
 
       > div {
         text-align: center;
+        color: #707070;
+        font-size: 1.6rem;
+        margin-bottom: 1.5rem;
 
         &:first-child {
           text-align: left;
@@ -172,12 +215,18 @@ export const DataBox = styled.div`
       > div {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+        border-top: 0.5px solid #F1f1f1;
+        padding: 10px 0rem;
 
         > div {
           text-align: center;
+          color: #707070;
+          font-size: 1.6rem;
 
           &:first-child {
             text-align: left;
+            color: #222222;
+            font-weight: 500;
           }
         }
       }
