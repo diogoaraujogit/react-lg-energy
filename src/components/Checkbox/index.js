@@ -21,7 +21,7 @@ export default function CheckboxLabels(props) {
         
 
       } else {
-        const newArray = variable.concat({ id: value })
+        const newArray = variable.concat({ id: value, name: label })
         func(newArray)
       }
     } else {

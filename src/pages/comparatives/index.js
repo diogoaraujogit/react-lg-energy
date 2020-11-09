@@ -7,9 +7,13 @@ import Layout from '../../components/Layout'
 import Loading from '../../components/Loading';
 import RadioButton from '../../components/Radio';
 import TabsComponent from '../../components/Tabs';
-import { Search } from '../group/config-tab/styles';
 
-import { Container, Content, FeaturesBox, Period, AddDevice, AddDeviceModal, CurrentDevices, Scroll, DataBox } from './styles';
+import { Container, Content, FeaturesBox, Period, AddDevice, AddDeviceModal, Search, CurrentDevices, Scroll, DataBox } from './styles';
+
+import api_analytics from '../../services/api_analytics'
+import api_crud from '../../services/api_crud'
+import { toast } from 'react-toastify';
+import { format } from 'date-fns';
 
 const Comparatives = () => {
 
@@ -22,56 +26,17 @@ const Comparatives = () => {
   const [monthDate, setMonthDate] = useState(new Date())
   const [param, setParam] = useState('powerConsumption')
 
-  const selectedsDevices_base = [{ idLora: 1, name: 'Device 01' }, { idLora: 0, name: 'Device 02' }, { idLora: 0, name: 'Device 03' }, { idLora: 0, name: 'Device 04' },]
-
   const [searchDevice, setSearchDevice] = useState('')
   const [devicesArray, setDevicesArray] = useState([])
   const [allDevices, setAllDevices] = useState([])
   const [saving, setSaving] = useState(false)
-  const [selectedsDevices, setSelectedsDevices] = useState(selectedsDevices_base)
+  const [selectedsDevices, setSelectedsDevices] = useState([])
+  const [currentDevices, setCurrentDevices] = useState([])
 
 
   const tableLabels = [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
-  const devices = [
-    {
-      "idLora": 1,
-      "date": "03/11/2020",
-      "current_a": "8.03",
-      "current_b": "7.45",
-      "current_c": "7.73",
-      "current_total": "23.21",
-      "current_average": "7.74",
-      "activePower_a": "0.05",
-      "activePower_b": "0.05",
-      "activePower_c": "0.05",
-      "activePower_total": "0.15",
-      "activePower_average": "0.05",
-      "powerConsumption_a": "0.01",
-      "powerConsumption_b": "0.01",
-      "powerConsumption_c": "0.01",
-      "powerConsumption_total": "0.04",
-      "powerConsumption_average": "0.01"
-    },
-    {
-      "idLora": 2,
-      "date": "03/11/2020",
-      "current_a": "8.37",
-      "current_b": "7.29",
-      "current_c": "8.43",
-      "current_total": "24.09",
-      "current_average": "8.03",
-      "activePower_a": "0.05",
-      "activePower_b": "0.05",
-      "activePower_c": "0.05",
-      "activePower_total": "0.15",
-      "activePower_average": "0.05",
-      "powerConsumption_a": "0.01",
-      "powerConsumption_b": "0.01",
-      "powerConsumption_c": "0.01",
-      "powerConsumption_total": "0.04",
-      "powerConsumption_average": "0.01"
-    }
-  ]
+
+  const [devices, setDevices] = useState([])
 
   useEffect(() => {
     switch (tab) {
@@ -91,6 +56,116 @@ const Comparatives = () => {
         return;
     }
   }, [tab])
+
+  // FUNCTIONS 
+
+  const handleSearch = (devices) => {
+
+    const devicesParsedToString = devices.map(device => device.id)
+    const date = periodType === 'day'? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
+    
+    console.log(dayDate)    
+    console.log(devices)
+
+    const query = `date=${date}&idLoraDevices=${devicesParsedToString}`
+
+    getComparatives(query)
+
+  }
+
+  const showOnlyDevicesThatMatches = () => {
+
+    if (searchDevice) {
+      const devicesThatMatch = allDevices.filter(device =>
+        device.name.toLowerCase().includes(searchDevice.toLowerCase())
+      )
+
+      setDevicesArray(devicesThatMatch)
+    } else {
+      setDevicesArray(allDevices)
+    }
+
+
+  }
+
+  const switchLoraToId = (currentDevices) => {
+
+    const devices_id = currentDevices.map(device => {
+      let obj = {}
+
+      obj.id = device.idLora
+      obj.name = device.name
+
+      return obj
+    })
+
+    return devices_id
+
+  }
+
+  // API CALLS
+
+  async function getDevices() {
+
+    try {
+
+      const response = await api_crud.get(`/devices`)
+
+      if (response.data) {
+        setAllDevices(response.data)
+      }
+
+    } catch (e) {
+      toast.error('Error')
+    }
+  }
+
+
+  async function getComparatives(query) {
+
+    try {
+
+      const response = await api_analytics.get(`/comparatives/${periodType}?${query}`)
+
+      if (response.data) {
+        setDevices(response.data)
+        console.log(response.data)
+      }
+
+    } catch (e) {
+      toast.error('Error')
+    }
+  }
+
+  // USE EFFECTS
+
+  useEffect(() => {
+    getDevices()
+  }, [])
+
+  useEffect(() => {
+
+
+    currentDevices && Array.isArray(currentDevices) && currentDevices.length && handleSearch(currentDevices)
+
+  }, [dayDate, monthDate, periodType, currentDevices])
+
+
+  useEffect(() => {
+
+    showOnlyDevicesThatMatches()
+
+  }, [searchDevice, allDevices])
+
+    
+  // useEffect(() => {
+
+  //   const devices_id = switchLoraToId(currentDevices)
+
+  //   setSelectedsDevices(devices_id)
+
+
+  // }, [currentDevices])
 
   return (
     <Layout title='Comparatives'>
@@ -131,7 +206,7 @@ const Comparatives = () => {
 
                     return (
                       <AddDeviceModal>
-                        {/* <h3>Edit Subgroup</h3>
+                        <h3>Add Devices</h3>
 
                         <div className='search'>
                           <Search>
@@ -159,8 +234,9 @@ const Comparatives = () => {
                                   <CheckboxLabels
                                     label={device.name}
                                     variable={selectedsDevices}
-                                    value={device.id}
+                                    value={device.idLora}
                                     func={setSelectedsDevices}
+                                    disabled={!device.idLora}
                                     multiple
                                     notRemove
                                   />
@@ -173,14 +249,17 @@ const Comparatives = () => {
                         <div className='buttons'>
                           <button onClick={() => close()}>
                             Cancel
-                                      </button>
+                          </button>
                           <button
                             disabled={saving}
-                            // onClick={() => handleEditSub(group, close)}
+                            onClick={() => {
+                              setCurrentDevices(selectedsDevices)
+                              close()
+                            }}
                           >
-                            Save {saving && <Loading />}
+                            Add {saving && <Loading />}
                           </button>
-                        </div> */}
+                        </div>
                       </AddDeviceModal>
                     )
                   }
@@ -192,12 +271,16 @@ const Comparatives = () => {
               <p>Current devices</p>
               <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
                 {
-                  selectedsDevices.map(device => {
+                  currentDevices.map(device => {
 
                     return (
                       <div>
                         <p>{device.name}</p>
-                        <MdDelete />
+                        <MdDelete onClick={() => {
+                          const remainingDevices = currentDevices.filter(dev => dev.id !== device.id)
+                          setCurrentDevices(remainingDevices)
+                          setSelectedsDevices(remainingDevices)
+                        }} />
                       </div>
                     )
                   })
@@ -222,9 +305,9 @@ const Comparatives = () => {
               </div>
               <div className='table'>
                 {
-                  selectedsDevices.map(selected => {
+                  currentDevices.map(selected => {
 
-                    const device = devices.find(device => device.idLora === selected.idLora)
+                    const device = devices.find(device => device.idLora === selected.id)
 
 
                     return (

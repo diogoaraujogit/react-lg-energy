@@ -1,4 +1,4 @@
-import { lighten } from 'polished';
+import { darken, lighten } from 'polished';
 import styled from 'styled-components'
 import PerfectScrollbar from 'react-perfect-scrollbar';
 
@@ -82,7 +82,7 @@ export const Period = styled.div`
 export const AddDevice = styled.div`
   margin-bottom: 2rem;
 
-  button {
+  > button {
     width: 100%;
     height: 5rem;
     background: #222222 0% 0% no-repeat padding-box;
@@ -100,8 +100,111 @@ export const AddDevice = styled.div`
 `;
 
 export const AddDeviceModal = styled.div`
-  
+  padding: 3rem;
+  height: 100%;
+
+  h3 {
+    color: #707070;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .MuiTypography-body1 {
+      font-size: 1.6rem;
+      color: #222222;
+      font-weight: 500;
+    }
+
+    .MuiCheckbox-colorSecondary.Mui-checked {
+      color: #222222;
+    }
+
+  .devices {
+    height: 30rem;
+    margin-bottom: 2rem;
+    overflow-y: auto;
+    padding-left: 1rem;
+  }
+
+  .buttons {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    align-self: flex-end;
+
+    button {
+      width: 12rem;
+      height: 4.2rem;
+      border: none;
+      border-radius: 5px;
+      font-size: 1.8rem;
+      font-weight: 500;
+      transition: background 0.3s;
+
+      &:first-child {
+        background-color: #F8F8F8;
+        color: #222222;
+
+        &:hover {
+          background-color: ${() => darken( 0.05, '#F8F8F8')}
+        }
+      }
+      
+      &:last-child {
+        background-color: #C5004F;
+        color: #ffffff;
+
+        &:hover {
+          background-color: ${() => darken( 0.05, '#C5004F')}
+        }
+      }
+    }
+  }
 `;
+
+export const Search = styled.div`
+  display: flex;
+  height: 4.5rem;
+  align-items: center;
+  margin-bottom: 2rem;
+
+  > div {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+  }
+
+  button {
+    background-color: transparent;
+    border: none;
+
+    svg {
+      margin-left: -4rem;
+    }
+  }
+
+  input {
+    border: none;
+    border-radius: 5px;
+    height: 100%;
+    padding: 0rem 2rem;
+    box-shadow: 0rem 0.3rem 0.6rem #00000029;
+    width: 100%;
+  }
+
+  svg {
+    color: #707070;
+    font-size: 2.5rem;
+    margin-left: 1rem;
+    cursor: pointer;
+
+    &:hover {
+      color: ${darken(0.2, '#707070')}
+    }
+  }
+`;
+
 
 export const CurrentDevices = styled.div`
 
