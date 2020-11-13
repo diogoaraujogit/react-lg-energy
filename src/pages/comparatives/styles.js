@@ -15,6 +15,27 @@ export const Content = styled.div`
   margin-bottom: 5rem;
 `;
 
+export const LoadingArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+`;
+
+export const PageMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
 export const FeaturesBox = styled.div`
   width: 27rem;
   height: 57.5rem;
@@ -247,6 +268,24 @@ export const Scroll = styled(PerfectScrollbar)`
   overflow-y: auto;
   overflow-x: hidden;
   max-height: 29rem;
+`;
+
+export const BodyLoading = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+`;
+
+export const BodyMessage = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  margin-top: 5rem;
+
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
 `;
 
 export const DataBox = styled.div`

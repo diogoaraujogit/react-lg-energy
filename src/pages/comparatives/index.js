@@ -8,7 +8,11 @@ import Loading from '../../components/Loading';
 import RadioButton from '../../components/Radio';
 import TabsComponent from '../../components/Tabs';
 
-import { Container, Content, FeaturesBox, Period, AddDevice, AddDeviceModal, Search, CurrentDevices, Scroll, DataBox } from './styles';
+import {
+  Container, Content, LoadingArea, PageMessage, FeaturesBox, Period,
+  AddDevice, AddDeviceModal, Search, CurrentDevices, Scroll, BodyLoading,
+  BodyMessage, DataBox
+} from './styles';
 
 import api_analytics from '../../services/api_analytics'
 import api_crud from '../../services/api_crud'
@@ -20,6 +24,11 @@ const Comparatives = () => {
   const tabs = useMemo(() => ['Consumption', 'Current', 'Demand', 'Power'], [])
 
   const [tab, setTab] = useState(0)
+
+  const [pageLoading, setPageLoading] = useState(false)
+  const [pageMessage, setPageMessage] = useState('')
+  const [bodyLoading, setBodyLoading] = useState(false)
+  const [bodyMessage, setBodyMessage] = useState('')
 
   const [periodType, setPeriodType] = useState('day')
   const [dayDate, setDayDate] = useState(new Date())
@@ -62,9 +71,9 @@ const Comparatives = () => {
   const handleSearch = (devices) => {
 
     const devicesParsedToString = devices.map(device => device.id)
-    const date = periodType === 'day'? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
-    
-    console.log(dayDate)    
+    const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
+
+    console.log(dayDate)
     console.log(devices)
 
     const query = `date=${date}&idLoraDevices=${devicesParsedToString}`
@@ -107,6 +116,9 @@ const Comparatives = () => {
 
   async function getDevices() {
 
+    setPageLoading(true)
+    setPageMessage('')
+
     try {
 
       const response = await api_crud.get(`/devices`)
@@ -116,12 +128,18 @@ const Comparatives = () => {
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error('Error loading devices')
+      setPageMessage('Error loading devices')
     }
+
+    setPageLoading(false)
   }
 
 
   async function getComparatives(query) {
+
+    setBodyLoading(true)
+    setBodyMessage('')
 
     try {
 
@@ -133,8 +151,11 @@ const Comparatives = () => {
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error('Error loading comparatives')
+      setBodyMessage('Error loading comparatives')
     }
+
+    setBodyLoading(false)
   }
 
   // USE EFFECTS
@@ -157,7 +178,7 @@ const Comparatives = () => {
 
   }, [searchDevice, allDevices])
 
-    
+
   // useEffect(() => {
 
   //   const devices_id = switchLoraToId(currentDevices)
@@ -170,172 +191,200 @@ const Comparatives = () => {
   return (
     <Layout title='Comparatives'>
       <Container>
-        <Content>
+        {
+          pageLoading ?
+            <LoadingArea>
+              <Loading />
+            </LoadingArea>
+            :
+            pageMessage ?
+              <PageMessage>
+                {pageMessage}
+              </PageMessage>
+              :
+              <Content>
 
-          <FeaturesBox>
-            <Period>
-              <p>Period:</p>
-              <div className='radio-buttons'>
-                <RadioButton label='Day' value='day' variable={periodType} func={setPeriodType} />
-                <RadioButton label='Month' value='month' variable={periodType} func={setPeriodType} />
-              </div>
-              <div className='date-input'>
-                {
-                  periodType === 'day' ?
-                    <BasicDatePicker value={dayDate} handleChange={setDayDate} />
-                    :
-                    <BasicDatePicker value={monthDate} handleChange={setMonthDate} format='MM/yyyy' views={['year', 'month']} />
-                }
-              </div>
-            </Period>
-            <AddDevice>
-              <Popup
-                onOpen={() => {
-                  // setSelectedsDevices(devices)
-                }}
-                contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
-                trigger={
-                  <button>
-                    Add Device
-                </button>
-                }
-                modal
-              >
-                {
-                  close => {
-
-                    return (
-                      <AddDeviceModal>
-                        <h3>Add Devices</h3>
-
-                        <div className='search'>
-                          <Search>
-                            <div>
-                              <input
-                                type='text'
-                                maxlength='20'
-                                autoFocus
-                                value={searchDevice}
-                                onChange={event => setSearchDevice(event.target.value)}
-                              />
-                              <button onClick={() => setSearchDevice('')} >
-                                <MdClear />
-                              </button>
-                            </div>
-
-                          </Search>
-                        </div>
-                        <div className='devices'>
-                          {
-                            devicesArray && devicesArray.map(device => {
-
-                              return (
-                                <div>
-                                  <CheckboxLabels
-                                    label={device.name}
-                                    variable={selectedsDevices}
-                                    value={device.idLora}
-                                    func={setSelectedsDevices}
-                                    disabled={!device.idLora}
-                                    multiple
-                                    notRemove
-                                  />
-
-                                </div>
-                              )
-                            })
-                          }
-                        </div>
-                        <div className='buttons'>
-                          <button onClick={() => close()}>
-                            Cancel
-                          </button>
-                          <button
-                            disabled={saving}
-                            onClick={() => {
-                              setCurrentDevices(selectedsDevices)
-                              close()
-                            }}
-                          >
-                            Add {saving && <Loading />}
-                          </button>
-                        </div>
-                      </AddDeviceModal>
-                    )
-                  }
-                }
-              </Popup>
-
-            </AddDevice>
-            <CurrentDevices>
-              <p>Current devices</p>
-              <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
-                {
-                  currentDevices.map(device => {
-
-                    return (
-                      <div>
-                        <p>{device.name}</p>
-                        <MdDelete onClick={() => {
-                          const remainingDevices = currentDevices.filter(dev => dev.id !== device.id)
-                          setCurrentDevices(remainingDevices)
-                          setSelectedsDevices(remainingDevices)
-                        }} />
-                      </div>
-                    )
-                  })
-                }
-              </Scroll>
-            </CurrentDevices>
-          </FeaturesBox>
-
-          <DataBox>
-            <div className='tabs'>
-              <TabsComponent tabs={tabs} onTabChange={setTab} initial={tab} />
-            </div>
-            <div className='body'>
-              <div className='header'>
-                {
-                  tableLabels.map(item => (
-                    <div>
-                      {item.title}
+                <FeaturesBox>
+                  <Period>
+                    <p>Period:</p>
+                    <div className='radio-buttons'>
+                      <RadioButton label='Day' value='day' variable={periodType} func={setPeriodType} />
+                      <RadioButton label='Month' value='month' variable={periodType} func={setPeriodType} />
                     </div>
-                  ))
-                }
-              </div>
-              <div className='table'>
-                {
-                  currentDevices.map(selected => {
+                    <div className='date-input'>
+                      {
+                        periodType === 'day' ?
+                          <BasicDatePicker value={dayDate} handleChange={setDayDate} />
+                          :
+                          <BasicDatePicker value={monthDate} handleChange={setMonthDate} format='MM/yyyy' views={['year', 'month']} />
+                      }
+                    </div>
+                  </Period>
+                  <AddDevice>
+                    <Popup
+                      onOpen={() => {
+                        // setSelectedsDevices(devices)
+                      }}
+                      contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
+                      trigger={
+                        <button>
+                          Add Device
+                </button>
+                      }
+                      modal
+                    >
+                      {
+                        close => {
 
-                    const device = devices.find(device => device.idLora === selected.id)
+                          return (
+                            <AddDeviceModal>
+                              <h3>Add Devices</h3>
 
+                              <div className='search'>
+                                <Search>
+                                  <div>
+                                    <input
+                                      type='text'
+                                      maxlength='20'
+                                      autoFocus
+                                      value={searchDevice}
+                                      onChange={event => setSearchDevice(event.target.value)}
+                                    />
+                                    <button onClick={() => setSearchDevice('')} >
+                                      <MdClear />
+                                    </button>
+                                  </div>
 
-                    return (
-                      <div>
-                        {
-                          tableLabels.map(label => {
+                                </Search>
+                              </div>
+                              <div className='devices'>
+                                {
+                                  devicesArray && devicesArray.map(device => {
 
-                            let value
+                                    return (
+                                      <div>
+                                        <CheckboxLabels
+                                          label={device.name}
+                                          variable={selectedsDevices}
+                                          value={device.idLora}
+                                          func={setSelectedsDevices}
+                                          disabled={!device.idLora}
+                                          multiple
+                                          notRemove
+                                        />
 
-                            if (label.value === 'name') {
-                              value = selected.name
-                            } else {
-                              value = device && device[`${param}_${label.value}`]
-                            }
-
-                            return (
-                              <div>{value}</div>
-                            )
-                          })
+                                      </div>
+                                    )
+                                  })
+                                }
+                              </div>
+                              <div className='buttons'>
+                                <button onClick={() => close()}>
+                                  Cancel
+                          </button>
+                                <button
+                                  disabled={saving}
+                                  onClick={() => {
+                                    setCurrentDevices(selectedsDevices)
+                                    close()
+                                  }}
+                                >
+                                  Add {saving && <Loading />}
+                                </button>
+                              </div>
+                            </AddDeviceModal>
+                          )
                         }
-                      </div>
-                    )
-                  })
+                      }
+                    </Popup>
+
+                  </AddDevice>
+                  <CurrentDevices>
+                    <p>Current devices</p>
+                    <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
+                      {
+                        currentDevices.map(device => {
+
+                          return (
+                            <div>
+                              <p>{device.name}</p>
+                              <MdDelete onClick={() => {
+                                const remainingDevices = currentDevices.filter(dev => dev.id !== device.id)
+                                setCurrentDevices(remainingDevices)
+                                setSelectedsDevices(remainingDevices)
+                              }} />
+                            </div>
+                          )
+                        })
+                      }
+                    </Scroll>
+                  </CurrentDevices>
+                </FeaturesBox>
+
+                {
+                  bodyLoading ?
+                    <BodyLoading>
+                      <Loading />
+                    </BodyLoading>
+                    :
+                    bodyMessage ?
+                      <BodyMessage>
+                        {
+                          bodyMessage
+                        }
+                      </BodyMessage>
+                      :
+
+
+                      <DataBox>
+                        <div className='tabs'>
+                          <TabsComponent tabs={tabs} onTabChange={setTab} initial={tab} />
+                        </div>
+                        <div className='body'>
+                          <div className='header'>
+                            {
+                              tableLabels.map(item => (
+                                <div>
+                                  {item.title}
+                                </div>
+                              ))
+                            }
+                          </div>
+                          <div className='table'>
+                            {
+                              currentDevices.map(selected => {
+
+                                const device = devices.find(device => device.idLora === selected.id)
+
+
+                                return (
+                                  <div>
+                                    {
+                                      tableLabels.map(label => {
+
+                                        let value
+
+                                        if (label.value === 'name') {
+                                          value = selected.name
+                                        } else {
+                                          value = device && device[`${param}_${label.value}`]
+                                        }
+
+                                        return (
+                                          <div>{value}</div>
+                                        )
+                                      })
+                                    }
+                                  </div>
+                                )
+                              })
+                            }
+                          </div>
+                        </div>
+                      </DataBox>
                 }
-              </div>
-            </div>
-          </DataBox>
-        </Content>
+              </Content>
+        }
       </Container>
     </Layout>
 
