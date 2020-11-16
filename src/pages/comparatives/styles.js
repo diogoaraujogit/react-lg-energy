@@ -339,7 +339,8 @@ export const DataBox = styled.div`
 
     .header {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+      grid-template-columns: repeat(6, 1fr);
+      /* grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)); */
 
       > div {
         text-align: center;
@@ -356,7 +357,8 @@ export const DataBox = styled.div`
     .table {
       > div {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(10px, 1fr));
+        grid-template-columns: repeat(6, 1fr);
+        /* grid-template-columns: repeat(auto-fit, minmax(10px, 1fr)); */
         border-top: 0.5px solid #F1f1f1;
         padding: 10px 0rem;
 

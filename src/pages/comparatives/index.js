@@ -16,6 +16,7 @@ import {
 
 import api_analytics from '../../services/api_analytics'
 import api_crud from '../../services/api_crud'
+import api_logs from '../../services/api_logs'
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 
@@ -43,7 +44,8 @@ const Comparatives = () => {
   const [currentDevices, setCurrentDevices] = useState([])
 
 
-  const tableLabels = [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
+  const tableLabels = tab === 2 ?  [{ title: 'Devices', value: 'name' }, {title: 'Total', value: 'total'}] :
+  [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
 
   const [devices, setDevices] = useState([])
 
@@ -143,11 +145,28 @@ const Comparatives = () => {
 
     try {
 
-      const response = await api_analytics.get(`/comparatives/${periodType}?${query}`)
+      const response = await api_analytics.get(`/comparatives/${periodType}?${query}`) 
+      const response_logs = await api_logs.get(`/comparatives/${periodType}?${query}`) 
 
-      if (response.data) {
-        setDevices(response.data)
-        console.log(response.data)
+
+      if (response.data && response_logs.data) {
+
+        const devicesDataWithDemand = response.data.map(data => {
+
+          const demandDataForThisDevice = response_logs.data.filter(data_demand => data_demand.idLora === data.idLora)
+
+          return {...data, ...demandDataForThisDevice[0]}
+
+        })
+
+        console.log('Crazy test')
+        console.log(response_logs.data)
+        setDevices(devicesDataWithDemand)
+        console.log(devicesDataWithDemand)
+
+      } else {
+        toast.error('Error loading comparatives')
+        setBodyMessage('Error loading comparatives')
       }
 
     } catch (e) {
