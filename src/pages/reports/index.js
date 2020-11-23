@@ -1,13 +1,422 @@
-import React from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { MdClear, MdDelete, MdDevices, MdFileDownload } from 'react-icons/md';
+import Popup from 'reactjs-popup';
+import BasicDatePicker from '../../components/BasicDatePicker';
+import CheckboxLabels from '../../components/Checkbox';
 import Layout from '../../components/Layout'
+import Loading from '../../components/Loading';
+import RadioButton from '../../components/Radio';
+import TabsComponent from '../../components/Tabs';
 
-import { Container } from './styles';
+import {
+  Container, Content, LoadingArea, PageMessage, FeaturesBox, Period,
+  AddDevice, AddDeviceModal, Search, CurrentDevices, Scroll, BodyLoading,
+  BodyMessage, DataBox, Report
+} from './styles';
+
+import api_analytics from '../../services/api_analytics'
+import api_crud from '../../services/api_crud'
+import api_logs from '../../services/api_logs'
+import { toast } from 'react-toastify';
+import { format } from 'date-fns';
 
 const Reports = () => {
+
+  const tabs = useMemo(() => ['Consumption', 'Current', 'Demand', 'Power'], [])
+
+  const [tab, setTab] = useState(0)
+
+  const [pageLoading, setPageLoading] = useState(false)
+  const [pageMessage, setPageMessage] = useState('')
+  const [bodyLoading, setBodyLoading] = useState(false)
+  const [bodyMessage, setBodyMessage] = useState('')
+
+  const [periodType, setPeriodType] = useState('day')
+  const [dayDate, setDayDate] = useState(new Date())
+  const [monthDate, setMonthDate] = useState(new Date())
+  const [param, setParam] = useState('powerConsumption')
+
+  const [searchDevice, setSearchDevice] = useState('')
+  const [devicesArray, setDevicesArray] = useState([])
+  const [allDevices, setAllDevices] = useState([])
+  const [saving, setSaving] = useState(false)
+  const [selectedsDevices, setSelectedsDevices] = useState([])
+  const [selectedsParams, setSelectedsParams] = useState([])
+  const [currentDevices, setCurrentDevices] = useState([])
+
+
+  const tableLabels = tab === 2 ? [{ title: 'Devices', value: 'name' }, { title: 'Total', value: 'total' }] :
+    [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
+
+
+  const parameters = [
+    { title: 'Current', value: 'current' },
+    { title: 'Active Power', value: 'activePower' },
+    { title: 'Consumption', value: 'powerConsumption' },
+    { title: 'Demand', value: 'demand' }
+  ]
+
+  const reports = [
+    {
+      name: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      name: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      name: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      name: 'Name Report',
+      period: '02/02/2020',
+    },
+  ]
+
+  const [devices, setDevices] = useState([])
+
+  useEffect(() => {
+    switch (tab) {
+      case 0:
+        setParam('powerConsumption')
+        return;
+      case 1:
+        setParam('current')
+        return;
+      case 2:
+        setParam('demand')
+        return;
+      case 3:
+        setParam('activePower')
+        return;
+      default:
+        return;
+    }
+  }, [tab])
+
+  // FUNCTIONS 
+
+  const handleSearch = (devices) => {
+
+    const devicesParsedToString = devices.map(device => device.id)
+    const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
+
+    console.log(dayDate)
+    console.log(devices)
+
+    const query = `date=${date}&idLoraDevices=${devicesParsedToString}`
+
+    getComparatives(query)
+
+  }
+
+  const showOnlyDevicesThatMatches = () => {
+
+    if (searchDevice) {
+      const devicesThatMatch = allDevices.filter(device =>
+        device.name.toLowerCase().includes(searchDevice.toLowerCase())
+      )
+
+      setDevicesArray(devicesThatMatch)
+    } else {
+      setDevicesArray(allDevices)
+    }
+
+
+  }
+
+  const switchLoraToId = (currentDevices) => {
+
+    const devices_id = currentDevices.map(device => {
+      let obj = {}
+
+      obj.id = device.idLora
+      obj.name = device.name
+
+      return obj
+    })
+
+    return devices_id
+
+  }
+
+  // API CALLS
+
+  async function getDevices() {
+
+    setPageLoading(true)
+    setPageMessage('')
+
+    try {
+
+      const response = await api_crud.get(`/devices`)
+
+      if (response.data) {
+        setAllDevices(response.data)
+      }
+
+    } catch (e) {
+      toast.error('Error loading devices')
+      setPageMessage('Error loading devices')
+    }
+
+    setPageLoading(false)
+  }
+
+
+  async function getComparatives(query) {
+
+    setBodyLoading(true)
+    setBodyMessage('')
+
+    try {
+
+      const response = await api_analytics.get(`/comparatives/${periodType}?${query}`)
+      const response_logs = await api_logs.get(`/comparatives/${periodType}?${query}`)
+
+
+      if (response.data && response_logs.data) {
+
+        const devicesDataWithDemand = response.data.map(data => {
+
+          const demandDataForThisDevice = response_logs.data.filter(data_demand => data_demand.idLora === data.idLora)
+
+          return { ...data, ...demandDataForThisDevice[0] }
+
+        })
+
+        console.log('Crazy test')
+        console.log(response_logs.data)
+        setDevices(devicesDataWithDemand)
+        console.log(devicesDataWithDemand)
+
+      } else {
+        toast.error('Error loading comparatives')
+        setBodyMessage('Error loading comparatives')
+      }
+
+    } catch (e) {
+      toast.error('Error loading comparatives')
+      setBodyMessage('Error loading comparatives')
+    }
+
+    setBodyLoading(false)
+  }
+
+  // USE EFFECTS
+
+  useEffect(() => {
+    getDevices()
+  }, [])
+
+  useEffect(() => {
+
+
+    currentDevices && Array.isArray(currentDevices) && currentDevices.length && handleSearch(currentDevices)
+
+  }, [dayDate, monthDate, periodType, currentDevices])
+
+
+  useEffect(() => {
+
+    showOnlyDevicesThatMatches()
+
+  }, [searchDevice, allDevices])
+
+
+  // useEffect(() => {
+
+  //   const devices_id = switchLoraToId(currentDevices)
+
+  //   setSelectedsDevices(devices_id)
+
+
+  // }, [currentDevices])
+
   return (
     <Layout title='Reports'>
       <Container>
-        
+        {
+          pageLoading ?
+            <LoadingArea>
+              <Loading />
+            </LoadingArea>
+            :
+            pageMessage ?
+              <PageMessage>
+                {pageMessage}
+              </PageMessage>
+              :
+              <Content>
+
+                <FeaturesBox>
+                  <Period>
+                    <p>Period:</p>
+                    <div className='radio-buttons'>
+                      <RadioButton label='Day' value='day' variable={periodType} func={setPeriodType} />
+                      <RadioButton label='Month' value='month' variable={periodType} func={setPeriodType} />
+                    </div>
+                    <div className='date-input'>
+                      {
+                        periodType === 'day' ?
+                          <BasicDatePicker value={dayDate} handleChange={setDayDate} />
+                          :
+                          <BasicDatePicker value={monthDate} handleChange={setMonthDate} format='MM/yyyy' views={['year', 'month']} />
+                      }
+                    </div>
+                  </Period>
+                  <AddDevice>
+                    <Popup
+                      onOpen={() => {
+                        // setSelectedsDevices(devices)
+                      }}
+                      contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
+                      trigger={
+                        <button>
+                          Add Device
+                        </button>
+                      }
+                      modal
+                    >
+                      {
+                        close => {
+
+                          return (
+                            <AddDeviceModal>
+                              <h3>Add Devices</h3>
+
+                              <div className='search'>
+                                <Search>
+                                  <div>
+                                    <input
+                                      type='text'
+                                      maxlength='20'
+                                      autoFocus
+                                      value={searchDevice}
+                                      onChange={event => setSearchDevice(event.target.value)}
+                                    />
+                                    <button onClick={() => setSearchDevice('')} >
+                                      <MdClear />
+                                    </button>
+                                  </div>
+
+                                </Search>
+                              </div>
+                              <div className='devices'>
+                                {
+                                  devicesArray && devicesArray.map(device => {
+
+                                    return (
+                                      <div>
+                                        <CheckboxLabels
+                                          label={device.name}
+                                          variable={selectedsDevices}
+                                          value={device.idLora}
+                                          func={setSelectedsDevices}
+                                          disabled={!device.idLora}
+                                          multiple
+                                          notRemove
+                                        />
+
+                                      </div>
+                                    )
+                                  })
+                                }
+                              </div>
+                              <div className='buttons'>
+                                <button onClick={() => close()}>
+                                  Cancel
+                                </button>
+                                <button
+                                  disabled={saving}
+                                  onClick={() => {
+                                    setCurrentDevices(selectedsDevices)
+                                    close()
+                                  }}
+                                >
+                                  Add {saving && <Loading />}
+                                </button>
+                              </div>
+                            </AddDeviceModal>
+                          )
+                        }
+                      }
+                    </Popup>
+
+                    <input
+                      placeholder='Report Name'
+
+                    />
+
+                  </AddDevice>
+                  <CurrentDevices>
+                    <p>Select Parameter</p>
+
+                    <div>
+                      {
+                        parameters.map(parameter => {
+
+                          return (
+                            <div>
+                              <CheckboxLabels
+                                label={parameter.title}
+                                variable={selectedsParams}
+                                value={parameter.value}
+                                func={setSelectedsParams}
+                                multiple
+                              />
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                  </CurrentDevices>
+
+                  <div className='create-report-btn'>
+                    <button>
+                      Create Report
+                    </button>
+                  </div>
+                </FeaturesBox>
+
+                {
+                  bodyLoading ?
+                    <BodyLoading>
+                      <Loading />
+                    </BodyLoading>
+                    :
+                    bodyMessage ?
+                      <BodyMessage>
+                        {
+                          bodyMessage
+                        }
+                      </BodyMessage>
+                      :
+
+
+                      <DataBox>
+                        <div>
+                        {
+                          reports.map(report => {
+
+                            return (
+                              <Report>
+                                <div>
+                                  <h3>{report.name}</h3>
+                                  <MdFileDownload />
+                                </div>
+                                <p>{`Period: ${report.period}`}</p>
+                              </Report>
+                            )
+                          })
+                        }
+                        </div>
+                      </DataBox>
+                }
+              </Content>
+        }
       </Container>
     </Layout>
 
