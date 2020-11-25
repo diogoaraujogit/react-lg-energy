@@ -11,7 +11,7 @@ import TabsComponent from '../../components/Tabs';
 import {
   Container, Content, LoadingArea, PageMessage, FeaturesBox, Period,
   AddDevice, AddDeviceModal, Search, CurrentDevices, Scroll, BodyLoading,
-  BodyMessage, DataBox, Report
+  BodyMessage, DataBox, Report, AddItemTabs
 } from './styles';
 
 import api_analytics from '../../services/api_analytics'
@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 
 const Reports = () => {
 
-  const tabs = useMemo(() => ['Consumption', 'Current', 'Demand', 'Power'], [])
+  const tabs = useMemo(() => ['Devices', 'Groups'], [])
 
   const [tab, setTab] = useState(0)
 
@@ -34,7 +34,7 @@ const Reports = () => {
   const [periodType, setPeriodType] = useState('day')
   const [dayDate, setDayDate] = useState(new Date())
   const [monthDate, setMonthDate] = useState(new Date())
-  const [param, setParam] = useState('powerConsumption')
+  const [reportName, setReportName] = useState('')
 
   const [searchDevice, setSearchDevice] = useState('')
   const [devicesArray, setDevicesArray] = useState([])
@@ -44,10 +44,10 @@ const Reports = () => {
   const [selectedsParams, setSelectedsParams] = useState([])
   const [currentDevices, setCurrentDevices] = useState([])
 
-
-  const tableLabels = tab === 2 ? [{ title: 'Devices', value: 'name' }, { title: 'Total', value: 'total' }] :
-    [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
-
+  const [searchGroup, setSearchGroup] = useState('')
+  const [groupsArray, setGroupsArray] = useState([])
+  const [allGroups, setAllGroups] = useState([])
+  const [selectedsGroups, setSelectedsGroups] = useState([])
 
   const parameters = [
     { title: 'Current', value: 'current' },
@@ -75,46 +75,31 @@ const Reports = () => {
     },
   ]
 
-  const [devices, setDevices] = useState([])
-
-  useEffect(() => {
-    switch (tab) {
-      case 0:
-        setParam('powerConsumption')
-        return;
-      case 1:
-        setParam('current')
-        return;
-      case 2:
-        setParam('demand')
-        return;
-      case 3:
-        setParam('activePower')
-        return;
-      default:
-        return;
-    }
-  }, [tab])
 
   // FUNCTIONS 
 
-  const handleSearch = (devices) => {
-
-    const devicesParsedToString = devices.map(device => device.id)
+  const handleCreatReport = () => {
+    
+    const selectedsItems = tab ? selectedsGroups : selectedsDevices
+    const hasSelectedsItems = selectedsItems && Array.isArray(selectedsItems) && selectedsItems.length > 0
+    const hasSelectedsParams = selectedsParams && Array.isArray(selectedsParams) && selectedsParams.length > 0
+    
     const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
 
-    console.log(dayDate)
-    console.log(devices)
-
-    const query = `date=${date}&idLoraDevices=${devicesParsedToString}`
-
-    getComparatives(query)
+    !hasSelectedsItems?
+    toast.error(`No ${tab? 'groups' : 'devices'} selecteds`) :
+    !reportName?
+    toast.error('Report name required') :
+    !hasSelectedsParams?
+    toast.error('No parameters selecteds') :
+    createReport(date)
 
   }
 
   const showOnlyDevicesThatMatches = () => {
 
     if (searchDevice) {
+
       const devicesThatMatch = allDevices.filter(device =>
         device.name.toLowerCase().includes(searchDevice.toLowerCase())
       )
@@ -124,23 +109,24 @@ const Reports = () => {
       setDevicesArray(allDevices)
     }
 
+  }
+
+  const showOnlyGroupsThatMatches = () => {
+
+    if (searchGroup) {
+      
+      const groupsThatMatch = allGroups.filter(group =>
+        group.name.toLowerCase().includes(searchGroup.toLowerCase())
+      )
+
+      setGroupsArray(groupsThatMatch)
+
+    } else {
+      setGroupsArray(allGroups)
+    }
 
   }
 
-  const switchLoraToId = (currentDevices) => {
-
-    const devices_id = currentDevices.map(device => {
-      let obj = {}
-
-      obj.id = device.idLora
-      obj.name = device.name
-
-      return obj
-    })
-
-    return devices_id
-
-  }
 
   // API CALLS
 
@@ -151,10 +137,15 @@ const Reports = () => {
 
     try {
 
-      const response = await api_crud.get(`/devices`)
+      const response_devices = await api_crud.get(`/devices`)
+      const response_groups = await api_crud.get(`/groups`)
 
-      if (response.data) {
-        setAllDevices(response.data)
+      if (response_devices.data && response_groups.data) {
+        setAllDevices(response_devices.data)
+        setAllGroups(response_groups.data)
+      } else {
+        toast.error('Error loading devices')
+        setPageMessage('Error loading devices')
       }
 
     } catch (e) {
@@ -165,58 +156,16 @@ const Reports = () => {
     setPageLoading(false)
   }
 
+  const createReport = () => {
 
-  async function getComparatives(query) {
-
-    setBodyLoading(true)
-    setBodyMessage('')
-
-    try {
-
-      const response = await api_analytics.get(`/comparatives/${periodType}?${query}`)
-      const response_logs = await api_logs.get(`/comparatives/${periodType}?${query}`)
-
-
-      if (response.data && response_logs.data) {
-
-        const devicesDataWithDemand = response.data.map(data => {
-
-          const demandDataForThisDevice = response_logs.data.filter(data_demand => data_demand.idLora === data.idLora)
-
-          return { ...data, ...demandDataForThisDevice[0] }
-
-        })
-
-        console.log('Crazy test')
-        console.log(response_logs.data)
-        setDevices(devicesDataWithDemand)
-        console.log(devicesDataWithDemand)
-
-      } else {
-        toast.error('Error loading comparatives')
-        setBodyMessage('Error loading comparatives')
-      }
-
-    } catch (e) {
-      toast.error('Error loading comparatives')
-      setBodyMessage('Error loading comparatives')
-    }
-
-    setBodyLoading(false)
   }
+
 
   // USE EFFECTS
 
   useEffect(() => {
     getDevices()
   }, [])
-
-  useEffect(() => {
-
-
-    currentDevices && Array.isArray(currentDevices) && currentDevices.length && handleSearch(currentDevices)
-
-  }, [dayDate, monthDate, periodType, currentDevices])
 
 
   useEffect(() => {
@@ -225,15 +174,13 @@ const Reports = () => {
 
   }, [searchDevice, allDevices])
 
+  useEffect(() => {
 
-  // useEffect(() => {
+    showOnlyGroupsThatMatches()
 
-  //   const devices_id = switchLoraToId(currentDevices)
-
-  //   setSelectedsDevices(devices_id)
+  }, [searchGroup, allGroups])
 
 
-  // }, [currentDevices])
 
   return (
     <Layout title='Reports'>
@@ -275,7 +222,7 @@ const Reports = () => {
                       contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                       trigger={
                         <button>
-                          Add Device
+                          Select device or group
                         </button>
                       }
                       modal
@@ -283,9 +230,18 @@ const Reports = () => {
                       {
                         close => {
 
+                          const itemsArray = tab ? groupsArray : devicesArray
+                          const selectedsItems = tab ? selectedsGroups : selectedsDevices
+                          const setSelectedsItems = tab ? setSelectedsGroups : setSelectedsDevices
+
+                          const searchItem = tab ? searchGroup : searchDevice
+                          const setSearchItem = tab ? setSearchGroup : setSearchDevice
+
                           return (
                             <AddDeviceModal>
-                              <h3>Add Devices</h3>
+                              <AddItemTabs>
+                                <TabsComponent tabs={tabs} onTabChange={setTab} initial={tab}/>
+                              </AddItemTabs>
 
                               <div className='search'>
                                 <Search>
@@ -294,10 +250,10 @@ const Reports = () => {
                                       type='text'
                                       maxlength='20'
                                       autoFocus
-                                      value={searchDevice}
-                                      onChange={event => setSearchDevice(event.target.value)}
+                                      value={searchItem}
+                                      onChange={event => setSearchItem(event.target.value)}
                                     />
-                                    <button onClick={() => setSearchDevice('')} >
+                                    <button onClick={() => setSearchItem('')} >
                                       <MdClear />
                                     </button>
                                   </div>
@@ -306,18 +262,20 @@ const Reports = () => {
                               </div>
                               <div className='devices'>
                                 {
-                                  devicesArray && devicesArray.map(device => {
+                                  
+                                  itemsArray && itemsArray.map(item => {
+
+                                    const itemId = tab ? item.id : item.idLora
 
                                     return (
                                       <div>
                                         <CheckboxLabels
-                                          label={device.name}
-                                          variable={selectedsDevices}
-                                          value={device.idLora}
-                                          func={setSelectedsDevices}
-                                          disabled={!device.idLora}
+                                          label={item.name}
+                                          variable={selectedsItems}
+                                          value={itemId}
+                                          func={setSelectedsItems}
+                                          disabled={!itemId}
                                           multiple
-                                          notRemove
                                         />
 
                                       </div>
@@ -347,7 +305,8 @@ const Reports = () => {
 
                     <input
                       placeholder='Report Name'
-
+                      value={reportName}
+                      onChange={(e) => setReportName(e.target.value)}
                     />
 
                   </AddDevice>
@@ -375,7 +334,7 @@ const Reports = () => {
                   </CurrentDevices>
 
                   <div className='create-report-btn'>
-                    <button>
+                    <button onClick={() => handleCreatReport()}>
                       Create Report
                     </button>
                   </div>
@@ -405,7 +364,10 @@ const Reports = () => {
                               <Report>
                                 <div>
                                   <h3>{report.name}</h3>
-                                  <MdFileDownload />
+                                  <div>
+                                    <MdFileDownload />
+                                    <MdDelete />
+                                  </div>
                                 </div>
                                 <p>{`Period: ${report.period}`}</p>
                               </Report>

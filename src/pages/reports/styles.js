@@ -219,6 +219,46 @@ export const AddDeviceModal = styled.div`
   }
 `;
 
+export const AddItemTabs = styled.div`
+
+margin-bottom: 2rem;
+
+.MuiTabs-root {
+    max-height: 4rem;
+    min-height: 4rem;
+  }
+
+  .MuiTabs-flexContainer {
+    max-height: 4rem;
+    min-height: 4rem;
+  }
+
+  .MuiButtonBase-root {
+    max-height: 4rem;
+    min-height: 4rem;
+    max-width: 14rem;
+    min-width: 14rem;
+
+    > span {
+      color: #818181;
+      font-size: 1.4rem;
+    }
+  }
+
+  .Mui-selected {
+    > span {
+      color: #222222;
+      font-weight: 500;
+    }
+  }
+
+  .MuiTabs-indicator {
+    background-color: #222222;
+  }  
+
+
+`;
+
 export const Search = styled.div`
   display: flex;
   height: 4.5rem;
@@ -337,8 +377,17 @@ export const Report = styled.div`
     cursor: pointer;
 
     &:hover {
-      color: green;
+      color: red;
     }
+
+    &:first-child {
+      
+      margin-right: 1rem;
+      &:hover {
+      color: green;
+      }
+    }
+
   }
 
   p {
