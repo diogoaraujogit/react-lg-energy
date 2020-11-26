@@ -17,6 +17,7 @@ import {
 import api_analytics from '../../services/api_analytics'
 import api_crud from '../../services/api_crud'
 import api_logs from '../../services/api_logs'
+import api_reports from '../../services/api_reports'
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 
@@ -25,6 +26,28 @@ const Reports = () => {
   const tabs = useMemo(() => ['Devices', 'Groups'], [])
 
   const [tab, setTab] = useState(0)
+
+  const reports_base = [
+    {
+      title: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      title: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      title: 'Name Report',
+      period: '02/02/2020',
+    },
+    {
+      title: 'Name Report',
+      period: '02/02/2020',
+    },
+  ]
+
+
+  const [reports, setReports] = useState(reports_base)
 
   const [pageLoading, setPageLoading] = useState(false)
   const [pageMessage, setPageMessage] = useState('')
@@ -39,7 +62,8 @@ const Reports = () => {
   const [searchDevice, setSearchDevice] = useState('')
   const [devicesArray, setDevicesArray] = useState([])
   const [allDevices, setAllDevices] = useState([])
-  const [saving, setSaving] = useState(false)
+  const [creating, setCreating] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [selectedsDevices, setSelectedsDevices] = useState([])
   const [selectedsParams, setSelectedsParams] = useState([])
   const [currentDevices, setCurrentDevices] = useState([])
@@ -56,29 +80,11 @@ const Reports = () => {
     { title: 'Demand', value: 'demand' }
   ]
 
-  const reports = [
-    {
-      name: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      name: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      name: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      name: 'Name Report',
-      period: '02/02/2020',
-    },
-  ]
 
 
   // FUNCTIONS 
 
-  const handleCreatReport = () => {
+  const handleCreateReport = () => {
     
     const selectedsItems = tab ? selectedsGroups : selectedsDevices
     const hasSelectedsItems = selectedsItems && Array.isArray(selectedsItems) && selectedsItems.length > 0
@@ -86,13 +92,22 @@ const Reports = () => {
     
     const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
 
+    const reportBody = {
+      userId: 1,
+      userName: 'teste',
+      devices: selectedsDevices,
+      greatness: selectedsParams,
+      period: date,
+      title: reportName
+    }
+
     !hasSelectedsItems?
     toast.error(`No ${tab? 'groups' : 'devices'} selecteds`) :
     !reportName?
     toast.error('Report name required') :
     !hasSelectedsParams?
     toast.error('No parameters selecteds') :
-    createReport(date)
+    createReport(reportBody)
 
   }
 
@@ -156,15 +171,94 @@ const Reports = () => {
     setPageLoading(false)
   }
 
-  const createReport = () => {
+  async function createReport(reportBody) {
+    setCreating(true)
 
+    try {
+
+      const response = await api_reports.post('', reportBody)
+      console.log(response)
+
+      if(response.data) {
+        
+        const message = response.data.message
+        // const processingStatus = response.data.processingStatus
+        getReports()
+
+        message ? toast.info(message) : toast.info('Generating report...')
+
+      } else {
+        toast.error('Failed to create report')
+      }
+
+    } catch(e) {
+      toast.error('Failed to create report')
+    }
+
+    setCreating(false)
   }
 
+  async function getReports() {
+
+    setBodyLoading(true)
+    
+
+    try {
+
+      const response = await api_reports.get('/')
+
+      if(response.data) {
+
+        const reportsReceived = response.data
+
+        if(Array.isArray(response.data) && response.data.length) {
+          setBodyMessage('')
+        } else {
+          setBodyMessage('No reports')
+        }
+
+        setReports(response.data)
+
+      } else {
+        setBodyMessage('Error loading reports')
+        toast.error('Error loading reports')
+      }
+
+    } catch(e) {
+      toast.error('Error loading reports')
+      setBodyMessage('Error loading reports')
+    }
+
+    setBodyLoading(false)
+  }
+
+  async function handleDeleteReport(reportId) {
+
+    setDeleting(true)
+    
+    try {
+
+      const response = await api_reports.delete(`/${reportId}`)
+      
+
+      if(response) {
+        console.log(response)
+        toast.info('Report deleted')
+        getReports()
+      } 
+
+    } catch(e) {
+      toast.error('Error deleting report')
+    }
+
+    setDeleting(false)
+  }
 
   // USE EFFECTS
 
   useEffect(() => {
     getDevices()
+    getReports()
   }, [])
 
 
@@ -288,13 +382,12 @@ const Reports = () => {
                                   Cancel
                                 </button>
                                 <button
-                                  disabled={saving}
                                   onClick={() => {
                                     setCurrentDevices(selectedsDevices)
                                     close()
                                   }}
                                 >
-                                  Add {saving && <Loading />}
+                                  Add 
                                 </button>
                               </div>
                             </AddDeviceModal>
@@ -334,8 +427,11 @@ const Reports = () => {
                   </CurrentDevices>
 
                   <div className='create-report-btn'>
-                    <button onClick={() => handleCreatReport()}>
-                      Create Report
+                    <button 
+                      onClick={() => handleCreateReport()}
+                      disabled={creating}
+                    >
+                      Create Report {creating && <Loading />}
                     </button>
                   </div>
                 </FeaturesBox>
@@ -360,16 +456,42 @@ const Reports = () => {
                         {
                           reports.map(report => {
 
+                            const reportId = report.id
+                            const processingStatus = report.processingStatus
+                            const message = report.message
+                            var status = ''
+
+                            switch(processingStatus) {
+                              case 'FINISHED':
+                                status = 'Ready'
+                                break;
+                              case 'PENDING':
+                                status = 'Pending'
+                                break;
+                              case 'PROCESSING':
+                                status = 'Processing'
+                                break;
+                              case 'ERROR':
+                                status = 'Error'
+                                break;
+                              default:
+                                status = 'Undefined'
+                                break;
+                            }
+
                             return (
                               <Report>
                                 <div>
-                                  <h3>{report.name}</h3>
+                                  <h3>{report.title}</h3>
                                   <div>
-                                    <MdFileDownload />
-                                    <MdDelete />
+                                    {processingStatus === 'FINISHED' && <MdFileDownload />}
+                                    {(processingStatus === 'FINISHED' || processingStatus === 'ERROR') && 
+                                    (deleting? <div className='deleting'><Loading /></div> : <MdDelete onClick={() => handleDeleteReport(reportId)} />) }
                                   </div>
                                 </div>
                                 <p>{`Period: ${report.period}`}</p>
+                                <p>{`Status: ${status} ${message? ` - ${message}`  : ''}`}</p>
+                                
                               </Report>
                             )
                           })

@@ -52,19 +52,36 @@ export const FeaturesBox = styled.div`
     margin-top: auto;
 
     > button {
-    width: 100%;
-    height: 5rem;
-    background: #222222 0% 0% no-repeat padding-box;
-    border: 0.5px solid #A1A1A1;
-    border-radius: 5px;
-    color: #ffffff;
-    font-size: 1.8rem;
-    transition: background-color 0.2s;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 5rem;
+      background: #222222 0% 0% no-repeat padding-box;
+      border: 0.5px solid #A1A1A1;
+      border-radius: 5px;
+      color: #ffffff;
+      font-size: 1.8rem;
+      transition: background-color 0.2s;
 
-    &:hover {
-      background-color: ${() => lighten(0.1, '#222222')}
+      &:hover {
+        background-color: ${() => lighten(0.1, '#222222')}
+      }
     }
-  }
+
+    .MuiCircularProgress-root {
+      width: 2rem !important;
+      height: 2rem !important;
+      margin-left: 1rem;
+    }
+
+    .MuiCircularProgress-svg {
+      color: #ffffff;
+      opacity: 1;
+      width: 2rem;
+      height: 2rem;
+    }
   }
 `;
 
@@ -363,7 +380,30 @@ export const Report = styled.div`
     flex-direction: row;
     justify-content: space-between;
     margin-bottom: 1.2rem;
+
+    > div {
+      display: flex;
+      flex-direction: row;
+
+      > svg {
+        font-size: 3rem;
+        transition: color 0.3s; 
+        cursor: pointer;
+        margin-left: 1rem;
+
+        &:hover {
+          color: red;
+        }
+
+        &:first-child {
+          &:hover {
+          color: green;
+          }
+        }
+      }
+    }
   }
+
 
   h3 {
     color: #C5004F;
@@ -371,28 +411,33 @@ export const Report = styled.div`
     font-weight: 500;
   }
 
-  svg {
-    font-size: 3rem;
-    transition: color 0.3s; 
-    cursor: pointer;
+  
 
-    &:hover {
-      color: red;
-    }
-
-    &:first-child {
+  .deleting {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 1rem;
+    
+    .MuiCircularProgress-root {
+      width: 2rem !important;
+      height: 2rem !important;
       
-      margin-right: 1rem;
-      &:hover {
-      color: green;
-      }
     }
 
+    .MuiCircularProgress-svg {
+      color: red;
+      opacity: 1;
+      width: 2rem;
+      height: 2rem;
+    }
+    
   }
 
   p {
     color: #707070;
     font-size: 1.6rem;
     font-weight: 400;
+    margin-bottom: 1.3rem;
   }
 `;
