@@ -92,10 +92,11 @@ const Reports = () => {
     
     const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
 
-    const reportBody = {
+    const reportBody = 
+    {
       userId: 1,
       userName: 'teste',
-      devices: selectedsDevices,
+      devices: selectedsItems,
       greatness: selectedsParams,
       period: date,
       title: reportName
@@ -209,7 +210,6 @@ const Reports = () => {
 
       if(response.data) {
 
-        const reportsReceived = response.data
 
         if(Array.isArray(response.data) && response.data.length) {
           setBodyMessage('')
