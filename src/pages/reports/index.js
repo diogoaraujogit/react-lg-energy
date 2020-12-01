@@ -254,6 +254,33 @@ const Reports = () => {
     setDeleting(false)
   }
 
+  async function handleDownloadReport(reportId) {
+
+    
+    try {
+
+      const response = await api_reports.get(`/download/${reportId}`)
+      
+
+      if(response) {
+        console.log(response)
+        // toast.info('Report deleted')
+        
+
+        const link = document.createElement('a');
+				console.log(response.config.url)
+				link.href = `https://lg.grupoicts.com.br/reports${response.config.url}`;
+				link.target = "_blank" // ou _self 
+				link.rel = 'noopener noreferrer'
+				document.body.appendChild(link);
+				link.click();
+      } 
+
+    } catch(e) {
+      toast.error('Error dowloading report')
+    }
+  }
+
   // USE EFFECTS
 
   useEffect(() => {
@@ -484,7 +511,7 @@ const Reports = () => {
                                 <div>
                                   <h3>{report.title}</h3>
                                   <div>
-                                    {processingStatus === 'FINISHED' && <MdFileDownload />}
+                                    {processingStatus === 'FINISHED' && <MdFileDownload onClick={() => handleDownloadReport(reportId)} />}
                                     {(processingStatus === 'FINISHED' || processingStatus === 'ERROR') && 
                                     (deleting? <div className='deleting'><Loading /></div> : <MdDelete onClick={() => handleDeleteReport(reportId)} />) }
                                   </div>
