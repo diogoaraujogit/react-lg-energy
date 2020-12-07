@@ -120,7 +120,7 @@ const Notifications = () => {
                       single
                     />
                   </div>
-                  <div>
+                  <div className='delete'>
                     <MdDelete />
                   </div>
                   <Notification>
