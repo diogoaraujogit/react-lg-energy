@@ -8,6 +8,7 @@ export default function CheckboxLabels(props) {
   const variable = props.variable
   const func = props.func
   const multiple = props.multiple
+  const single = props.single
   const label = props.label
   const notRemove = props.notRemove
   const disabled = props.disabled
@@ -24,6 +25,10 @@ export default function CheckboxLabels(props) {
         const newArray = variable.concat({ id: value, name: label })
         func(newArray)
       }
+    } else if (single) {
+
+      func(!variable)
+
     } else {
       func(value)
     }

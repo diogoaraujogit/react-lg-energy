@@ -89,15 +89,17 @@ const Reports = () => {
     const selectedsItems = tab ? selectedsGroups : selectedsDevices
     const hasSelectedsItems = selectedsItems && Array.isArray(selectedsItems) && selectedsItems.length > 0
     const hasSelectedsParams = selectedsParams && Array.isArray(selectedsParams) && selectedsParams.length > 0
-    
+    console.log(selectedsParams)
     const date = periodType === 'day' ? format(dayDate, 'dd/MM/yyyy') : format(monthDate, 'MM/yyyy')
+
+    const greatness = selectedsParams.map(param => param.id)
 
     const reportBody = 
     {
       userId: 1,
       userName: 'teste',
       devices: selectedsItems,
-      greatness: selectedsParams,
+      greatness: greatness,
       period: date,
       title: reportName
     }
