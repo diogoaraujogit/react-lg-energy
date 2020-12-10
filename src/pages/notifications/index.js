@@ -20,7 +20,7 @@ const Notifications = () => {
     },
     {
       id: 2,
-      title: 'Notification',
+      title: 'Notification 2',
       body: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sagittis enim. Aliquam erat volutpat. 
       Nam nec nibh sit amet metus tempor consectetur at quis diam. Cras tempus volutpat nisl, ac porttitor dolor feugiat 
       sit amet. Integer sollicitudin metus nisl, nec scelerisque nibh convallis a. Nullam ut faucibus risus. Sed.`,
