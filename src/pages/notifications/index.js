@@ -87,7 +87,8 @@ const Notifications = () => {
 
     setPageLoading(true)
 
-    const query = `skip=${searchSelected}&take=10`
+    const skip = searchSelected*10 - 10
+    const query = `skip=${skip}&take=10`
 
     try {
 
