@@ -410,7 +410,8 @@ const InfoTab = () => {
                       onEdit ?
                         <input
                           value={idLora}
-                          onChange={(e) => setIdLora(mask(e.target, 'number'))}
+                          // onChange={(e) => setIdLora(mask(e.target, 'number'))}
+                          onChange={(e) => setIdLora(e.target.value)}
                         />
                         :
                         <p>{device.idLora}</p>
