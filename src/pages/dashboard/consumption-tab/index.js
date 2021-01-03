@@ -2,11 +2,13 @@ import React from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
 import { MdLens } from 'react-icons/md';
+import BarChart from '../../../components/BarChart';
 import PieChart from '../../../components/PieChart';
 
-import { Container, ShowAll, ConsumptionCards, DashboardHighlights, DashboardCharts, DashboardNotifications, 
-         Server, UsageChart, Groups, Devices
-       } from './styles';
+import {
+  Container, ShowAll, ConsumptionCards, DashboardHighlights, DashboardCharts, DashboardNotifications,
+  Server, UsageChart, Groups, Devices
+} from './styles';
 
 const ConsumptionTab = () => {
 
@@ -49,7 +51,127 @@ const ConsumptionTab = () => {
       "value": 50,
     }
   ]
- 
+
+
+  const notifications = [
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+    {
+      title: 'Notification',
+      message: `
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
+      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
+
+    },
+  ]
+
+  const barData = [
+    {
+      id: 1,
+      color: '#2222AA',
+      value: '64',
+      date: 'Online',
+    },
+    {
+      id: 2,
+      color: '#630028',
+      value: '240',
+      date: 'Offline',
+    },
+    {
+      id: 3,
+      value: '32',
+      date: 'Registered',
+    },
+    {
+      id: 4,
+      value: '47',
+      date: 'Not registered',
+    },
+    {
+      id: 5,
+      value: '88',
+      date: 'Setted',
+    },
+    {
+      id: 6,
+      value: '12',
+      date: 'Manually setted',
+    },
+    {
+      id: 7,
+      value: '210',
+      date: 'Unconfigured',
+    },
+  ]
 
   return (
     <Container>
@@ -91,11 +213,11 @@ const ConsumptionTab = () => {
               <div className='data'>
                 <div className='legend'>
                   <div>
-                    <MdLens style={{color: '#E1E1E1'}} />
+                    <MdLens style={{ color: '#E1E1E1' }} />
                     <p>Free</p>
                   </div>
                   <div>
-                    <MdLens style={{color: '#C5004F'}} />
+                    <MdLens style={{ color: '#C5004F' }} />
                     <p>Used space</p>
                   </div>
                 </div>
@@ -130,14 +252,40 @@ const ConsumptionTab = () => {
               </div>
             </Groups>
           </div>
-          <div>
-            <Devices>
+          <Devices>
+            <h4>Devices</h4>
+            <div>
+            <BarChart
+                data={barData}
+                keys={'value'}
+                indexBy='date'
+                xLegend=''
+                yLegend=''
+                minValue={0}
+                dashboard={true}
+              />
+            </div>
+          </Devices>
 
-            </Devices>
-          </div>
         </DashboardCharts>
         <DashboardNotifications>
+          <div className='notifications-header'>
+            <h3>Notifications</h3>
+            <p>97 notifications</p>
+          </div>
+          <div className='notifications'>
+            {
+              notifications.map(notification => {
 
+                return (
+                  <div className='notification'>
+                    <h4>{notification.title}</h4>
+                    <p>{notification.message}</p>
+                  </div>
+                )
+              })
+            }
+          </div>
         </DashboardNotifications>
       </DashboardHighlights>
     </Container>

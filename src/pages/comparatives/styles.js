@@ -300,38 +300,38 @@ export const DataBox = styled.div`
     height: 4rem;
     margin-bottom: 3rem;
 
-.MuiTabs-root {
-  max-height: 4rem;
-  min-height: 4rem;
-}
-
-.MuiTabs-flexContainer {
-  max-height: 4rem;
-  min-height: 4rem;
-}
-
-.MuiButtonBase-root {
-  max-height: 4rem;
-  min-height: 4rem;
-  max-width: 14rem;
-  min-width: 14rem;
-
-  > span {
-    color: #818181;
-    font-size: 1.4rem;
+  .MuiTabs-root {
+    max-height: 4rem;
+    min-height: 4rem;
   }
-}
 
-.Mui-selected {
-  > span {
-    color: #222222;
-    font-weight: 500;
+  .MuiTabs-flexContainer {
+    max-height: 4rem;
+    min-height: 4rem;
   }
-}
 
-.MuiTabs-indicator {
-  background-color: #222222;
-}  
+  .MuiButtonBase-root {
+    max-height: 4rem;
+    min-height: 4rem;
+    max-width: 14rem;
+    min-width: 14rem;
+
+    > span {
+      color: #818181;
+      font-size: 1.4rem;
+    }
+  }
+
+  .Mui-selected {
+    > span {
+      color: #222222;
+      font-weight: 500;
+    }
+  }
+
+  .MuiTabs-indicator {
+    background-color: #222222;
+  }  
 
   }
 

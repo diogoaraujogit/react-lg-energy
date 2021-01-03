@@ -72,7 +72,8 @@ export const ConsumptionCards = styled.div`
 export const DashboardHighlights = styled.div`
   display: grid;
   grid-template-columns: 3fr 1fr;
-  
+  padding-bottom: 4rem;
+  height: 83.6rem;
 `;
 
 export const DashboardCharts = styled.div`
@@ -88,6 +89,46 @@ export const DashboardNotifications = styled.div`
   box-shadow: 0px 2px 15px #0000000D;
   border-radius: 10px;
   margin-left: 2rem;
+  padding: 1.5rem 2.7rem;
+  height: 79.6rem;
+
+  .notifications-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 3.2rem;
+
+    h3 {
+      color: #222222;
+      font-size: 1.6rem;
+      font-weight: 500;
+    }
+
+    p {
+      color: #707070;
+      font-size: 1.2rem;
+    }
+  }
+
+  .notifications {
+    max-height: 90%;
+    overflow-y: auto;
+  }
+
+  .notification {
+    margin-bottom: 2rem;
+
+    h4 {
+      color: #222222;
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #707070;
+      font-size: 1.2rem;
+    }
+  }
 `;
 
 export const Server = styled.div`
@@ -172,29 +213,31 @@ export const UsageChart = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-
+  position: relative;
 
   .used-info {
     z-index: 99;
-    position: fixed;
     display: flex;
+    position: absolute;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 
-    h2 {
-      color: #222222;
-      font-size: 4rem;
-    }
-
     p {
       color: #222222;
-      font-size: 2.4rem;
+      font-size: 3rem;
+      font-weight: 500;
+    }
+
+    span {
+      color: #222222;
+      font-size: 1.8rem;
+      font-weight: 400;
     }
   }
 
   .chart {
-    position: relative;
+    position: absolute;
     flex: 1;
     height: 100%;
     width: 100%;
@@ -260,5 +303,26 @@ export const Groups = styled.div`
 `;
 
 export const Devices = styled.div`
+  height: 38.5rem;
+  width: 100%;
+  margin-top: 3.2rem;
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 15px #0000000D;
+  border-radius: 10px;
+  padding: 3rem 3.7rem;
+  display: flex;
+  flex-direction: column;
 
+  > h4 {
+    color: #222222;
+    font-size: 1.6rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+  }
+
+  > div {
+    flex: 1;
+    max-height: 100%;
+    width: 100%;
+  }
 `;
