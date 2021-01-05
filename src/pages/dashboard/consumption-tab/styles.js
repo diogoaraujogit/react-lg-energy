@@ -11,13 +11,159 @@ export const ShowAll = styled.div`
   justify-content: flex-end;
   margin-bottom: 1rem;
 
-  button {
+  > button {
     height: 4.5rem;
     width: 15rem;
     border: 1px solid #222222;
     border-radius: 5px;
     background-color: transparent;
   }
+`;
+
+export const ShowAllModal = styled.div`
+  height: 100%;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  .select-options {
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 2px 5px #0000000D;
+    height: 100%;
+    width: 30rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .total {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border-bottom: solid 1px #F1F1F1; 
+      padding: 3.7rem 0rem;
+      width: 90%;
+
+      p {
+        color: #B3B3B3;
+        font-size: 2.2rem;
+        margin-bottom: 2.9rem;
+      }
+
+      h3 {
+        color: #222222;
+        font-size: 2.5rem;
+        font-weight: 600;
+      }
+    }
+
+    > p {
+      color: #B3B3B3;
+      font-size: 1.6rem;
+      margin-top: 4rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .date {
+      border: 0.5px solid #B3B3B3;
+      border-radius: 5px;
+      width: 23rem;
+      height: 4rem;
+      display: flex;
+      align-items: center;
+    }
+
+    > button {
+      background: #222222 0% 0% no-repeat padding-box;
+      border: 0.5px solid #A1A1A1;
+      border-radius: 5px;
+      width: 22.9rem;
+      height: 5rem;
+      color: #FFFFFF;
+      margin-top: auto;
+      margin-bottom: 2.1rem;  
+    }
+
+    .MuiInputBase-input {
+      font-size: 1.6rem;
+      text-align: center;
+      font-weight: 500;
+      color: #222222;
+      width: 23rem;
+    }
+
+    .MuiInput-underline:hover:not(.Mui-disabled):before {
+      border: none;
+    }
+
+    .MuiInput-underline:before {
+      border: none;
+      transition: none;
+    }
+
+    .MuiInput-underline:after {
+      border: none;
+    }
+  }
+`;
+
+export const ConsumptionTable = styled.div`
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 2px 5px #0000000D;
+    height: 100%;
+    width: 86.8rem;
+    display: flex;
+    flex-direction: column;
+
+    .table-header {
+      display: grid;
+      grid-template-columns: 6fr 2fr 2fr 1fr;
+      padding: 3.1rem 4.3rem 2rem 2rem;
+      border-bottom: 1px solid #F8F8F8;
+
+      p {
+        color: #B3B3B3;
+        font-size: 1.6rem;
+      }
+    }
+
+    .table-body {
+      overflow-y: auto;
+      flex: 1;
+      max-height: 100%;
+    }
+
+    .month {
+      
+      display: grid;
+      grid-template-columns: 6fr 2fr 2fr 1fr;
+      padding: 0.5rem 4.3rem 0.5rem 2rem;
+      border-bottom: 1px solid #F8F8F8;
+      align-items: center;
+
+      p {
+        color: #222222;
+        font-size: 1.6rem;
+        font-weight: 500;
+      }
+      
+      svg {
+        font-size: 3rem;
+      }
+    }
+
+    .day {   
+      display: grid;
+      grid-template-columns: 6fr 2fr 2fr 1fr;
+      padding: 0.5rem 4.3rem 0.5rem 2rem;
+      align-items: center;
+
+      p {
+        color: #222222;
+        font-size: 1.4rem;
+        font-weight: 400;
+      }
+    }
 `;
 
 export const ConsumptionCards = styled.div`
