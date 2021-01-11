@@ -8,15 +8,13 @@ import { ThemeProvider } from '@material-ui/core/styles';
 export default function SwitchLabels(props) {
 
 
-    const disabled = props.disabled || false
+    const [disabled, setDisabled] = useState(false)
     const size = props.size || 'medium'
 
     const label = props.label
     const variable = props.variable
     const [checked, setChecked] = useState(variable)
     const func = props.func
-
-
 
     return (
         <ThemeProvider >
@@ -26,9 +24,9 @@ export default function SwitchLabels(props) {
                         <Switch
                             checked={checked}
                             onChange={(e) => {
-                                func && func(checked, setChecked)
+                                func && func(checked, setChecked, setDisabled)
                             }}
-                            value="checked"
+                            value={checked}
                             disabled={disabled}
                             color="primary"
                             size={size}

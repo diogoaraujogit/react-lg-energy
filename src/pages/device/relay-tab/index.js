@@ -6,6 +6,8 @@ import { MdLens } from 'react-icons/md';
 import BasicTimePicker from '../../../components/BasicTimePicker';
 import SwitchLabels from '../../../components/Switch'
 import Loading from '../../../components/Loading';
+import api_crud from '../../../services/api_crud'
+import { toast } from 'react-toastify';
 
 const RelayTab = () => {
 
@@ -19,6 +21,7 @@ const RelayTab = () => {
 
   const [onEdit, setOnEdit] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [relay, setRelay] = useState(false)
 
   const handleSave = () => {
 
@@ -26,6 +29,38 @@ const RelayTab = () => {
 
   const handleCancel = () => {
 
+  }
+
+  const handleSwitch = (checked, setChecked, setDisabled) => {
+
+    const body = {
+      idDevice: device.id,
+      action: checked? 'OFF' : 'ON'
+    }
+
+    switchDevice(body, checked, setChecked, setDisabled)
+
+  }
+
+  async function switchDevice(body, checked, setChecked, setDisabled) {
+
+    setDisabled(true)
+
+    try {
+
+      const response = await api_crud.post('/devices/relay', body)
+
+      if(response) {
+        toast.info('Response')
+        console.log(response)
+        checked? setChecked(false) : setChecked(true)
+      }
+
+    } catch(e) {
+      toast.error('Error')
+    }
+
+    setDisabled(false)
   }
 
   return (
@@ -61,7 +96,7 @@ const RelayTab = () => {
       
       <ManualRelay>
         <p>On/Off Manual Relay</p>
-        <SwitchLabels />
+        <SwitchLabels variable={relay} func={handleSwitch}  />
       </ManualRelay>
 
       <Body>

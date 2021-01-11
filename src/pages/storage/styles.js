@@ -12,6 +12,26 @@ export const Content = styled.div`
   padding: 2rem 5.6rem;
 `;
 
+export const LoadingArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+`;
+
+export const MessageArea = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 5rem;
+
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
 export const DiskUsage = styled.div`
   width: 30rem;
   height: 55.1rem;
@@ -71,11 +91,12 @@ export const UsageChart = styled.div`
   justify-content: center;
   margin-top: 6rem;
   margin-bottom: 5.2rem;
+  position: relative;
 
   .info {
     z-index: 99;
-    position: fixed;
     display: flex;
+    position: absolute;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -92,7 +113,7 @@ export const UsageChart = styled.div`
   }
 
   .chart {
-    position: relative;
+    position: absolute;
     flex: 1;
     height: 100%;
     width: 100%;
@@ -135,6 +156,10 @@ export const StorageList = styled.div`
     margin-bottom: 3rem;
   }
 
+  .table {
+    height: 100%;
+  }
+
   .table-header {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -145,6 +170,11 @@ export const StorageList = styled.div`
       font-size: 1.6rem;
 
     }
+  }
+
+  .table-body {
+    overflow-y: auto;
+    height: 80%;
   }
 
   .MuiTabs-root {
