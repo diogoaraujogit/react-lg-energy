@@ -1,49 +1,80 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
-import { MdArrowDropDown, MdKeyboardArrowDown, MdLens } from 'react-icons/md';
+import { MdArrowDropDown, MdKeyboardArrowDown, MdKeyboardArrowUp, MdLens } from 'react-icons/md';
 import BarChart from '../../../components/BarChart';
 import PieChart from '../../../components/PieChart';
 import Popup from 'reactjs-popup';
-
+import Loading from '../../../components/Loading'
 import BasicDatePicker from '../../../components/BasicDatePicker';
+import api_crud from "../../../services/api_crud"
+import api_server from "../../../services/api_server"
+import api_notifications from "../../../services/api_notifications"
+import api_analytics from "../../../services/api_analytics"
 
 import {
-  Container, ShowAll, ShowAllModal, ConsumptionTable, ConsumptionCards, DashboardHighlights, DashboardCharts, DashboardNotifications,
-  Server, UsageChart, Groups, Devices
+  Container, ShowAll, ShowAllModal, ConsumptionTable, ConsumptionCards,
+  DashboardHighlights, DashboardCharts, DashboardNotifications,
+  Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading, DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage, DevicesMessage, NotificationsMessage,
 } from './styles';
+import { toast } from 'react-toastify';
 
 const ConsumptionTab = () => {
-
-  
-  const [yearDate, setYearDate] = useState(new Date())
 
   const consumptionCards = [
     {
       date: 'Today',
       since: '00:00 AM',
       kWh: '32.526 kWh',
-      cost: 'R$ 35.492'
+      cost: 'R$ 35.492',
+      foreign: 'today'
     },
     {
       date: 'Week',
       since: 'Monday',
       kWh: '83.139 kWh',
-      cost: 'R$ 97.13'
+      cost: 'R$ 97.13',
+      foreign: 'weekly'
     },
     {
       date: 'Month',
       since: '01/12',
       kWh: '559.584 kWh',
-      cost: 'R$ 640.816'
+      cost: 'R$ 640.816',
+      foreign: 'monthly',
     },
     {
       date: 'Year',
       since: '01/01',
       kWh: '1.1802.04 kWh',
-      cost: 'R$ 13.401.133'
+      cost: 'R$ 13.401.133',
+      foreign: 'yearly'
     },
   ]
+
+
+  const [yearDate, setYearDate] = useState(new Date())
+  const [dropdown, setDropdown] = useState([])
+
+  const [cardsLoading, setCardsLoading] = useState(false)
+  const [cardsMessage, setCardsMessage] = useState('')
+  const [cardsData, setCardsData] = useState(consumptionCards)
+
+  const [serverLoading, setServerLoading] = useState(false)
+  const [serverMessage, setServerMessage] = useState('')
+  const [serverData, setServerData] = useState()
+  const [serverChart, setServerChart] = useState([])
+
+  const [groupsLoading, setGroupsLoading] = useState(false)
+  const [groupsMessage, setGroupsMessage] = useState('')
+  const [groupsData, setGroupsData] = useState()
+
+  const [notificationsLoading, setNotificationsLoading] = useState(false)
+  const [notificationsMessage, setNotificationsMessage] = useState('')
+
+  const [devicesLoading, setDevicesLoading] = useState(false)
+  const [devicesMessage, setDevicesMessage] = useState('')
+
 
   const data = [
     {
@@ -605,6 +636,181 @@ const ConsumptionTab = () => {
     "total": "532.01"
   }
 
+  async function getCards() {
+    setCardsLoading(true)
+    setCardsMessage('')
+
+    try {
+
+      const response = await api_analytics.get('/dashboard/consumption/resume')
+      console.log(response)
+      if (response.data) {
+        handleCards(response.data)
+
+      } else {
+        toast.error('Error trying to get consumption')
+        setCardsMessage('Error trying to get consumption')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get consumption')
+      console.log(e.response)
+      setCardsMessage('Error trying to get consumption 2')
+    }
+
+    setCardsLoading(false)
+  }
+
+  async function getServer() {
+    setServerLoading(true)
+    setServerMessage('')
+
+    try {
+
+      const response = await api_server.get('/disk')
+      console.log(response)
+      if (response.data) {
+        handleServer(response.data)
+        setServerData(response.data)
+      } else {
+        toast.error('Error trying to get consumption')
+        setServerMessage('Error trying to get consumption')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get consumption')
+      console.log(e.response)
+      setServerMessage('Error trying to get consumption 2')
+    }
+
+    setServerLoading(false)
+  }
+
+  async function getServer() {
+    setServerLoading(true)
+    setServerMessage('')
+
+    try {
+
+      const response = await api_server.get('/disk')
+      console.log(response)
+      if (response.data) {
+        handleServer(response.data)
+        setServerData(response.data)
+      } else {
+        toast.error('Error trying to get consumption')
+        setServerMessage('Error trying to get consumption')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get consumption')
+      console.log(e.response)
+      setServerMessage('Error trying to get consumption 2')
+    }
+
+    setServerLoading(false)
+  }
+
+  async function getGroups() {
+    setGroupsLoading(true)
+    setGroupsMessage('')
+
+    try {
+
+      const response = await api_crud.get('/groups')
+      
+      if (response.data) {
+        handleGroups(response.data)
+      } else {
+        toast.error('Error trying to get consumption')
+        setGroupsMessage('Error trying to get consumption')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get consumption')
+      console.log(e.response)
+      setGroupsMessage('Error trying to get consumption 2')
+    }
+
+    setGroupsLoading(false)
+  }
+
+  const handleCards = (data) => {
+
+    const newCards = consumptionCards.map(card => {
+      const item = data[card.foreign]
+      const value = item[0]?.total
+      card.kWh = value
+      card.cost = (value*1.06).toFixed(2)
+      return card
+    })
+
+    setCardsData(newCards)
+  }
+
+  const handleServer = (data) => {
+    
+    const used = data?.used?.slice(0, -3) || 0
+    const free = data?.free?.slice(0, -3) || 0
+
+    const chartData = [
+      {
+        "id": "used",
+        "label": "used",
+        "value": used,
+      },
+      {
+        "id": "free",
+        "label": "free",
+        "value": free,
+      }
+    ]
+
+    setServerChart(chartData)
+  }
+
+  const handleGroups = (data) => {
+    let subgroups = 0
+    let devices = 0
+    let groups = 0
+
+    data.map(group => {
+      groups = groups + 1
+      devices = devices + group.totalDevices
+      subgroups = subgroups + group.totalSubgroups
+    })
+
+    const newData = {
+      groups,
+      devices,
+      subgroups
+    }
+
+    console.log('------------>>>')
+    console.log(newData)
+    setGroupsData(newData)
+  }
+
+  const handleDropdown = (monthName) => {
+
+    if (dropdown.includes(monthName)) {
+      const newDropdown = dropdown.filter(month => month !== monthName)
+      setDropdown(newDropdown)
+    } else {
+      setDropdown([...dropdown, monthName])
+    }
+
+  }
+
+  useEffect(() => {
+    getCards()
+    getServer()
+    getGroups()
+  }, [])
+
+  console.log('=======>>')
+  console.log(groupsData)
+
   return (
     <Container>
       <ShowAll>
@@ -654,40 +860,46 @@ const ConsumptionTab = () => {
                           const days = month.days
                           const monthName = month.monthname
                           const total = month.total
-                          const cost = (month.total*1.06).toFixed(2)
+                          const cost = (month.total * 1.06).toFixed(2)
+                          const drop = dropdown.includes(monthName)
 
                           return (
                             <div>
-                              <div className='month'>
+                              <div className='month' onClick={() => handleDropdown(monthName)}>
                                 <p>{monthName}</p>
                                 <p>{total}</p>
                                 <p>{cost}</p>
                                 <div>
-                                  <MdKeyboardArrowDown />
+                                  {
+                                    drop ?
+                                      <MdKeyboardArrowUp />
+                                      :
+                                      <MdKeyboardArrowDown />
+                                  }
                                 </div>
                               </div>
                               {
-                                true?
-                                <div className='month-details'>
-                                  {
-                                    days.map(day => {
-                                      const date = day.date
-                                      const total = day.value
-                                      const cost = (total*1.06).toFixed(2)
+                                drop ?
+                                  <div className='month-details'>
+                                    {
+                                      days.map(day => {
+                                        const date = day.date
+                                        const total = day.value
+                                        const cost = (total * 1.06).toFixed(2)
 
-                                      return (
-                                        <div className='day'>
-                                          <p>{date}</p>
-                                          <p>{total}</p>
-                                          <p>{cost}</p>
-                                          <div></div>
-                                        </div>
-                                      )
-                                    })
-                                  }
-                                </div>
-                                :
-                                <></>
+                                        return (
+                                          <div className='day'>
+                                            <p>{date}</p>
+                                            <p>{total}</p>
+                                            <p>{cost}</p>
+                                            <div></div>
+                                          </div>
+                                        )
+                                      })
+                                    }
+                                  </div>
+                                  :
+                                  <></>
                               }
                             </div>
                           )
@@ -702,113 +914,172 @@ const ConsumptionTab = () => {
         </Popup>
 
       </ShowAll>
-      <ConsumptionCards>
-        {
-          consumptionCards.map(data => {
+      {
+        cardsLoading ?
+          <CardsLoading>
+            <Loading />
+          </CardsLoading>
+          :
+          cardsMessage ?
+            <CardsMessage>
+              {cardsMessage}
+            </CardsMessage>
+            :
+            <ConsumptionCards>
+              {
+                cardsData.map(data => {
 
-            const date = data.date
-            const since = data.since
-            const consumption = data.kWh
-            const cost = data.cost
+                  const date = data.date
+                  const since = data.since
+                  const consumption = data.kWh
+                  const cost = data.cost
 
-            return (
-              <div>
-                <div className='header'>
-                  <p>{date}</p>
-                  <span>{since}</span>
-                </div>
-                <div className='values'>
-                  <h3>{consumption}</h3>
-                  <h4>{cost}</h4>
-                </div>
-              </div>
-            )
-          })
-        }
-      </ConsumptionCards>
+                  return (
+                    <div>
+                      <div className='header'>
+                        <p>{date}</p>
+                        <span>{since}</span>
+                      </div>
+                      <div className='values'>
+                        <h3>{`${consumption} kWh`}</h3>
+                        <h4>{`R$ ${cost}`}</h4>
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </ConsumptionCards>
+      }
       <DashboardHighlights>
         <DashboardCharts>
           <div>
-            <Server>
-              <h4>Server</h4>
-              <h3>DISK USAGE</h3>
-              <div className='data'>
-                <div className='legend'>
-                  <div>
-                    <MdLens style={{ color: '#E1E1E1' }} />
-                    <p>Free</p>
-                  </div>
-                  <div>
-                    <MdLens style={{ color: '#C5004F' }} />
-                    <p>Used space</p>
-                  </div>
-                </div>
-                <UsageChart>
-                  <div className='used-info'>
-                    <p>50%</p>
-                    <span>Used Space</span>
-                  </div>
-                  <div className='chart'>
-                    <PieChart data={data} />
-                  </div>
-                </UsageChart>
-              </div>
-              <div className='info'>
-                <p>Available: 500GB</p>
-                <p>Used Space: 250GB</p>
-              </div>
-            </Server>
-            <Groups>
-              <h4>Groups</h4>
-              <h3>Total of devices registered</h3>
-              <h2>588</h2>
-              <div>
-                <div className='groups'>
-                  <p>038</p>
-                  <span>Groups</span>
-                </div>
-                <div className='subgroups'>
-                  <p>012</p>
-                  <span>Subgroups</span>
-                </div>
-              </div>
-            </Groups>
-          </div>
-          <Devices>
-            <h4>Devices</h4>
-            <div>
-              <BarChart
-                data={barData}
-                keys={'value'}
-                indexBy='date'
-                xLegend=''
-                yLegend=''
-                minValue={0}
-                dashboard={true}
-              />
-            </div>
-          </Devices>
-
-        </DashboardCharts>
-        <DashboardNotifications>
-          <div className='notifications-header'>
-            <h3>Notifications</h3>
-            <p>97 notifications</p>
-          </div>
-          <div className='notifications'>
             {
-              notifications.map(notification => {
-
-                return (
-                  <div className='notification'>
-                    <h4>{notification.title}</h4>
-                    <p>{notification.message}</p>
-                  </div>
-                )
-              })
+              serverLoading ?
+                <ServerLoading>
+                  <Loading />
+                </ServerLoading>
+                :
+                serverMessage ?
+                  <ServerMessage>
+                    {serverMessage}
+                  </ServerMessage>
+                  :
+                  <Server>
+                    <h4>Server</h4>
+                    <h3>DISK USAGE</h3>
+                    <div className='data'>
+                      <div className='legend'>
+                        <div>
+                          <MdLens style={{ color: '#E1E1E1' }} />
+                          <p>Free</p>
+                        </div>
+                        <div>
+                          <MdLens style={{ color: '#C5004F' }} />
+                          <p>Used space</p>
+                        </div>
+                      </div>
+                      <UsageChart>
+                        <div className='used-info'>
+                          <p>{`${serverData?.percentageUsed || '-'}%`}</p>
+                          <span>Used Space</span>
+                        </div>
+                        <div className='chart'>
+                          <PieChart data={serverChart} />
+                        </div>
+                      </UsageChart>
+                    </div>
+                    <div className='info'>
+                      <p>{`Available: ${serverData?.free || '-'}`}</p>
+                      <p>{`Used Space: ${serverData?.used || '-'}`}</p>
+                    </div>
+                  </Server>
+            }
+            {
+              groupsLoading ?
+                <GroupsLoading>
+                  <Loading />
+                </GroupsLoading>
+                :
+                groupsMessage ?
+                  <GroupsMessage>
+                    {groupsMessage}
+                  </GroupsMessage>
+                  :
+                  <Groups>
+                    <h4>Groups</h4>
+                    <h3>Total of devices registered</h3>
+                    <h2>{groupsData?.devices}</h2>
+                    <div>
+                      <div className='groups'>
+                        <p>{groupsData?.groups}</p>
+                        <span>Groups</span>
+                      </div>
+                      <div className='subgroups'>
+                        <p>{groupsData?.subgroups}</p>
+                        <span>Subgroups</span>
+                      </div>
+                    </div>
+                  </Groups>
             }
           </div>
-        </DashboardNotifications>
+          {
+            devicesLoading ?
+              <DevicesLoading>
+                <Loading />
+              </DevicesLoading>
+              :
+              devicesMessage ?
+                <DevicesMessage>
+                  {devicesMessage}
+                </DevicesMessage>
+                :
+                <Devices>
+                  <h4>Devices</h4>
+                  <div>
+                    <BarChart
+                      data={barData}
+                      keys={'value'}
+                      indexBy='date'
+                      xLegend=''
+                      yLegend=''
+                      minValue={0}
+                      dashboard={true}
+                    />
+                  </div>
+                </Devices>
+          }
+        </DashboardCharts>
+        {
+          notificationsLoading ?
+            <NotificationsLoading>
+              <Loading />
+            </NotificationsLoading>
+            :
+            notificationsMessage ?
+              <NotificationsMessage>
+                {notificationsMessage}
+              </NotificationsMessage>
+              :
+              <DashboardNotifications>
+                <div className='notifications-header'>
+                  <h3>Notifications</h3>
+                  <p>97 notifications</p>
+                </div>
+                <div className='notifications'>
+                  {
+                    notifications.map(notification => {
+
+                      return (
+                        <div className='notification'>
+                          <h4>{notification.title}</h4>
+                          <p>{notification.message}</p>
+                        </div>
+                      )
+                    })
+                  }
+                </div>
+              </DashboardNotifications>
+        }
       </DashboardHighlights>
     </Container>
   );

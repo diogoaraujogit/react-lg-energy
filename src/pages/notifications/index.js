@@ -5,7 +5,7 @@ import CheckboxLabels from '../../components/Checkbox';
 
 import { Container, LoadingArea, MessageArea, Content, Header, SingleNotification, Notification, Body, Footer } from './styles';
 import { MdDelete } from 'react-icons/md';
-import api_notifications from '../../services/api_logs copy';
+import api_notifications from '../../services/api_notifications';
 import { toast } from 'react-toastify';
 import { addHours, format, parseISO } from 'date-fns';
 import Loading from '../../components/Loading';

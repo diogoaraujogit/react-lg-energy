@@ -6,6 +6,7 @@ export const Container = styled.div`
   padding: 0rem 6rem;
 `;
 
+
 export const ShowAll = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -17,6 +18,14 @@ export const ShowAll = styled.div`
     border: 1px solid #222222;
     border-radius: 5px;
     background-color: transparent;
+    transition: all 0.2s;
+    transition-property: background color;
+
+
+    &:hover {
+      background-color: #222222;
+      color: #ffffff
+    }
   }
 `;
 
@@ -166,6 +175,27 @@ export const ConsumptionTable = styled.div`
     }
 `;
 
+export const CardsMessage = styled.div`
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+export const CardsLoading = styled.div`
+  width: 100%;
+  height: 10rem;
+  margin-bottom: 3.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const ConsumptionCards = styled.div`
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -230,6 +260,30 @@ export const DashboardCharts = styled.div`
   }
 `;
 
+
+export const NotificationsMessage = styled.div`
+  margin-left: 2rem;
+  padding: 1.5rem 2.7rem;
+  height: 79.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const NotificationsLoading = styled.div`
+  margin-left: 2rem;
+  padding: 1.5rem 2.7rem;
+  height: 79.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+
 export const DashboardNotifications = styled.div`
   background: #FFFFFF 0% 0% no-repeat padding-box;
   box-shadow: 0px 2px 15px #0000000D;
@@ -276,6 +330,32 @@ export const DashboardNotifications = styled.div`
     }
   }
 `;
+
+
+export const ServerMessage = styled.div`
+  width: 37.5rem;
+  height: 37.9rem;
+  margin-right: 3rem;
+  padding: 1.5rem 2.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const ServerLoading = styled.div`
+  width: 37.5rem;
+  height: 37.9rem;
+  margin-right: 3rem;
+  padding: 1.5rem 2.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 
 export const Server = styled.div`
   width: 37.5rem;
@@ -394,6 +474,27 @@ export const UsageChart = styled.div`
 
 `;
 
+export const GroupsMessage = styled.div`
+  flex: 1;
+  padding: 1.5rem 2.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const GroupsLoading = styled.div`
+  flex: 1;
+  padding: 1.5rem 2.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+
 export const Groups = styled.div`
   flex: 1;
   background: #FFFFFF 0% 0% no-repeat padding-box;
@@ -437,6 +538,7 @@ export const Groups = styled.div`
         color: #222222;
         font-size: 2.4rem;
         font-weight: 500;
+        text-align: center;
       }
 
       span {
@@ -447,6 +549,32 @@ export const Groups = styled.div`
   }
 
 `;
+
+
+export const DevicesMessage = styled.div`
+  height: 38.5rem;
+  width: 100%;
+  margin-top: 3.2rem;
+  padding: 3rem 3.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const DevicesLoading = styled.div`
+  height: 38.5rem;
+  width: 100%;
+  margin-top: 3.2rem;
+  padding: 3rem 3.7rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 
 export const Devices = styled.div`
   height: 38.5rem;
