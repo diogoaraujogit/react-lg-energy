@@ -193,6 +193,22 @@ export const ManualRelay = styled.div`
     margin-right: 2rem;
     color: #707070;
   }
+
+  button {
+
+    width: 5rem;
+    height: 2rem;
+    border: none;
+    border-radius: 5px;
+    background-color: green;
+    color: #ffffff;
+
+    &:last-child {
+      margin-right: 2rem;
+      margin-left: 2rem;
+      background-color: red;
+    }
+  }
 `;
 
 export const Body = styled.div`

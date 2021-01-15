@@ -21,44 +21,12 @@ import { toast } from 'react-toastify';
 
 const ConsumptionTab = () => {
 
-  const consumptionCards = [
-    {
-      date: 'Today',
-      since: '00:00 AM',
-      kWh: '32.526 kWh',
-      cost: 'R$ 35.492',
-      foreign: 'today'
-    },
-    {
-      date: 'Week',
-      since: 'Monday',
-      kWh: '83.139 kWh',
-      cost: 'R$ 97.13',
-      foreign: 'weekly'
-    },
-    {
-      date: 'Month',
-      since: '01/12',
-      kWh: '559.584 kWh',
-      cost: 'R$ 640.816',
-      foreign: 'monthly',
-    },
-    {
-      date: 'Year',
-      since: '01/01',
-      kWh: '1.1802.04 kWh',
-      cost: 'R$ 13.401.133',
-      foreign: 'yearly'
-    },
-  ]
-
-
   const [yearDate, setYearDate] = useState(new Date())
   const [dropdown, setDropdown] = useState([])
 
   const [cardsLoading, setCardsLoading] = useState(false)
   const [cardsMessage, setCardsMessage] = useState('')
-  const [cardsData, setCardsData] = useState(consumptionCards)
+  const [cardsData, setCardsData] = useState([])
 
   const [serverLoading, setServerLoading] = useState(false)
   const [serverMessage, setServerMessage] = useState('')
@@ -71,104 +39,11 @@ const ConsumptionTab = () => {
 
   const [notificationsLoading, setNotificationsLoading] = useState(false)
   const [notificationsMessage, setNotificationsMessage] = useState('')
+  const [notificationsData, setNotificationsData] = useState([])
 
   const [devicesLoading, setDevicesLoading] = useState(false)
   const [devicesMessage, setDevicesMessage] = useState('')
 
-
-  const data = [
-    {
-      "id": "used",
-      "label": "used",
-      "value": 50,
-    },
-    {
-      "id": "free",
-      "label": "free",
-      "value": 50,
-    }
-  ]
-
-
-  const notifications = [
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-    {
-      title: 'Notification',
-      message: `
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus quis 
-      enim auctor, gravida sapien et, pulvinar dolor. Morbi nulla augue.`,
-
-    },
-  ]
 
   const barData = [
     {
@@ -686,30 +561,6 @@ const ConsumptionTab = () => {
     setServerLoading(false)
   }
 
-  async function getServer() {
-    setServerLoading(true)
-    setServerMessage('')
-
-    try {
-
-      const response = await api_server.get('/disk')
-      console.log(response)
-      if (response.data) {
-        handleServer(response.data)
-        setServerData(response.data)
-      } else {
-        toast.error('Error trying to get consumption')
-        setServerMessage('Error trying to get consumption')
-      }
-
-    } catch (e) {
-      toast.error('Error trying to get consumption')
-      console.log(e.response)
-      setServerMessage('Error trying to get consumption 2')
-    }
-
-    setServerLoading(false)
-  }
 
   async function getGroups() {
     setGroupsLoading(true)
@@ -735,7 +586,64 @@ const ConsumptionTab = () => {
     setGroupsLoading(false)
   }
 
+  async function getNotifications() {
+    setNotificationsLoading(true)
+    setNotificationsMessage('')
+
+    try {
+
+      const response = await api_notifications.get('?skip=0&take=10')
+      console.log(response)
+      if (response.data) {
+        setNotificationsData(response.data)
+        
+      } else {
+        toast.error('Error trying to get consumption')
+        setNotificationsMessage('Error trying to get consumption')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get consumption')
+      console.log(e.response)
+      setNotificationsMessage('Error trying to get consumption 2')
+    }
+
+    setNotificationsLoading(false)
+  }
+
   const handleCards = (data) => {
+
+    const consumptionCards = [
+      {
+        date: 'Today',
+        since: '00:00 AM',
+        kWh: '32.526 kWh',
+        cost: 'R$ 35.492',
+        foreign: 'today'
+      },
+      {
+        date: 'Week',
+        since: 'Monday',
+        kWh: '83.139 kWh',
+        cost: 'R$ 97.13',
+        foreign: 'weekly'
+      },
+      {
+        date: 'Month',
+        since: '01/12',
+        kWh: '559.584 kWh',
+        cost: 'R$ 640.816',
+        foreign: 'monthly',
+      },
+      {
+        date: 'Year',
+        since: '01/01',
+        kWh: '1.1802.04 kWh',
+        cost: 'R$ 13.401.133',
+        foreign: 'yearly'
+      },
+    ]
+  
 
     const newCards = consumptionCards.map(card => {
       const item = data[card.foreign]
@@ -791,6 +699,7 @@ const ConsumptionTab = () => {
     setGroupsData(newData)
   }
 
+
   const handleDropdown = (monthName) => {
 
     if (dropdown.includes(monthName)) {
@@ -806,6 +715,7 @@ const ConsumptionTab = () => {
     getCards()
     getServer()
     getGroups()
+    getNotifications()
   }, [])
 
   console.log('=======>>')
@@ -1063,16 +973,16 @@ const ConsumptionTab = () => {
               <DashboardNotifications>
                 <div className='notifications-header'>
                   <h3>Notifications</h3>
-                  <p>97 notifications</p>
+                  <p>{`${notificationsData.total} notifications`}</p>
                 </div>
                 <div className='notifications'>
                   {
-                    notifications.map(notification => {
+                    notificationsData?.result?.map(notification => {
 
                       return (
                         <div className='notification'>
                           <h4>{notification.title}</h4>
-                          <p>{notification.message}</p>
+                          <p>{notification.description}</p>
                         </div>
                       )
                     })

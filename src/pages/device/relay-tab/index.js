@@ -31,20 +31,20 @@ const RelayTab = () => {
 
   }
 
-  const handleSwitch = (checked, setChecked, setDisabled) => {
+  const handleSwitch = (value) => {
 
     const body = {
       idDevice: device.id,
-      action: checked? 'OFF' : 'ON'
+      action: value? 'ON' : 'OFF'
     }
 
-    switchDevice(body, checked, setChecked, setDisabled)
+    switchDevice(body)
 
   }
 
   async function switchDevice(body, checked, setChecked, setDisabled) {
 
-    setDisabled(true)
+    // setDisabled(true)
 
     try {
 
@@ -53,14 +53,14 @@ const RelayTab = () => {
       if(response) {
         toast.info('Response')
         console.log(response)
-        checked? setChecked(false) : setChecked(true)
+        // checked? setChecked(false) : setChecked(true)
       }
 
     } catch(e) {
       toast.error('Error')
     }
 
-    setDisabled(false)
+    // setDisabled(false)
   }
 
   return (
@@ -96,7 +96,9 @@ const RelayTab = () => {
       
       <ManualRelay>
         <p>On/Off Manual Relay</p>
-        <SwitchLabels variable={relay} func={handleSwitch}  />
+        <button onClick={() => handleSwitch(true)}>ON</button>
+        <button onClick={() => handleSwitch(false)}>OFF</button>
+        {/* <SwitchLabels variable={relay} func={handleSwitch} disabled={!device?.isRelayEnabled}  /> */}
       </ManualRelay>
 
       <Body>

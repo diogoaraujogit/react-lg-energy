@@ -8,7 +8,7 @@ import { ThemeProvider } from '@material-ui/core/styles';
 export default function SwitchLabels(props) {
 
 
-    const [disabled, setDisabled] = useState(false)
+    const [disabled, setDisabled] = useState(props.disabled || false)
     const size = props.size || 'medium'
 
     const label = props.label
