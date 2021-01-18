@@ -11,7 +11,6 @@ const BarChart = ({ data, keys, indexBy, xLegend, yLegend, maxValue, minValue, s
   const colors = {1: '#222222', 2: '#630028', 3: '#C5004F', 4: '#707070', 5: '#B3B3B3', 6: '#E6E6E6', 7: '#F8F8F8'}
   const getColor = bar => {
 
-    console.log(bar)
     return colors[bar.data.id]
   }
 

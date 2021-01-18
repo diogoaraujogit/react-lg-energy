@@ -15,7 +15,9 @@ import api_analytics from "../../../services/api_analytics"
 import {
   Container, ShowAll, ShowAllModal, ConsumptionTable, ConsumptionCards,
   DashboardHighlights, DashboardCharts, DashboardNotifications,
-  Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading, DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage, DevicesMessage, NotificationsMessage,
+  Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading, 
+  DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage, 
+  DevicesMessage, NotificationsMessage, DetailsLoading, DetailsMessage
 } from './styles';
 import { toast } from 'react-toastify';
 
@@ -23,6 +25,11 @@ const ConsumptionTab = () => {
 
   const [yearDate, setYearDate] = useState(new Date())
   const [dropdown, setDropdown] = useState([])
+
+
+  const [detailsLoading, setDetailsLoading] = useState(true)
+  const [detailsMessage, setDetailsMessage] = useState('')
+  const [detailsData, setDetailsData] = useState({})
 
   const [cardsLoading, setCardsLoading] = useState(false)
   const [cardsMessage, setCardsMessage] = useState('')
@@ -85,431 +92,7 @@ const ConsumptionTab = () => {
     },
   ]
 
-  const details = {
-    "data": [
-      {
-        "total": "165.94",
-        "date": "23/09/2020",
-        "monthname": "September",
-        "year": 2020,
-        "days": [
-          {
-            "value": "82.40",
-            "date": "23/09/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "24/09/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "25/09/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "26/09/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "27/09/2020"
-          },
-          {
-            "value": "10.67",
-            "date": "28/09/2020"
-          },
-          {
-            "value": "36.57",
-            "date": "29/09/2020"
-          },
-          {
-            "value": "34.80",
-            "date": "30/09/2020"
-          }
-        ]
-      },
-      {
-        "total": "342.41",
-        "date": "01/10/2020",
-        "monthname": "October",
-        "year": 2020,
-        "days": [
-          {
-            "value": "112.35",
-            "date": "01/10/2020"
-          },
-          {
-            "value": "35.18",
-            "date": "02/10/2020"
-          },
-          {
-            "value": "35.96",
-            "date": "03/10/2020"
-          },
-          {
-            "value": "36.15",
-            "date": "04/10/2020"
-          },
-          {
-            "value": "34.20",
-            "date": "05/10/2020"
-          },
-          {
-            "value": "35.57",
-            "date": "06/10/2020"
-          },
-          {
-            "value": "36.14",
-            "date": "07/10/2020"
-          },
-          {
-            "value": "8.63",
-            "date": "08/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "09/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "10/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "11/10/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "12/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "13/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "14/10/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "15/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "16/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "17/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "19/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "20/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "21/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "22/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "23/10/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "24/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "25/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "26/10/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "27/10/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "28/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "29/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "30/10/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "31/10/2020"
-          }
-        ]
-      },
-      {
-        "total": "11.67",
-        "date": "01/11/2020",
-        "monthname": "November",
-        "year": 2020,
-        "days": [
-          {
-            "value": "0.76",
-            "date": "01/11/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "02/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "03/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "04/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "05/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "06/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "07/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "08/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "09/11/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "10/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "11/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "12/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "13/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "14/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "15/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "16/11/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "17/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "18/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "19/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "20/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "21/11/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "22/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "23/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "24/11/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "25/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "26/11/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "27/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "28/11/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "29/11/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "30/11/2020"
-          }
-        ]
-      },
-      {
-        "total": "11.99",
-        "date": "01/12/2020",
-        "monthname": "December",
-        "year": 2020,
-        "days": [
-          {
-            "value": "0.76",
-            "date": "01/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "02/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "03/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "04/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "05/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "06/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "07/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "08/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "09/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "10/12/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "11/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "12/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "13/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "14/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "15/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "16/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "17/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "18/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "19/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "20/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "21/12/2020"
-          },
-          {
-            "value": "0.38",
-            "date": "22/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "23/12/2020"
-          },
-          {
-            "value": "0.37",
-            "date": "24/12/2020"
-          },
-          {
-            "value": "0.39",
-            "date": "25/12/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "26/12/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "27/12/2020"
-          },
-          {
-            "value": "0.36",
-            "date": "28/12/2020"
-          },
-          {
-            "value": "1.11",
-            "date": "30/12/2020"
-          }
-        ]
-      }
-    ],
-    "total": "532.01"
-  }
+
 
   async function getCards() {
     setCardsLoading(true)
@@ -518,7 +101,7 @@ const ConsumptionTab = () => {
     try {
 
       const response = await api_analytics.get('/dashboard/consumption/resume')
-      console.log(response)
+
       if (response.data) {
         handleCards(response.data)
 
@@ -529,7 +112,7 @@ const ConsumptionTab = () => {
 
     } catch (e) {
       toast.error('Error trying to get consumption')
-      console.log(e.response)
+
       setCardsMessage('Error trying to get consumption 2')
     }
 
@@ -543,7 +126,7 @@ const ConsumptionTab = () => {
     try {
 
       const response = await api_server.get('/disk')
-      console.log(response)
+
       if (response.data) {
         handleServer(response.data)
         setServerData(response.data)
@@ -554,7 +137,7 @@ const ConsumptionTab = () => {
 
     } catch (e) {
       toast.error('Error trying to get consumption')
-      console.log(e.response)
+
       setServerMessage('Error trying to get consumption 2')
     }
 
@@ -569,7 +152,7 @@ const ConsumptionTab = () => {
     try {
 
       const response = await api_crud.get('/groups')
-      
+
       if (response.data) {
         handleGroups(response.data)
       } else {
@@ -579,7 +162,7 @@ const ConsumptionTab = () => {
 
     } catch (e) {
       toast.error('Error trying to get consumption')
-      console.log(e.response)
+
       setGroupsMessage('Error trying to get consumption 2')
     }
 
@@ -593,10 +176,10 @@ const ConsumptionTab = () => {
     try {
 
       const response = await api_notifications.get('?skip=0&take=10')
-      console.log(response)
+
       if (response.data) {
         setNotificationsData(response.data)
-        
+
       } else {
         toast.error('Error trying to get consumption')
         setNotificationsMessage('Error trying to get consumption')
@@ -604,11 +187,35 @@ const ConsumptionTab = () => {
 
     } catch (e) {
       toast.error('Error trying to get consumption')
-      console.log(e.response)
+
       setNotificationsMessage('Error trying to get consumption 2')
     }
 
     setNotificationsLoading(false)
+  }
+
+  async function getDetails(query) {
+    setDetailsLoading(true)
+    setDetailsMessage('')
+
+    try {
+
+      const response = await api_analytics.get(`/dashboard/consumption/details?${query}`)
+
+      if (response.data) {
+        setDetailsData(response.data)
+
+      } else {
+        toast.error('Error trying to get details')
+        setDetailsMessage('Error trying to get details')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get details')
+      setDetailsMessage('Error trying to get consumption 2')
+    }
+
+    setDetailsLoading(false)
   }
 
   const handleCards = (data) => {
@@ -643,13 +250,13 @@ const ConsumptionTab = () => {
         foreign: 'yearly'
       },
     ]
-  
+
 
     const newCards = consumptionCards.map(card => {
       const item = data[card.foreign]
       const value = item[0]?.total
       card.kWh = value
-      card.cost = (value*1.06).toFixed(2)
+      card.cost = (value * 1.06).toFixed(2)
       return card
     })
 
@@ -657,7 +264,7 @@ const ConsumptionTab = () => {
   }
 
   const handleServer = (data) => {
-    
+
     const used = data?.used?.slice(0, -3) || 0
     const free = data?.free?.slice(0, -3) || 0
 
@@ -694,8 +301,6 @@ const ConsumptionTab = () => {
       subgroups
     }
 
-    console.log('------------>>>')
-    console.log(newData)
     setGroupsData(newData)
   }
 
@@ -711,6 +316,14 @@ const ConsumptionTab = () => {
 
   }
 
+  const handleDetails = () => {
+    const year = yearDate.getFullYear()
+
+    const query = `startDate=01/${year}&endDate=12/${year}`
+
+    getDetails(query)
+  }
+
   useEffect(() => {
     getCards()
     getServer()
@@ -718,8 +331,10 @@ const ConsumptionTab = () => {
     getNotifications()
   }, [])
 
-  console.log('=======>>')
-  console.log(groupsData)
+  useEffect(() => {
+    handleDetails()
+
+  }, [yearDate])
 
   return (
     <Container>
@@ -739,7 +354,7 @@ const ConsumptionTab = () => {
           {
             close => {
 
-              const yearTotal = details?.total || '-'
+              const yearTotal = detailsData?.total || '-'
 
               return (
                 <ShowAllModal>
@@ -756,67 +371,80 @@ const ConsumptionTab = () => {
                       SEARCH
                     </button>
                   </div>
-                  <ConsumptionTable>
-                    <div className='table-header'>
-                      <p>Date</p>
-                      <p>kWh</p>
-                      <p>Cost</p>
-                      <div></div>
-                    </div>
-                    <div className='table-body'>
-                      {
-                        details.data.map(month => {
 
-                          const days = month.days
-                          const monthName = month.monthname
-                          const total = month.total
-                          const cost = (month.total * 1.06).toFixed(2)
-                          const drop = dropdown.includes(monthName)
+                  {
+                    detailsLoading ?
+                      <DetailsLoading>
+                        <Loading />
+                      </DetailsLoading>
+                      :
+                      detailsMessage ?
+                        <DetailsMessage>
+                          {detailsMessage}
+                        </DetailsMessage>
+                        :
+                        <ConsumptionTable>
+                          <div className='table-header'>
+                            <p>Date</p>
+                            <p>kWh</p>
+                            <p>Cost</p>
+                            <div></div>
+                          </div>
+                          <div className='table-body'>
+                            {
+                              detailsData?.data?.map(month => {
 
-                          return (
-                            <div>
-                              <div className='month' onClick={() => handleDropdown(monthName)}>
-                                <p>{monthName}</p>
-                                <p>{total}</p>
-                                <p>{cost}</p>
-                                <div>
-                                  {
-                                    drop ?
-                                      <MdKeyboardArrowUp />
-                                      :
-                                      <MdKeyboardArrowDown />
-                                  }
-                                </div>
-                              </div>
-                              {
-                                drop ?
-                                  <div className='month-details'>
+                                const days = month.days
+                                const monthName = month.monthname
+                                const total = month.total
+                                const cost = (month.total * 1.06).toFixed(2)
+                                const drop = dropdown.includes(monthName)
+
+                                return (
+                                  <div>
+                                    <div className='month' onClick={() => handleDropdown(monthName)}>
+                                      <p>{monthName}</p>
+                                      <p>{total}</p>
+                                      <p>{cost}</p>
+                                      <div>
+                                        {
+                                          drop ?
+                                            <MdKeyboardArrowUp />
+                                            :
+                                            <MdKeyboardArrowDown />
+                                        }
+                                      </div>
+                                    </div>
                                     {
-                                      days.map(day => {
-                                        const date = day.date
-                                        const total = day.value
-                                        const cost = (total * 1.06).toFixed(2)
+                                      drop ?
+                                        <div className='month-details'>
+                                          {
+                                            days.map(day => {
+                                              const date = day.date
+                                              const total = day.value
+                                              const cost = (total * 1.06).toFixed(2)
 
-                                        return (
-                                          <div className='day'>
-                                            <p>{date}</p>
-                                            <p>{total}</p>
-                                            <p>{cost}</p>
-                                            <div></div>
-                                          </div>
-                                        )
-                                      })
+                                              return (
+                                                <div className='day'>
+                                                  <p>{date}</p>
+                                                  <p>{total}</p>
+                                                  <p>{cost}</p>
+                                                  <div></div>
+                                                </div>
+                                              )
+                                            })
+                                          }
+                                        </div>
+                                        :
+                                        <></>
                                     }
                                   </div>
-                                  :
-                                  <></>
-                              }
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
-                  </ConsumptionTable>
+                                )
+                              })
+                            }
+                          </div>
+                        </ConsumptionTable>
+                  }
                 </ShowAllModal>
               )
             }

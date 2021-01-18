@@ -116,6 +116,32 @@ export const ShowAllModal = styled.div`
   }
 `;
 
+
+export const DetailsMessage = styled.div`
+  background: #FFFFFF 0% 0% no-repeat padding-box;
+  box-shadow: 0px 2px 5px #0000000D;
+  height: 100%;
+  width: 86.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #707070;
+  font-size: 2rem;
+  font-weight: 600;
+`;
+
+
+export const DetailsLoading = styled.div`
+    background: #FFFFFF 0% 0% no-repeat padding-box;
+    box-shadow: 0px 2px 5px #0000000D;
+    height: 100%;
+    width: 86.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+
 export const ConsumptionTable = styled.div`
     background: #FFFFFF 0% 0% no-repeat padding-box;
     box-shadow: 0px 2px 5px #0000000D;
