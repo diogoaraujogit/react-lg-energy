@@ -169,12 +169,17 @@ export const ConsumptionTable = styled.div`
     }
 
     .month {
-      
+      cursor: pointer;
       display: grid;
       grid-template-columns: 6fr 2fr 2fr 1fr;
       padding: 0.5rem 4.3rem 0.5rem 2rem;
       border-bottom: 1px solid #F8F8F8;
       align-items: center;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: #f2f2f2
+      }
 
       p {
         color: #222222;
