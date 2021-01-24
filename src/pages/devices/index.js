@@ -143,7 +143,7 @@ const Devices = () => {
     }
 
     setRegistering(false)
-  }  
+  }
 
   async function getGroups() {
 
@@ -161,7 +161,7 @@ const Devices = () => {
         setGroups(response.data)
         setGroupsArray(response.data)
         setGroupsFiltered(response.data)
-        
+
       }
 
     } catch (e) {
@@ -177,7 +177,7 @@ const Devices = () => {
 
   useEffect(() => {
     getGroups()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -214,7 +214,8 @@ const Devices = () => {
       let obj = Object.assign({}, group)
 
       const result_devices = obj.devices.filter(device =>
-        device.name.toLowerCase().includes(search.toLowerCase())  
+        device.name.toLowerCase().includes(search.toLowerCase()) ||
+        device.idLora?.toLowerCase().includes(search.toLowerCase())
       )
 
       obj.devices = result_devices
@@ -403,14 +404,14 @@ const Devices = () => {
             </div>
           </Features>
         </Header>
-        
+
         <SearchInfo>
           {
             search && <><h3>Showing results for:&nbsp;</h3>
-            <p>{search}</p></>
+              <p>{search}</p></>
           }
         </SearchInfo>
-        
+
         {/* BODY */}
         <Body>
           {bodyLoading ?
@@ -449,6 +450,7 @@ const Devices = () => {
                               const name = device.name || '-'
                               const relay_status = false
                               const id = device.id
+                              const idLora = device.idLora
 
                               return (
                                 <Card status={status}>
@@ -456,7 +458,10 @@ const Devices = () => {
                                     <div>
                                       <MdLens />
                                     </div>
-                                    <p>{name}</p>
+                                    <div className='card-names'>
+                                      <p>{name}</p>
+                                      <span>{idLora && `id: ${idLora}`}</span>
+                                    </div>
                                   </div>
                                   <SwitchLabels label='' func={(checked, setChecked) => handlePowerDevice(checked, setChecked)} variable={relay_status}
                                     fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled} size='medium'

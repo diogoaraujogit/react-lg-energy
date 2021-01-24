@@ -11,7 +11,7 @@ import { Container, Tabs, PageContent } from './styles';
 const Dashboard = () => {
 
   const tabs = useMemo(() => ['Consumption', 'Ranking'], [])
-  const [tab, setTab] = useState(0)
+  const [tab, setTab] = useState(1)
 
   const renderTab = () => {
     switch (tab) {

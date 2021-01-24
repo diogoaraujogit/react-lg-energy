@@ -151,10 +151,10 @@ const ConsumptionTab = () => {
 
     try {
 
-      const response = await api_crud.get('/groups')
+      const [response, response_devices] = await Promise.all([api_crud.get('/groups'), api_crud.get('groups/devices')])
 
-      if (response.data) {
-        handleGroups(response.data)
+      if (response.data && response_devices.data) {
+        handleGroups(response.data, response_devices.data)
       } else {
         toast.error('Error trying to get consumption')
         setGroupsMessage('Error trying to get consumption')
@@ -284,16 +284,20 @@ const ConsumptionTab = () => {
     setServerChart(chartData)
   }
 
-  const handleGroups = (data) => {
+  const handleGroups = (data, data_devices) => {
     let subgroups = 0
     let devices = 0
     let groups = 0
 
     data.map(group => {
       groups = groups + 1
-      devices = devices + group.totalDevices
       subgroups = subgroups + group.totalSubgroups
     })
+
+    data_devices.map(group => {
+      devices = devices + group.devices.length
+    })
+    
 
     const newData = {
       groups,

@@ -551,14 +551,28 @@ export const Card = styled.div`
 
     > div {
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
       align-items: center;
+      justify-content: center;
+      height: 2rem;
     }
 
-    p {
-      font-size: 1.8rem;
-      font-weight: 500;
+    .card-names {
+      align-items: flex-start;
+      justify-content: flex-start;
+
+      p {
+        font-size: 1.8rem;
+        font-weight: 500;
+      }
+
+    > span {
+        font-size: 1rem;
+        color: #C1C1C1;
+      }
     }
+
+    
 
     svg {
       margin-right: 1.5rem;
