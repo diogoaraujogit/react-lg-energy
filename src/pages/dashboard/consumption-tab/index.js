@@ -50,47 +50,10 @@ const ConsumptionTab = () => {
 
   const [devicesLoading, setDevicesLoading] = useState(false)
   const [devicesMessage, setDevicesMessage] = useState('')
+  const [devicesData, setDevicesData] = useState([])
+  const [devicesChart, setDevicesChart] = useState([])
 
 
-  const barData = [
-    {
-      id: 1,
-      color: '#2222AA',
-      value: '64',
-      date: 'Online',
-    },
-    {
-      id: 2,
-      color: '#630028',
-      value: '240',
-      date: 'Offline',
-    },
-    {
-      id: 3,
-      value: '32',
-      date: 'Registered',
-    },
-    {
-      id: 4,
-      value: '47',
-      date: 'Not registered',
-    },
-    {
-      id: 5,
-      value: '88',
-      date: 'Setted',
-    },
-    {
-      id: 6,
-      value: '12',
-      date: 'Manually setted',
-    },
-    {
-      id: 7,
-      value: '210',
-      date: 'Unconfigured',
-    },
-  ]
 
 
 
@@ -218,6 +181,31 @@ const ConsumptionTab = () => {
     setDetailsLoading(false)
   }
 
+  async function getDevices() {
+    setDevicesLoading(true)
+    setDevicesMessage('')
+
+    try {
+
+      const response = await api_crud.get(`/dashboard/devices`)
+
+      if (response.data) {
+        setDevicesData(response.data)
+        handleDevices(response.data)
+
+      } else {
+        toast.error('Error trying to get devices')
+        setDevicesMessage('Error trying to get devices')
+      }
+
+    } catch (e) {
+      toast.error('Error trying to get details')
+      setDevicesMessage('Error trying to get consumption 2')
+    }
+
+    setDevicesLoading(false)
+  }
+
   const handleCards = (data) => {
 
     const consumptionCards = [
@@ -284,6 +272,50 @@ const ConsumptionTab = () => {
     setServerChart(chartData)
   }
 
+  const handleDevices = (data) => {
+
+    const barData = [
+      {
+        id: 1,
+        value: data.online,
+        date: 'Online',
+      },
+      {
+        id: 2,
+        value: data.offline,
+        date: 'Offline',
+      },
+      {
+        id: 3,
+        value: data.registeredIdLora,
+        date: 'Registered',
+      },
+      {
+        id: 4,
+        value: data.unregisteredIdLora,
+        date: 'Not registered',
+      },
+      // {
+      //   id: 5,
+      //   value: '88',
+      //   date: 'Setted',
+      // },
+      // {
+      //   id: 6,
+      //   value: '12',
+      //   date: 'Manually setted',
+      // },
+      {
+        id: 5,
+        value: data.unconfigured,
+        date: 'Unconfigured',
+      },
+    ]
+    
+    setDevicesChart(barData)
+
+  }
+
   const handleGroups = (data, data_devices) => {
     let subgroups = 0
     let devices = 0
@@ -333,6 +365,7 @@ const ConsumptionTab = () => {
     getServer()
     getGroups()
     getNotifications()
+    getDevices()
   }, [])
 
   useEffect(() => {
@@ -579,7 +612,7 @@ const ConsumptionTab = () => {
                   <h4>Devices</h4>
                   <div>
                     <BarChart
-                      data={barData}
+                      data={devicesChart}
                       keys={'value'}
                       indexBy='date'
                       xLegend=''
