@@ -11,6 +11,7 @@ import PieChart from '../../../components/PieChart';
 import RadioButton from '../../../components/Radio';
 import api_analytics from '../../../services/api_analytics';
 import api_crud from '../../../services/api_crud';
+import { format } from 'date-fns';
 
 import {
   Container,
@@ -50,6 +51,7 @@ const RankingTab = () => {
   const [saving, setSaving] = useState(false)
   const [selectedsDevices, setSelectedsDevices] = useState([])
   const [currentDevices, setCurrentDevices] = useState([])
+  const [highlightedDevice, setHighlightedDevice] = useState()
 
 
   const rankingBase = [
@@ -110,7 +112,7 @@ const RankingTab = () => {
   ]
 
   const [ranking, setRanking] = useState(rankingBase)
-
+  const [sortedRanking, setSortedRanking] = useState(rankingBase)
 
   // API CALLS
 
@@ -125,6 +127,7 @@ const RankingTab = () => {
 
       if (response.data) {
         setAllDevices(response.data)
+        
       }
 
     } catch (e) {
@@ -135,17 +138,18 @@ const RankingTab = () => {
     setPageLoading(false)
   }
 
-  async function getRanking() {
+  async function getRanking(query) {
 
     setRankingLoading(true)
     setRankingMessage('')
 
     try {
 
-      const response = await api_analytics.get(`/ranking/devices`)
+      const response = await api_analytics.get(`/ranking/devices?${query}`)
 
       if (response.data) {
         setRanking(response.data.devices)
+        setHighlightedDevice(response.data.devices[0])
       }
 
     } catch (e) {
@@ -159,9 +163,19 @@ const RankingTab = () => {
 
   // HANDLE FUNCTIONS
 
-  const handleSearch = () => {
+  const handleSearch = (selectedsDevices) => {
 
+    console.log('------ > selecteds')
+    console.log(selectedsDevices)
+    const idsLoraArray = selectedsDevices.map(device => device.id)
 
+    console.log(idsLoraArray)
+    const idsLora = idsLoraArray.join(',')
+    const period = format(startDate, 'MM/yyyy')
+    console.log(idsLora)
+    const query = `period=${period}&idsLora=${idsLora}`
+
+    idsLora.length &&  getRanking(query)
   }
 
   const showOnlyDevicesThatMatches = () => {
@@ -179,12 +193,40 @@ const RankingTab = () => {
 
   }
 
+  const setAllSelected = () => {
+
+    console.log(' ----->>> ALLL DEVICES')
+    console.log(allDevices)
+
+    const filteredDevices = allDevices.filter(device => device.idLora)
+
+    const allSelected = filteredDevices.map(device => {
+      const obj = {}
+      if(device.idLora) {
+        obj.id = device.idLora
+        obj.name = device.name
+
+        return obj
+      }
+    })
+
+    setSelectedsDevices(allSelected)
+    handleSearch(allSelected)
+
+  }
 
   // USE EFFECTS
 
   useEffect(() => {
-    handleSearch()
-  }, [startFormatted, endFormatted, searchType])
+    handleSearch(selectedsDevices)
+  }, [startDate])
+
+
+  useEffect(() => {
+
+    setAllSelected()
+
+  }, [allDevices])
 
   useEffect(() => {
     getDevices()
@@ -219,6 +261,15 @@ const RankingTab = () => {
 
   }, [])
 
+  useEffect(() => {
+
+
+    const aux = ranking.sort((a, b) => (a.kWh > b.kWh) ? -1 : 1)
+    setSortedRanking(aux)
+    setHighlightedDevice(aux[0])
+
+  }, [ranking])
+
 
   return (
     <Container>
@@ -241,12 +292,12 @@ const RankingTab = () => {
                   showRanking ?
                     <RankingChart>
                       <div>
-                        <p>1°&nbsp;</p>
+                        <p>{`${highlightedDevice?.idx || '1°'}`}&nbsp;</p>
                         <span>Solda L2</span>
                       </div>
                       <ConsumptionChart>
                         <div className='info'>
-                          <h2>{`${50 || '-'}%`}</h2>
+                          <h2>{`${highlightedDevice?.percentage || '0'}%`}</h2>
                           <p>General Consumption</p>
                         </div>
                         <div className='chart'>
@@ -254,8 +305,8 @@ const RankingTab = () => {
                         </div>
                       </ConsumptionChart>
                       <div>
-                        <p>R$ 471.26</p>
-                        <p>415.29 kWh</p>
+                        <p>{`R$ ${highlightedDevice?.cost || 0}`}</p>
+                        <p>{`${highlightedDevice?.kWh || 0} kWh`}</p>
                       </div>
                       <div>
                         <button onClick={() => setShowRanking(false)}>
@@ -376,9 +427,9 @@ const RankingTab = () => {
                       </div>
 
                       <div className='search-button'>
-                        <button onClick={() => handleSearch()}>
+                        <button onClick={() => handleSearch(selectedsDevices)}>
                           SEARCH
-                  </button>
+                        </button>
                       </div>
                     </RankingSearch>
                 }
@@ -399,16 +450,18 @@ const RankingTab = () => {
                           <span>Device</span>
                           <span>General Consumption</span>
                           <span>kWh</span>
-                          <span>Price</span>
+                          <span>Cost</span>
                         </div>
                         <div className='table-body'>
                           {
-                            ranking.map((item, i) => {
+                            sortedRanking.map((item, i) => {
 
                               const idx = i + 1 + '°'
 
+                              item.idx = i + 1 + '°'
+
                               return (
-                                <div className='table-line'>
+                                <div className='table-line highlighted' onClick={() => setHighlightedDevice(item)}>
                                   <p>{idx}</p>
                                   <p>{item.name}</p>
                                   <p>{item.percentage}</p>

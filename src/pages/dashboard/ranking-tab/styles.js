@@ -478,12 +478,26 @@ export const RankingList = styled.div`
   .table-line {
     display: grid;
     grid-template-columns: 1fr 3fr 2fr 2fr 2fr;
-    margin-bottom: 2rem;
+    margin-bottom: 0.5rem;
+    transition: background 0.2s;
+    height: 4rem;
+
+    p {
+      align-self: center;
+    }
 
     span, p {
       &:first-child, &:nth-child(3) {
         text-align: center;
       }
+    }
+  }
+
+  .highlighted {
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f2f2f2
     }
   }
 
