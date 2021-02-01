@@ -111,7 +111,7 @@ const RankingTab = () => {
     },
   ]
 
-  const [ranking, setRanking] = useState(rankingBase)
+  const [ranking, setRanking] = useState()
   const [sortedRanking, setSortedRanking] = useState(rankingBase)
 
   // API CALLS
@@ -148,7 +148,7 @@ const RankingTab = () => {
       const response = await api_analytics.get(`/ranking/devices?${query}`)
 
       if (response.data) {
-        setRanking(response.data.devices)
+        setRanking(response.data)
         setHighlightedDevice(response.data.devices[0])
       }
 
@@ -241,8 +241,8 @@ const RankingTab = () => {
 
   useEffect(() => {
 
-    const used = 50
-    const free = 50
+    const used = highlightedDevice?.kWh || 0
+    const free = ranking?.totalPowerConsumption || 100
 
     const data = [
       {
@@ -259,14 +259,14 @@ const RankingTab = () => {
 
     setChartData(data)
 
-  }, [])
+  }, [highlightedDevice, ranking])
 
   useEffect(() => {
 
 
-    const aux = ranking.sort((a, b) => (a.kWh > b.kWh) ? -1 : 1)
+    const aux = ranking?.devices?.sort((a, b) => (a.kWh > b.kWh) ? -1 : 1)
     setSortedRanking(aux)
-    setHighlightedDevice(aux[0])
+    aux && setHighlightedDevice(aux[0])
 
   }, [ranking])
 
@@ -293,7 +293,7 @@ const RankingTab = () => {
                     <RankingChart>
                       <div>
                         <p>{`${highlightedDevice?.idx || '1°'}`}&nbsp;</p>
-                        <span>Solda L2</span>
+                        <span>{`${highlightedDevice?.name || '-'}`}</span>
                       </div>
                       <ConsumptionChart>
                         <div className='info'>
@@ -464,7 +464,7 @@ const RankingTab = () => {
                                 <div className='table-line highlighted' onClick={() => setHighlightedDevice(item)}>
                                   <p>{idx}</p>
                                   <p>{item.name}</p>
-                                  <p>{item.percentage}</p>
+                                  <p>{`${item.percentage} %`}</p>
                                   <p>{item.kWh}</p>
                                   <p>{item.cost}</p>
                                 </div>
