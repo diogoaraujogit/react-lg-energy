@@ -48,12 +48,15 @@ export const Header = styled.div`
 
     > div {
       display: flex;
-      gap: 2rem;
+      gap: 3rem;
     }
 
     .cancel {
       background-color: transparent;
       color: #222222;
+      border: none;
+      font-size: 1.6rem;
+      font-weight: 500;
     }
 
     .save, > button {
@@ -105,9 +108,20 @@ export const Body = styled.div`
       align-items: center;
       justify-content: center;
 
-      font-size: 1.8rem;
-      font-weight: bold;
-      color: #C5004F;
+      > div {
+        p, input {
+          font-size: 1.8rem;
+          font-weight: bold;
+          color: #C5004F;
+          border: none;
+          text-align: center;
+        }
+
+        input {
+          border-bottom: 1px solid #222222;
+          width: 12rem;
+        }
+      }
     }
   }
 `;

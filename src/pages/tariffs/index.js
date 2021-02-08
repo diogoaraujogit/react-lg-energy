@@ -7,7 +7,12 @@ import { Container, Content, Header, Body, Previous } from './styles';
 const Tariffs = () => {
 
   const [onEdit, setOnEdit] = useState(false)
-  const [averageTariff, setAverageTariff] = useState('00:00')
+  const [averageTariff, setAverageTariff] = useState('1,07')
+  const [tempAverageTariff, setTempAverageTariff] = useState(averageTariff)
+  const [peakTariff, setPeakTariff] = useState('1,57')
+  const [tempPeakTariff, setTempPeakTariff] = useState(peakTariff)
+  const [referenceDate, setReferenceDate] = useState('20/12/2020')
+  const [tempReferenceDate, setTempReferenceDate] = useState(referenceDate)
 
   const tariffs = [
     {
@@ -31,6 +36,14 @@ const Tariffs = () => {
       date: '$ 20/12/2020',
     },
   ]
+
+  const handleSave = () => {
+
+    setAverageTariff(tempAverageTariff)
+    setPeakTariff(tempPeakTariff)
+    setReferenceDate(tempReferenceDate)
+    setOnEdit(false)
+  }
 
   return (
     <Layout title='Tariffs'>
@@ -56,15 +69,15 @@ const Tariffs = () => {
               {
                 onEdit ?
                   <div>
-                    <button className='cancel'>
+                    <button onClick={() => setOnEdit(false)} className='cancel'>
                       Cancel
                     </button>
-                    <button className='save'>
+                    <button onClick={() => handleSave()} className='save'>
                       Save
                     </button>
                   </div>
                   :
-                  <button onClick={() => setOnEdit(!onEdit)}>
+                  <button onClick={() => setOnEdit(true)}>
                     <MdEdit /> Edit
                   </button>
               }
@@ -77,27 +90,55 @@ const Tariffs = () => {
                 {
                   onEdit ?
                     <div>
-                      <p>00:00</p>
+                      <input
+                        value={tempAverageTariff}
+                        onChange={e => setTempAverageTariff(e.target.value)}
+                      />
                     </div>
                     :
                     <div>
-                      <input
-
-                      />
+                      <p>{`$ ${averageTariff}`}</p>
                     </div>
+
                 }
               </div>
             </div>
             <div>
               <h4>Average Peak Tariff</h4>
               <div>
-                $ 1,57
+              {
+                  onEdit ?
+                    <div>
+                      <input
+                        value={tempPeakTariff}
+                        onChange={e => setTempPeakTariff(e.target.value)}
+                      />
+                    </div>
+                    :
+                    <div>
+                      <p>{`$ ${peakTariff}`}</p>
+                    </div>
+
+                }
               </div>
             </div>
             <div>
               <h4>Reference Date</h4>
               <div>
-                20/12/2020
+              {
+                  onEdit ?
+                    <div>
+                      <input
+                        value={tempReferenceDate}
+                        onChange={e => setTempReferenceDate(e.target.value)}
+                      />
+                    </div>
+                    :
+                    <div>
+                      <p>{`${referenceDate}`}</p>
+                    </div>
+
+                }
               </div>
             </div>
           </Body>
