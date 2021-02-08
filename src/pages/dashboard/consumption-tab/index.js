@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
@@ -15,8 +16,8 @@ import api_analytics from "../../../services/api_analytics"
 import {
   Container, ShowAll, ShowAllModal, ConsumptionTable, ConsumptionCards,
   DashboardHighlights, DashboardCharts, DashboardNotifications,
-  Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading, 
-  DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage, 
+  Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading,
+  DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage,
   DevicesMessage, NotificationsMessage, DetailsLoading, DetailsMessage
 } from './styles';
 import { toast } from 'react-toastify';
@@ -94,14 +95,14 @@ const ConsumptionTab = () => {
         handleServer(response.data)
         setServerData(response.data)
       } else {
-        toast.error('Error trying to get consumption')
-        setServerMessage('Error trying to get consumption')
+        toast.error('Error trying to get server data')
+        setServerMessage('Error trying to get server data')
       }
 
     } catch (e) {
-      toast.error('Error trying to get consumption')
+      toast.error('Error trying to get server data')
 
-      setServerMessage('Error trying to get consumption 2')
+      setServerMessage('Error trying to get server data')
     }
 
     setServerLoading(false)
@@ -119,14 +120,14 @@ const ConsumptionTab = () => {
       if (response.data && response_devices.data) {
         handleGroups(response.data, response_devices.data)
       } else {
-        toast.error('Error trying to get consumption')
-        setGroupsMessage('Error trying to get consumption')
+        toast.error('Error trying to get groups data')
+        setGroupsMessage('Error trying to get groups data')
       }
 
     } catch (e) {
-      toast.error('Error trying to get consumption')
+      toast.error('Error trying to get groups')
 
-      setGroupsMessage('Error trying to get consumption 2')
+      setGroupsMessage('Error trying to get groups')
     }
 
     setGroupsLoading(false)
@@ -144,14 +145,14 @@ const ConsumptionTab = () => {
         setNotificationsData(response.data)
 
       } else {
-        toast.error('Error trying to get consumption')
-        setNotificationsMessage('Error trying to get consumption')
+        toast.error('Error trying to get notifications data')
+        setNotificationsMessage('Error trying to get notifications data')
       }
 
     } catch (e) {
-      toast.error('Error trying to get consumption')
+      toast.error('Error trying to get notifications')
 
-      setNotificationsMessage('Error trying to get consumption 2')
+      setNotificationsMessage('Error trying to get notifications')
     }
 
     setNotificationsLoading(false)
@@ -175,7 +176,7 @@ const ConsumptionTab = () => {
 
     } catch (e) {
       toast.error('Error trying to get details')
-      setDetailsMessage('Error trying to get consumption 2')
+      setDetailsMessage('Error trying to get details')
     }
 
     setDetailsLoading(false)
@@ -194,13 +195,13 @@ const ConsumptionTab = () => {
         handleDevices(response.data)
 
       } else {
-        toast.error('Error trying to get devices')
-        setDevicesMessage('Error trying to get devices')
+        toast.error('Error trying to get devices data')
+        setDevicesMessage('Error trying to get devices data')
       }
 
     } catch (e) {
-      toast.error('Error trying to get details')
-      setDevicesMessage('Error trying to get consumption 2')
+      toast.error('Error trying to get devices')
+      setDevicesMessage('Error trying to get devices')
     }
 
     setDevicesLoading(false)
@@ -311,7 +312,7 @@ const ConsumptionTab = () => {
         date: 'Unconfigured',
       },
     ]
-    
+
     setDevicesChart(barData)
 
   }
@@ -329,7 +330,7 @@ const ConsumptionTab = () => {
     data_devices.map(group => {
       devices = devices + group.devices.length
     })
-    
+
 
     const newData = {
       groups,
@@ -366,12 +367,12 @@ const ConsumptionTab = () => {
     getGroups()
     getNotifications()
     getDevices()
-  }, [])
+  }, [getCards, getDevices, getGroups, getServer])
 
   useEffect(() => {
     handleDetails()
 
-  }, [yearDate])
+  }, [handleDetails, yearDate])
 
   return (
     <Container>
