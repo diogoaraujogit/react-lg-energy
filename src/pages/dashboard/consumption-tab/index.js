@@ -367,12 +367,12 @@ const ConsumptionTab = () => {
     getGroups()
     getNotifications()
     getDevices()
-  }, [getCards, getDevices, getGroups, getServer])
+  }, [])
 
   useEffect(() => {
     handleDetails()
 
-  }, [handleDetails, yearDate])
+  }, [yearDate])
 
   return (
     <Container>

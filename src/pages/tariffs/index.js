@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import Layout from '../../components/Layout'
 
 import { Container, Content, Header, Body, Previous } from './styles';
 
 const Tariffs = () => {
+
+  const [onEdit, setOnEdit] = useState(false)
+  const [averageTariff, setAverageTariff] = useState('00:00')
 
   const tariffs = [
     {
@@ -50,16 +53,39 @@ const Tariffs = () => {
               </div>
             </div>
             <div className='edit'>
-              <button>
-                <MdEdit /> Edit
-              </button>
+              {
+                onEdit ?
+                  <div>
+                    <button className='cancel'>
+                      Cancel
+                    </button>
+                    <button className='save'>
+                      Save
+                    </button>
+                  </div>
+                  :
+                  <button onClick={() => setOnEdit(!onEdit)}>
+                    <MdEdit /> Edit
+                  </button>
+              }
             </div>
           </Header>
           <Body>
             <div>
               <h4>Average Tariff</h4>
               <div>
-                $ 1,07
+                {
+                  onEdit ?
+                    <div>
+                      <p>00:00</p>
+                    </div>
+                    :
+                    <div>
+                      <input
+
+                      />
+                    </div>
+                }
               </div>
             </div>
             <div>
@@ -81,7 +107,7 @@ const Tariffs = () => {
               {
                 tariffs.map(tariff => {
 
-                  return(
+                  return (
                     <div>
                       <div>
                         <p>Tariff Value</p>

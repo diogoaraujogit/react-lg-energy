@@ -45,7 +45,18 @@ export const Header = styled.div`
   }
 
   .edit {
-    button {
+
+    > div {
+      display: flex;
+      gap: 2rem;
+    }
+
+    .cancel {
+      background-color: transparent;
+      color: #222222;
+    }
+
+    .save, > button {
       height: 4.2rem;
       width: 11rem;
       background-color: #222222;
@@ -90,12 +101,13 @@ export const Body = styled.div`
       background: #FFFFFF 0% 0% no-repeat padding-box;
       box-shadow: 0px 2px 5px #0000000D;
       border-radius: 10px;
-      color: #C5004F;
       display: flex;
       align-items: center;
       justify-content: center;
+
       font-size: 1.8rem;
       font-weight: bold;
+      color: #C5004F;
     }
   }
 `;
