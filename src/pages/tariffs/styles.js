@@ -1,3 +1,4 @@
+import { darken, lighten } from 'polished';
 import styled from 'styled-components'
 
 export const Container = styled.div`
@@ -71,6 +72,11 @@ export const Header = styled.div`
       border: none;
       border-radius: 0.5rem;
       font-size: 1.6rem;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: ${lighten(0.1, '#222222')}
+      }
 
       svg {
         font-size: 1.6rem;
