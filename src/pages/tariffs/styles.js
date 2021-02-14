@@ -126,6 +126,7 @@ export const Body = styled.div`
         input {
           border-bottom: 1px solid #222222;
           width: 12rem;
+          padding: 0rem;
         }
       }
     }
