@@ -3,9 +3,10 @@ import DateFnsUtils from '@date-io/date-fns';
 import { TimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 function BasicTimePicker(props) {
-  const [selectedDate, handleDateChange] = useState(new Date());
 
   const label = props.label || ''
+  const value = props.value 
+  const handleChange = props.handleChange
 
   return (
     <Fragment>
@@ -14,8 +15,8 @@ function BasicTimePicker(props) {
           clearable
           ampm={false}
           label={label}
-          value={selectedDate}
-          onChange={handleDateChange}
+          value={value}
+          onChange={handleChange}
         />
       </MuiPickersUtilsProvider>
     </Fragment>

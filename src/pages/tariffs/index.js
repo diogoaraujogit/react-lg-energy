@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import Layout from '../../components/Layout'
 import api_tariffs from '../../services/api_tariffs';
 import BasicDatePicker from '../../components/BasicDatePicker'
+import BasicTimePicker from '../../components/BasicTimePicker'
+
 import { Container, Content, Header, Body, Previous } from './styles';
 import { format, parse } from 'date-fns';
 import Loading from '../../components/Loading';
@@ -116,6 +118,12 @@ const Tariffs = () => {
     return stringDate
   }
 
+  const handleTimeFormat = (time) => {
+    const stringTime = parse(time, 'HH:mm:ss', new Date())
+
+    return stringTime
+  }
+
   return (
     <Layout title='Tariffs'>
       <Container>
@@ -136,15 +144,35 @@ const Tariffs = () => {
                     <p>Peak Hour</p>
                     <div>
                       <p>Starter hour</p>
-                      <div>
-                        00:00
-                </div>
+                      {
+                        onEdit?
+                        <div>
+                          <BasicTimePicker 
+                            value={handleTimeFormat(tempTariff.peak_hour_start)}
+                            handleChange={e => setTempTariff({ ...tempTariff, peak_hour_start: format(e, 'HH:mm:ss') })}
+                          />
+                        </div>
+                        :
+                        <div>
+                          {tempTariff.peak_hour_start?.slice(0, -3)}
+                        </div>
+                      }
                     </div>
                     <div>
                       <p>Final hour</p>
-                      <div>
-                        00:00
-                </div>
+                      {
+                        onEdit?
+                        <div>
+                          <BasicTimePicker 
+                            value={handleTimeFormat(tempTariff.peak_hour_end)}
+                            handleChange={e => setTempTariff({ ...tempTariff, peak_hour_end: format(e, 'HH:mm:ss') })}
+                          />
+                        </div>
+                        :
+                        <div>
+                          {tempTariff.peak_hour_end?.slice(0, -3)}
+                        </div>
+                      }
                     </div>
                   </div>
                   <div className='edit'>
@@ -153,10 +181,10 @@ const Tariffs = () => {
                         <div>
                           <button onClick={() => setOnEdit(false)} className='cancel'>
                             Cancel
-                    </button>
+                          </button>
                           <button onClick={() => handleSave()} className='save'>
                             Save
-                    </button>
+                          </button>
                         </div>
                         :
                         <button onClick={() => setOnEdit(true)}>

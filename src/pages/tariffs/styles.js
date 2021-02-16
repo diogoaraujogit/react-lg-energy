@@ -41,6 +41,13 @@ export const Header = styled.div`
         color: #C5004F;
         font-weight: 600;
         font-size: 1.6rem;
+        width: 5rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      input {
+        text-align: center;
       }
     }
   }
