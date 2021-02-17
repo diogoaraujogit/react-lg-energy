@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { MdLens } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -10,21 +11,14 @@ import Loading from '../../components/Loading';
 
 import { Container, MessageArea, LoadingArea,
   Content, DiskUsage, UsageHeader, UsageChart, UsageInfo, StorageList, ListItem } from './styles';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 const Storage = () => {
 
-
-
-  const db_base = [
-    {
-      name: 'DB Notification',
-      size: '15 MB',
-    },
-    {
-      name: 'DB Notification',
-      size: '15 MB',
-    },
-  ]
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const files_base = [
     {
@@ -39,13 +33,13 @@ const Storage = () => {
 
   const [disk, setDisk] = useState()
   const [chartData, setChartData] = useState([])
-  const [dbs, setDbs] = useState(db_base)
+  const [dbs, setDbs] = useState([])
   const [files, setFiles] = useState(files_base)
   const [itemsList, setItensList] = useState(dbs)
   const [loading, setLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
 
-  const tabs = ['Databases', 'Files']
+  const tabs = [transl.Databases, transl.Files]
   const [tab, setTab] = useState(0)
 
   useEffect(() => {
@@ -62,12 +56,12 @@ const Storage = () => {
     const data = [
       {
         "id": "used",
-        "label": "used",
+        "label": transl.used,
         "value": used,
       },
       {
         "id": "free",
-        "label": "free",
+        "label": transl.free,
         "value": free,
       }
     ]
@@ -95,12 +89,12 @@ const Storage = () => {
         setDisk(response.data)
       } else {
         setLoading(false)
-        setBodyMessage('Error trying to load database information')
+        setBodyMessage(transl.errorDisk)
       }
 
     } catch (e) {
       setLoading(false)
-      toast.error('Error trying to load database information')
+      toast.error(transl.errorDisk)
     }
   }
 
@@ -115,15 +109,15 @@ const Storage = () => {
       }
 
     } catch (e) {
-      toast.error('Error trying to load disk information')
-      setBodyMessage('Error trying to load disk information')
+      toast.error(transl.errorDatabase)
+      setBodyMessage(transl.errorDatabase)
     }
 
     setLoading(false)
   }
 
   return (
-    <Layout title='Server'>
+    <Layout title={transl.title}>
       <Container>
         {
           loading ?
@@ -140,30 +134,30 @@ const Storage = () => {
               <Content>
                 <DiskUsage>
                   <UsageHeader>
-                    <h3>DISK USAGE</h3>
+                    <h3>{transl.DiskUsage}</h3>
                     <div>
                       <div>
                         <MdLens />
-                        <p>Free</p>
+                        <p>{transl.Free}</p>
                       </div>
                       <div>
                         <MdLens id="used" />
-                        <p>Used</p>
+                        <p>{transl.Used}</p>
                       </div>
                     </div>
                   </UsageHeader>
                   <UsageChart>
                     <div className='info'>
                       <h2>{`${disk?.percentageUsed || '-'}%`}</h2>
-                      <p>Used Space</p>
+                      <p>{transl.UsedSpace}</p>
                     </div>
                     <div className='chart'>
                       <PieChart data={chartData} />
                     </div>
                   </UsageChart>
                   <UsageInfo>
-                    <div className='available'>{`Available: ${disk?.free || '-'}`}</div>
-                    <div className='used'>{`Used Space: ${disk?.used || '-'}`}</div>
+                    <div className='available'>{`${transl.Available}: ${disk?.free || '-'}`}</div>
+                    <div className='used'>{`${transl.UsedSpace}: ${disk?.used || '-'}`}</div>
                   </UsageInfo>
                 </DiskUsage>
                 <StorageList>
@@ -172,8 +166,8 @@ const Storage = () => {
                   </div>
                   <div className='table'>
                     <div className='table-header'>
-                      <p>Item</p>
-                      <p>Size</p>
+                      <p>{transl.Item}</p>
+                      <p>{transl.Size}</p>
                     </div>
                     <div className='table-body'>
                       {
