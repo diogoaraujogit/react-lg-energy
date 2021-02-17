@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout'
 import { PaginationLink } from '../../components/Pagination';
@@ -9,47 +10,14 @@ import api_notifications from '../../services/api_notifications';
 import { toast } from 'react-toastify';
 import { addHours, format, parseISO } from 'date-fns';
 import Loading from '../../components/Loading';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 const Notifications = () => {
 
-  const allNotes_base = [
-    {
-      id: 1,
-      title: 'Notification',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sagittis enim. Aliquam erat volutpat. 
-      Nam nec nibh sit amet metus tempor consectetur at quis diam. Cras tempus volutpat nisl, ac porttitor dolor feugiat 
-      sit amet. Integer sollicitudin metus nisl, nec scelerisque nibh convallis a. Nullam ut faucibus risus. Sed.`,
-      type: 'Device',
-      createdAt: '2020-12-11T19:00:01.134Z'
-    },
-    {
-      id: 2,
-      title: 'Notification 2',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sagittis enim. Aliquam erat volutpat. 
-      Nam nec nibh sit amet metus tempor consectetur at quis diam. Cras tempus volutpat nisl, ac porttitor dolor feugiat 
-      sit amet. Integer sollicitudin metus nisl, nec scelerisque nibh convallis a. Nullam ut faucibus risus. Sed.`,
-      type: 'Device',
-      createdAt: '2020-12-11T19:00:01.134Z'
-    },
-    {
-      id: 3,
-      title: 'Notification',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sagittis enim. Aliquam erat volutpat. 
-      Nam nec nibh sit amet metus tempor consectetur at quis diam. Cras tempus volutpat nisl, ac porttitor dolor feugiat 
-      sit amet. Integer sollicitudin metus nisl, nec scelerisque nibh convallis a. Nullam ut faucibus risus. Sed.`,
-      type: 'Device',
-      createdAt: '2020-12-11T19:00:01.134Z'
-    },
-    {
-      id: 4,
-      title: 'Notification',
-      description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sed sagittis enim. Aliquam erat volutpat. 
-      Nam nec nibh sit amet metus tempor consectetur at quis diam. Cras tempus volutpat nisl, ac porttitor dolor feugiat 
-      sit amet. Integer sollicitudin metus nisl, nec scelerisque nibh convallis a. Nullam ut faucibus risus. Sed.`,
-      type: 'Device',
-      createdAt: '2020-12-11T19:00:01.134Z'
-    },
-  ]
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   const [option, setOption] = useState(0)
   const options = ['Todas as Notificações', 'Dispositivos', 'Grupos', 'Usuários', 'Tarifas', 'Servidor']
@@ -59,7 +27,7 @@ const Notifications = () => {
   const [bodyMessage, setBodyMessage] = useState()
   const [totalNot, setTotalNot] = useState(0)
 
-  const [allNotes, setAllNotes] = useState(allNotes_base)
+  const [allNotes, setAllNotes] = useState([])
   const [notificationsSelected, setNotificationsSelected] = useState([])
   const [searchSelected, setSearchSelected] = useState(1)
   const [numberNotesToShow, setNumbersNoteToShow] = useState(5)
@@ -102,7 +70,7 @@ const Notifications = () => {
 
     } catch (e) {
 
-      toast.error('Error trying to get notifications')
+      toast.error(transl.errorNotifications)
 
     }
 
@@ -119,15 +87,16 @@ const Notifications = () => {
       const response = await api_notifications.delete(`?ids=${ids}`)
 
       if (response.data) {
-        toast.info('Deleted')
+        toast.info(transl.deleteSuccess)
         getNotifications()
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error(transl.errorNotifications)
     }
   }
 
+  
   useEffect(() => {
 
     getNotifications()
@@ -138,14 +107,15 @@ const Notifications = () => {
 
     const notificationsId = notificationsSelected.map(notification => notification.id)
 
-    if (allNotes.filter(note => !notificationsId.includes(note.id)).length) {
+
+    if ( allNotes.filter(note => !notificationsId.includes(note.id)).length) {
       setAllSelected(false)
     } else {
       setAllSelected(true)
     }
 
 
-  }, [notificationsSelected])
+  }, [notificationsSelected, allNotes])
 
   useEffect(() => {
 
@@ -162,13 +132,13 @@ const Notifications = () => {
   useEffect(() => {
 
     if (!allNotes.length) {
-      setBodyMessage('No notifications')
+      setBodyMessage(transl.noNotifications)
     }
 
   }, [allNotes])
 
   return (
-    <Layout title='Notifications'>
+    <Layout title={transl.title}>
       <Container>
         <Content>
           {
@@ -186,7 +156,7 @@ const Notifications = () => {
                   <Header>
                     <div>
                       <CheckboxLabels
-                        label={'Select All'}
+                        label={transl.selectAll}
                         variable={allSelected}
                         value={true}
                         func={setAllSelected}
@@ -198,7 +168,7 @@ const Notifications = () => {
                       notificationsSelected.length ?
                         <div className='delete-all' onClick={() => deleteNotification(notificationsSelected)}>
                           <MdDelete />
-                          <p>Delete selected</p>
+                          <p>{transl.deleteSelected}</p>
                         </div>
                         :
                         <></>
@@ -237,7 +207,7 @@ const Notifications = () => {
 
 
                                 <div>
-                                  <p>By:&nbsp;</p>
+                                  <p>{transl.generatedBy}:&nbsp;</p>
                                   <h4>{generatedBy}</h4>
                                 </div>
 

@@ -19,10 +19,20 @@ import api_crud from '../../services/api_crud'
 import api_logs from '../../services/api_logs'
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 const Comparatives = () => {
 
-  const tabs = useMemo(() => ['Consumption', 'Current', 'Demand', 'Power'], [])
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
+  const tabs = useMemo(() => [
+    transl.Consumption, 
+    transl.Current, 
+    transl.Demand,
+    transl.Power
+  ], [transl])
 
   const [tab, setTab] = useState(0)
 
@@ -44,8 +54,8 @@ const Comparatives = () => {
   const [currentDevices, setCurrentDevices] = useState([])
 
 
-  const tableLabels = tab === 2 ?  [{ title: 'Devices', value: 'name' }, {title: 'Total', value: 'total'}] :
-  [{ title: 'Devices', value: 'name' }, { title: 'Phase A', value: 'a' }, { title: 'Phase B', value: 'b' }, { title: 'Phase C', value: 'c' }, { title: 'Media', value: 'average' }, { title: 'Total', value: 'total' }]
+  const tableLabels = tab === 2 ?  [{ title: transl.Devices, value: 'name' }, {title: transl.Total, value: 'total'}] :
+  [{ title: transl.Devices, value: 'name' }, { title: transl.PhaseA, value: 'a' }, { title: transl.PhaseB, value: 'b' }, { title: transl.PhaseC, value: 'c' }, { title: transl.Average, value: 'average' }, { title: transl.Total, value: 'total' }]
 
   const [devices, setDevices] = useState([])
 
@@ -130,8 +140,8 @@ const Comparatives = () => {
       }
 
     } catch (e) {
-      toast.error('Error loading devices')
-      setPageMessage('Error loading devices')
+      toast.error(transl.errorDevices)
+      setPageMessage(transl.errorDevices)
     }
 
     setPageLoading(false)
@@ -159,19 +169,16 @@ const Comparatives = () => {
 
         })
 
-        console.log('Crazy test')
-        console.log(response_logs.data)
         setDevices(devicesDataWithDemand)
-        console.log(devicesDataWithDemand)
 
       } else {
-        toast.error('Error loading comparatives')
-        setBodyMessage('Error loading comparatives')
+        toast.error(transl.errorComparatives)
+        setBodyMessage(transl.errorComparatives)
       }
 
     } catch (e) {
-      toast.error('Error loading comparatives')
-      setBodyMessage('Error loading comparatives')
+      toast.error(transl.errorComparatives)
+      setBodyMessage(transl.errorComparatives)
     }
 
     setBodyLoading(false)
@@ -181,20 +188,20 @@ const Comparatives = () => {
 
   useEffect(() => {
     getDevices()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
 
-
     currentDevices && Array.isArray(currentDevices) && currentDevices.length && handleSearch(currentDevices)
-
-  }, [dayDate, monthDate, periodType, currentDevices])
+            // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dayDate, monthDate, periodType, currentDevices]) 
 
 
   useEffect(() => {
 
     showOnlyDevicesThatMatches()
-
+        // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchDevice, allDevices])
 
 
@@ -208,7 +215,7 @@ const Comparatives = () => {
   // }, [currentDevices])
 
   return (
-    <Layout title='Comparatives'>
+    <Layout title={transl.title}>
       <Container>
         {
           pageLoading ?
@@ -225,10 +232,10 @@ const Comparatives = () => {
 
                 <FeaturesBox>
                   <Period>
-                    <p>Period:</p>
+                    <p>{transl.Period}:</p>
                     <div className='radio-buttons'>
-                      <RadioButton label='Day' value='day' variable={periodType} func={setPeriodType} />
-                      <RadioButton label='Month' value='month' variable={periodType} func={setPeriodType} />
+                      <RadioButton label={transl.Day} value='day' variable={periodType} func={setPeriodType} />
+                      <RadioButton label={transl.Month} value='month' variable={periodType} func={setPeriodType} />
                     </div>
                     <div className='date-input'>
                       {
@@ -247,8 +254,8 @@ const Comparatives = () => {
                       contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                       trigger={
                         <button>
-                          Add Device
-                </button>
+                          {transl.AddDevice}
+                        </button>
                       }
                       modal
                     >
@@ -257,7 +264,7 @@ const Comparatives = () => {
 
                           return (
                             <AddDeviceModal>
-                              <h3>Add Devices</h3>
+                              <h3>{transl.AddDevices}</h3>
 
                               <div className='search'>
                                 <Search>
@@ -299,8 +306,8 @@ const Comparatives = () => {
                               </div>
                               <div className='buttons'>
                                 <button onClick={() => close()}>
-                                  Cancel
-                          </button>
+                                  {transl.Cancel}
+                                </button>
                                 <button
                                   disabled={saving}
                                   onClick={() => {
@@ -308,7 +315,7 @@ const Comparatives = () => {
                                     close()
                                   }}
                                 >
-                                  Add {saving && <Loading />}
+                                  {transl.Add} {saving && <Loading />}
                                 </button>
                               </div>
                             </AddDeviceModal>
@@ -319,7 +326,7 @@ const Comparatives = () => {
 
                   </AddDevice>
                   <CurrentDevices>
-                    <p>Current devices</p>
+                    <p>{transl.CurrentDevices}</p>
                     <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
                       {
                         currentDevices.map(device => {

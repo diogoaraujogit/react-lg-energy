@@ -9,21 +9,16 @@ import { useHistory } from 'react-router-dom';
 
 import lg_logo from '../../assets/lg_logo.png';
 import Flag from 'react-flagkit' ;
+import { useDispatch, useSelector } from 'react-redux';
+import { setLanguage } from '../../store/modules/intl/actions'
 
 const Login = () => {
 
   const { Formik } = formik;
   const history = useHistory()
+  const dispatch = useDispatch()
 
-  /* LANGUAGE CONTROL */
-  const languageStorage = localStorage.getItem('@lg/language') || 'en'
-  const [language, setLanguage] = useState(languageStorage)
-  const [english, setEnglish] = useState(language === 'en')
-
-  useEffect(() => {
-    localStorage.setItem('@lg/language', language)
-    setEnglish(language === 'en')
-  }, [language])
+  const { english, language } = useSelector(state => state.intl)
 
   /* FORM SCHEMA */
   const schema = yup.object({
@@ -100,10 +95,10 @@ const Login = () => {
         {/* LANGUAGE CONTROL */}
 
         <Language language={language}>
-          <button onClick={() => setLanguage('en')}>
+          <button onClick={() => dispatch(setLanguage('en'))}>
             <Flag country="US" />
           </button>
-          <button onClick={() => setLanguage('pt')}>
+          <button onClick={() => dispatch(setLanguage('pt'))}>
             <Flag country="BR" />
           </button>
         </Language>

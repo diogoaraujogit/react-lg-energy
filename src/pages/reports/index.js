@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useMemo, useState } from 'react';
 import { MdClear, MdDelete, MdDevices, MdFileDownload } from 'react-icons/md';
 import Popup from 'reactjs-popup';
@@ -20,34 +21,22 @@ import api_logs from '../../services/api_logs'
 import api_reports from '../../services/api_reports'
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 const Reports = () => {
 
-  const tabs = useMemo(() => ['Devices', 'Groups'], [])
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
+
+  const tabs = useMemo(() => [transl.Devices, transl.Groups], [])
 
   const [tab, setTab] = useState(0)
 
-  const reports_base = [
-    {
-      title: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      title: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      title: 'Name Report',
-      period: '02/02/2020',
-    },
-    {
-      title: 'Name Report',
-      period: '02/02/2020',
-    },
-  ]
 
 
-  const [reports, setReports] = useState(reports_base)
+  const [reports, setReports] = useState([])
 
   const [pageLoading, setPageLoading] = useState(false)
   const [pageMessage, setPageMessage] = useState('')
@@ -74,10 +63,10 @@ const Reports = () => {
   const [selectedsGroups, setSelectedsGroups] = useState([])
 
   const parameters = [
-    { title: 'Current', value: 'current' },
-    { title: 'Active Power', value: 'activePower' },
-    { title: 'Consumption', value: 'powerConsumption' },
-    { title: 'Demand', value: 'demand' }
+    { title: transl.Current, value: 'current' },
+    { title: transl.Power, value: 'activePower' },
+    { title: transl.Consumption, value: 'powerConsumption' },
+    { title: transl.Demand, value: 'demand' }
   ]
 
 
@@ -105,11 +94,11 @@ const Reports = () => {
     }
 
     !hasSelectedsItems?
-    toast.error(`No ${tab? 'groups' : 'devices'} selecteds`) :
+    toast.error(english? `No ${tab? 'group' : 'device'} selected` : `Nenhum ${tab? 'grupo' : 'dispositivo'} selecionado`) :
     !reportName?
-    toast.error('Report name required') :
+    toast.error(transl.nameRequired) :
     !hasSelectedsParams?
-    toast.error('No parameters selecteds') :
+    toast.error(transl.paramRequired) :
     createReport(reportBody)
 
   }
@@ -162,13 +151,13 @@ const Reports = () => {
         setAllDevices(response_devices.data)
         setAllGroups(response_groups.data)
       } else {
-        toast.error('Error loading devices')
-        setPageMessage('Error loading devices')
+        toast.error(transl.errorDevices)
+        setPageMessage(transl.errorDevices)
       }
 
     } catch (e) {
-      toast.error('Error loading devices')
-      setPageMessage('Error loading devices')
+      toast.error(transl.errorDevices)
+      setPageMessage(transl.errorDevices)
     }
 
     setPageLoading(false)
@@ -188,14 +177,14 @@ const Reports = () => {
         // const processingStatus = response.data.processingStatus
         getReports()
 
-        message ? toast.info(message) : toast.info('Generating report...')
+        message ? toast.info(message) : toast.info(transl.creating)
 
       } else {
-        toast.error('Failed to create report')
+        toast.error(transl.reportFail)
       }
 
     } catch(e) {
-      toast.error('Failed to create report')
+      toast.error(transl.reportFail)
     }
 
     setCreating(false)
@@ -216,19 +205,19 @@ const Reports = () => {
         if(Array.isArray(response.data) && response.data.length) {
           setBodyMessage('')
         } else {
-          setBodyMessage('No reports')
+          setBodyMessage(transl.noReports)
         }
 
         setReports(response.data)
 
       } else {
-        setBodyMessage('Error loading reports')
-        toast.error('Error loading reports')
+        setBodyMessage(transl.errorReports)
+        toast.error(transl.errorReports)
       }
 
     } catch(e) {
-      toast.error('Error loading reports')
-      setBodyMessage('Error loading reports')
+      toast.error(transl.errorReports)
+      setBodyMessage(transl.errorReports)
     }
 
     setBodyLoading(false)
@@ -245,12 +234,12 @@ const Reports = () => {
 
       if(response) {
         console.log(response)
-        toast.info('Report deleted')
+        toast.info(transl.reportDeleted)
         getReports()
       } 
 
     } catch(e) {
-      toast.error('Error deleting report')
+      toast.error(transl.errorDelete)
     }
 
     setDeleting(false)
@@ -279,7 +268,7 @@ const Reports = () => {
       } 
 
     } catch(e) {
-      toast.error('Error dowloading report')
+      toast.error(transl.errorDownload)
     }
   }
 
@@ -306,7 +295,7 @@ const Reports = () => {
 
 
   return (
-    <Layout title='Reports'>
+    <Layout title={transl.title}>
       <Container>
         {
           pageLoading ?
@@ -323,10 +312,10 @@ const Reports = () => {
 
                 <FeaturesBox>
                   <Period>
-                    <p>Period:</p>
+                    <p>{transl.Period}:</p>
                     <div className='radio-buttons'>
-                      <RadioButton label='Day' value='day' variable={periodType} func={setPeriodType} />
-                      <RadioButton label='Month' value='month' variable={periodType} func={setPeriodType} />
+                      <RadioButton label={transl.Day} value='day' variable={periodType} func={setPeriodType} />
+                      <RadioButton label={transl.Month} value='month' variable={periodType} func={setPeriodType} />
                     </div>
                     <div className='date-input'>
                       {
@@ -345,7 +334,7 @@ const Reports = () => {
                       contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                       trigger={
                         <button>
-                          Select device or group
+                          {transl.Select}
                         </button>
                       }
                       modal
@@ -408,7 +397,7 @@ const Reports = () => {
                               </div>
                               <div className='buttons'>
                                 <button onClick={() => close()}>
-                                  Cancel
+                                  {transl.Cancel}
                                 </button>
                                 <button
                                   onClick={() => {
@@ -416,7 +405,7 @@ const Reports = () => {
                                     close()
                                   }}
                                 >
-                                  Add 
+                                  {transl.Add}
                                 </button>
                               </div>
                             </AddDeviceModal>
@@ -426,14 +415,14 @@ const Reports = () => {
                     </Popup>
 
                     <input
-                      placeholder='Report Name'
+                      placeholder={transl.reportName}
                       value={reportName}
                       onChange={(e) => setReportName(e.target.value)}
                     />
 
                   </AddDevice>
                   <CurrentDevices>
-                    <p>Select Parameter</p>
+                    <p>{transl.selectParameter}</p>
 
                     <div>
                       {
@@ -460,7 +449,7 @@ const Reports = () => {
                       onClick={() => handleCreateReport()}
                       disabled={creating}
                     >
-                      Create Report {creating && <Loading />}
+                      {transl.createReport} {creating && <Loading />}
                     </button>
                   </div>
                 </FeaturesBox>
@@ -492,19 +481,19 @@ const Reports = () => {
 
                             switch(processingStatus) {
                               case 'FINISHED':
-                                status = 'Ready'
+                                status = transl.Ready
                                 break;
                               case 'PENDING':
-                                status = 'Pending'
+                                status = transl.Pending
                                 break;
                               case 'PROCESSING':
-                                status = 'Processing'
+                                status = transl.Processing
                                 break;
                               case 'ERROR':
-                                status = 'Error'
+                                status = transl.Error
                                 break;
                               default:
-                                status = 'Undefined'
+                                status = transl.Undefined
                                 break;
                             }
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { lighten } from 'polished';
+import { darken, lighten } from 'polished';
 
 export const Container = styled.div`
   width: 100%;
@@ -196,17 +196,27 @@ export const ManualRelay = styled.div`
 
   button {
 
-    width: 5rem;
-    height: 2rem;
+    width: 7rem;
+    height: 3rem;
     border: none;
     border-radius: 5px;
-    background-color: green;
+    background-color: #00d624;
     color: #ffffff;
+    box-shadow: 0rem 0rem 1rem #ccc;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: ${darken('0.1', '#00d624')}
+    }
 
     &:last-child {
       margin-right: 2rem;
       margin-left: 2rem;
-      background-color: red;
+      background-color: #ff0000;
+
+      &:hover {
+      background-color: ${darken('0.1', '#ff0000')}
+    }
     }
   }
 `;
