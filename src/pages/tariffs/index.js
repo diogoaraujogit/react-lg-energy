@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { MdEdit } from 'react-icons/md';
 import { toast } from 'react-toastify';
@@ -10,34 +11,17 @@ import { Container, Content, Header, Body, Previous } from './styles';
 import { format, parse } from 'date-fns';
 import Loading from '../../components/Loading';
 import { LoadingArea, MessageArea } from '../dashboard/ranking-tab/styles';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
-const tariffsBase = [
-  {
-    value: '$ 1,07',
-    peak: '$ 1,57',
-    date: '$ 20/12/2020',
-  },
-  {
-    value: '$ 1,07',
-    peak: '$ 1,57',
-    date: '$ 20/12/2020',
-  },
-  {
-    value: '$ 1,07',
-    peak: '$ 1,57',
-    date: '$ 20/12/2020',
-  },
-  {
-    value: '$ 1,07',
-    peak: '$ 1,57',
-    date: '$ 20/12/2020',
-  },
-]
 
 const Tariffs = () => {
 
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
-  const [tariffs, setTariffs] = useState(tariffsBase)
+
+  const [tariffs, setTariffs] = useState([])
   const [currentTariff, setCurrentTariff] = useState({})
   const [tempTariff, setTempTariff] = useState({})
   const [onEdit, setOnEdit] = useState(false)
@@ -74,7 +58,7 @@ const Tariffs = () => {
       }
 
     } catch (e) {
-      toast.error('Error trying to get tariffs')
+      toast.error(transl.errorGetTariffs)
     }
 
     setPageLoading(false)
@@ -94,13 +78,13 @@ const Tariffs = () => {
       })
 
       if (response.data) {
-        toast.success('Saved')
+        toast.success(transl.saveSuccess)
         setOnEdit(false)
         getTariffs()
       }
 
     } catch (e) {
-      toast.error('Error trying to save')
+      toast.error(transl.saveError)
     }
 
     setSaving(false)
@@ -125,7 +109,7 @@ const Tariffs = () => {
   }
 
   return (
-    <Layout title='Tariffs'>
+    <Layout title={transl.title}>
       <Container>
         {
           pageLoading ?
@@ -141,9 +125,9 @@ const Tariffs = () => {
               <Content>
                 <Header>
                   <div className='peak'>
-                    <p>Peak Hour</p>
+                    <p>{transl.peakHour}</p>
                     <div>
-                      <p>Starter hour</p>
+                      <p>{transl.StarterHour}</p>
                       {
                         onEdit?
                         <div>
@@ -159,7 +143,7 @@ const Tariffs = () => {
                       }
                     </div>
                     <div>
-                      <p>Final hour</p>
+                      <p>{transl.FinalHour}</p>
                       {
                         onEdit?
                         <div>
@@ -180,22 +164,22 @@ const Tariffs = () => {
                       onEdit ?
                         <div>
                           <button onClick={() => setOnEdit(false)} className='cancel'>
-                            Cancel
+                            {transl.Cancel}
                           </button>
                           <button onClick={() => handleSave()} className='save'>
-                            Save
+                            {transl.Save}
                           </button>
                         </div>
                         :
                         <button onClick={() => setOnEdit(true)}>
-                          <MdEdit /> Edit
+                          <MdEdit /> {transl.Edit}
                   </button>
                     }
                   </div>
                 </Header>
                 <Body>
                   <div>
-                    <h4>Average Tariff</h4>
+                    <h4>{transl.AverageTariff}</h4>
                     <div>
                       {
                         onEdit ?
@@ -215,7 +199,7 @@ const Tariffs = () => {
                     </div>
                   </div>
                   <div>
-                    <h4>Average Peak Tariff</h4>
+                    <h4>{transl.PeakTariff}</h4>
                     <div>
                       {
                         onEdit ?
@@ -235,7 +219,7 @@ const Tariffs = () => {
                     </div>
                   </div>
                   <div>
-                    <h4>Reference Date</h4>
+                    <h4>{transl.ReferenceDate}</h4>
                     <div>
                       {
                         onEdit ?
@@ -257,7 +241,7 @@ const Tariffs = () => {
                   </div>
                 </Body>
                 <Previous>
-                  <h3>PREVIOUS TARIFFS</h3>
+                  <h3>{transl.Previous}</h3>
                   <div>
                     {
                       tariffs.map(tariff => {
@@ -265,15 +249,15 @@ const Tariffs = () => {
                         return (
                           <div>
                             <div>
-                              <p>Tariff Value</p>
+                              <p>{transl.TariffValue}</p>
                               <span>{tariff.tariffValue}</span>
                             </div>
                             <div>
-                              <p>Peak Tariff</p>
+                              <p>{transl.PeakTariff}</p>
                               <span>{tariff.tariffPeakValue}</span>
                             </div>
                             <div>
-                              <p>Reference Date</p>
+                              <p>{transl.ReferenceDate}</p>
                               <span>{tariff.period}</span>
                             </div>
                           </div>

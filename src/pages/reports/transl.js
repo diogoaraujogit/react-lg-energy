@@ -32,15 +32,6 @@ const translation = {
     Processing: 'Processing',
     Error: 'Error',
     Undefined: 'Undefined',
-
-    Total: 'Total',
-    PhaseA: 'Phase A',
-    PhaseB: 'Phase B',
-    PhaseC: 'Phase C',
-    Average: 'Average',
-    AddDevice: 'Add Device',
-    AddDevices: 'Add Devices',
-    CurrentDevices: 'Current devices',
   },
   pt: {
     Devices: 'Dispositivos',
@@ -74,15 +65,6 @@ const translation = {
     Processing: 'Processando',
     Error: 'Erro',
     Undefined: 'Indefinido',
-
-    Total: 'Total',
-    PhaseA: 'Fase A',
-    PhaseB: 'Fase B',
-    PhaseC: 'Fase C',
-    Average: 'Média',
-    AddDevice: 'Adicionar Dispositivo',
-    AddDevices: 'Adicionar Dispositivos',
-    CurrentDevices: 'Dispositivos atuais',
   }
 }
 
