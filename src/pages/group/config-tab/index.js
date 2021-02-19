@@ -23,6 +23,7 @@ import { base_device } from './base_device';
 import { MdSearch, MdClear } from 'react-icons/md'
 import { useSelector } from 'react-redux';
 import CheckboxLabels from '../../../components/Checkbox';
+import api_notifications from '../../../services/api_notifications';
 
 
 const ConfigTab = () => {
@@ -136,6 +137,25 @@ const ConfigTab = () => {
     setSaving(false)
   }
 
+  async function notifyRemoveDevice(title) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "device_removed_from_group",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Device removed from group",
+          description: `Device '${title}' has been removed from group '${groupName}'`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+
   async function handleRemoveDevice(device) {
     setDeleting(true)
 
@@ -147,6 +167,7 @@ const ConfigTab = () => {
 
       if (response.data) {
         toast.info('Device removed')
+        notifyRemoveDevice(device.name)
         getGroups()
         getDevices()
       }
@@ -318,7 +339,7 @@ const ConfigTab = () => {
 
     setDevicesArray(result_devices)
 
-  }, [searchDevice])
+  }, [allDevices, searchDevice])
 
 
 

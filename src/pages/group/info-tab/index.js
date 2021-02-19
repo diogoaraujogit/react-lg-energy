@@ -9,6 +9,7 @@ import { toast } from 'react-toastify';
 import { setGroup } from '../../../store/modules/group/actions';
 import Loading from '../../../components/Loading';
 import { useHistory } from 'react-router-dom';
+import api_notifications from '../../../services/api_notifications';
 
 const InfoTab = () => {
 
@@ -33,6 +34,27 @@ const InfoTab = () => {
     setOnEdit(false)
   }
 
+  async function notifyUpdate() {
+
+    if(group.name !== name) {
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "edited_group",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Group update",
+          description: `Group name '${group.name}' has been update to '${name}'`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+  }
+
   const handleSave = async () => {
     setSaving(true)
 
@@ -44,6 +66,7 @@ const InfoTab = () => {
 
       if (response.data) {
         toast.success('Success')
+        notifyUpdate()
         getGroup()
         setOnEdit(false)
       }
@@ -53,6 +76,25 @@ const InfoTab = () => {
     }
 
     setSaving(false)
+  }
+
+  async function notifyDelete(title) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "group_removed",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Group deleted",
+          description: `Group '${title}' has been deleted`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
   }
 
   const handleDelete = async () => {
@@ -65,6 +107,7 @@ const InfoTab = () => {
 
       if (response) {
         toast.info('Group was successfully deleted')
+        notifyDelete(group.name)
         history.push('/groups')
       }
 

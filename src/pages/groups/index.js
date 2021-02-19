@@ -20,6 +20,7 @@ import { Link } from 'react-router-dom';
 import { base_device } from '../devices/base_device';
 
 import { MdSearch, MdClear } from 'react-icons/md'
+import api_notifications from '../../services/api_notifications';
 
 
 const Groups = () => {
@@ -65,6 +66,25 @@ const Groups = () => {
 
   // API SEARCHES
 
+  async function notifyCreation(title) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "created_group",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "New group registration",
+          description: `Group '${title}' has been registered`
+        }
+      })
+
+    } catch (e) {
+
+    }
+  }
+
   async function handleSubmit(e, close) {
     e.preventDefault()
     setRegistering(true)
@@ -74,12 +94,13 @@ const Groups = () => {
       try {
 
         const response = await api_crud.post('/groups', {
-          name: deviceName,
-          subgroups: []
-        })
+            name: deviceName,
+            subgroups: []
+          })
 
         if (response.data) {
           toast.info('Group created')
+          notifyCreation(deviceName)
           getGroups()
           close()
         } else {
@@ -167,7 +188,7 @@ const Groups = () => {
     const newGroups = groups.filter(group => group.name.toLowerCase().includes(search.toLowerCase()))
 
     setGroupsArray(newGroups)
-  }, [search])
+  }, [groups, search])
 
 
 

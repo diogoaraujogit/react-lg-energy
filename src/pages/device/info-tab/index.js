@@ -10,6 +10,7 @@ import SwitchLabels from '../../../components/Switch';
 import { setDevice } from '../../../store/modules/device/actions';
 import Loading from '../../../components/Loading';
 import { useHistory } from 'react-router-dom';
+import api_notifications from '../../../services/api_notifications';
 
 const InfoTab = () => {
 
@@ -73,7 +74,58 @@ const InfoTab = () => {
     setPhase(device.phase)
     setDiameter(device.diameter)
     setFrameVoltage(device.frameVoltage)
+    setMacAddress(device.macAddress)
     setOnEdit(false)
+  }
+
+  async function notifyUpdate(device, body) {
+
+    let message = ''
+    var hasChanges = false 
+
+    const associateParams = {
+      name: 'Name', idLora: 'ID Lora', description: 'Description', isRelayEnabled: 'Relay option',
+      switchboard: 'Switchboard', nominalCurrent: 'Nominal current', ratedVoltage: 'Rated Voltage',
+      currentTransformer: 'Current transformer', phase: 'Phase', diameter: 'Diameter', frameVoltage: 'Frame Voltage',
+      macAddress: 'Mac Address'
+    }
+
+    if(device.name !== body.name) {
+      hasChanges = true
+      message = message.concat(`Device '${device.name}' has been updated to '${body.name}'.`)
+    } else {
+      message = message.concat(`Device '${device.name}' has been updated.`)
+    }
+
+    ['idLora', 'description', 'isRelayEnabled', 'switchboard', 
+    'nominalCurrent', 'ratedVoltage', 'currentTransformer', 'phase', 
+    'diameter', 'frameVoltage', 'macAddress'].map(param => {
+      if((device[param] || body[param]) && (device[param] !== body[param])) {
+        hasChanges = true
+        message = message.concat(` ${associateParams[param]} from '${device[param]}' to '${body[param]}'.`)
+        console.log('----> MESSAGE')
+        console.log(message)
+      }
+    })
+
+    if(hasChanges){
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "edited_device",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Device update",
+          description: `${message}`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
   }
 
   const handleSave = async () => {
@@ -103,6 +155,7 @@ const InfoTab = () => {
 
       if (response.data) {
         toast.success('Sucess')
+        notifyUpdate(device, body)
         getDevice()
         setOnEdit(false)
       }
@@ -112,6 +165,25 @@ const InfoTab = () => {
     }
 
     setSaving(false)
+  }
+
+  async function notifyDelete(deviceName) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "device_removed",
+          userName: "teste",
+          userId: 0,
+          notification: {
+            title: "Device deleted",
+            description: `Device '${deviceName}' has been deleted`
+          }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
   }
 
   const handleDelete = async () => {
@@ -124,6 +196,7 @@ const InfoTab = () => {
 
       if (response) {
         toast.info('Device was successfully deleted')
+        notifyDelete(device.name)
         history.push('/devices')
       }
 

@@ -13,6 +13,7 @@ import Loading from '../../components/Loading';
 import { LoadingArea, MessageArea } from '../dashboard/ranking-tab/styles';
 import { useSelector } from 'react-redux';
 import translation from './transl';
+import api_notifications from '../../services/api_notifications';
 
 
 const Tariffs = () => {
@@ -64,21 +65,47 @@ const Tariffs = () => {
     setPageLoading(false)
   }
 
+  async function notifyUpdate(tempTariff) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "edited_tariff",
+          userName: "teste",
+          userId: 0,
+          notification: {
+            title: "Tariffs update",
+            description: 
+            `New tariff for reference month ${tempTariff.period}. 
+            Average Tariff Value: R$ ${tempTariff.tariff_value}.
+            Tariff Peak Value: R$ ${tempTariff.tariff_peak_value}.
+            Peak Start Hour: R$ ${tempTariff.peak_hour_start}.
+            Peak End Hour: R$ ${tempTariff.peak_hour_end}.
+            `
+          }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+
   async function updateTariff() {
     setSaving(true)
 
     try {
 
       const response = await api_tariffs.patch('/', {
-        period: tempTariff.period,
-        tariffValue: Number(tempTariff.tariff_value),
-        tariffPeakValue: Number(tempTariff.tariff_peak_value),
-        peakHourStart: tempTariff.peak_hour_start.slice(0, 5),
-        peakHourEnd: tempTariff.peak_hour_end.slice(0, 5),
-      })
+          period: tempTariff.period,
+          tariffValue: Number(tempTariff.tariff_value),
+          tariffPeakValue: Number(tempTariff.tariff_peak_value),
+          peakHourStart: tempTariff.peak_hour_start.slice(0, 5),
+          peakHourEnd: tempTariff.peak_hour_end.slice(0, 5),
+        })
 
       if (response.data) {
         toast.success(transl.saveSuccess)
+        notifyUpdate(tempTariff)
         setOnEdit(false)
         getTariffs()
       }

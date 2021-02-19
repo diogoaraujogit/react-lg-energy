@@ -15,6 +15,7 @@ import Popup from 'reactjs-popup'
 import { toast } from 'react-toastify'
 
 import api_crud from '../../services/api_crud';
+import api_notifications from '../../services/api_notifications';
 import SwitchLabels from '../../components/Switch';
 import { Link } from 'react-router-dom';
 import { base_device } from './base_device';
@@ -102,6 +103,25 @@ const Devices = () => {
 
   // API SEARCHES
 
+  async function notifyCreation(deviceName) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "created_device",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "New device registration",
+          description: `Device '${deviceName}' has been registered`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+
   async function handleSubmit(e, close) {
     e.preventDefault()
     setRegistering(true)
@@ -111,11 +131,12 @@ const Devices = () => {
       try {
 
         const response = await api_crud.post('/devices', {
-          ...base_device, name: deviceName
-        })
+            ...base_device, name: deviceName
+          })
 
         if (response.data) {
           toast.info('Device created')
+          notifyCreation(deviceName)
           getGroups()
           close()
         } else {
@@ -132,7 +153,7 @@ const Devices = () => {
           if (error.statusCode === 409) {
             setFormError('Device name already exists')
           }
-          else if (error.statusCode === 500) {
+          else if (error.statusCode === 500 || error.statusCode === 400) {
             setFormError('An unexpected error occurred')
           }
         }

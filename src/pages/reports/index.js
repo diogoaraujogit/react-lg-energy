@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { useSelector } from 'react-redux';
 import translation from './transl';
+import api_notifications from '../../services/api_notifications';
 
 const Reports = () => {
 
@@ -163,18 +164,38 @@ const Reports = () => {
     setPageLoading(false)
   }
 
+  async function notifyCreation(title) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "generated_report",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Report creation",
+          description: `Report '${title}' has been created`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+
+
   async function createReport(reportBody) {
     setCreating(true)
 
     try {
 
       const response = await api_reports.post('', reportBody)
-      console.log(response)
 
       if(response.data) {
         
         const message = response.data.message
         // const processingStatus = response.data.processingStatus
+        notifyCreation(reportBody.title)
         getReports()
 
         message ? toast.info(message) : toast.info(transl.creating)
@@ -223,7 +244,26 @@ const Reports = () => {
     setBodyLoading(false)
   }
 
-  async function handleDeleteReport(reportId) {
+  async function notifyDelete(title) {
+
+    try {
+
+      const response = await api_notifications.post('/users', {
+        action: "report_removed",
+        userName: "teste",
+        userId: 0,
+        notification: {
+          title: "Report deleted",
+          description: `Report '${title}' has been deleted`
+        }
+      })
+
+    } catch(e) {
+      toast.error(`Notification can't be sent`)
+    }
+  }
+
+  async function handleDeleteReport(reportId, title) {
 
     setDeleting(true)
     
@@ -235,6 +275,7 @@ const Reports = () => {
       if(response) {
         console.log(response)
         toast.info(transl.reportDeleted)
+        notifyDelete(title)
         getReports()
       } 
 
@@ -244,6 +285,25 @@ const Reports = () => {
 
     setDeleting(false)
   }
+
+  // async function notifyDownload(title) {
+
+  //   try {
+
+  //     const response = await api_notifications.post('/users', {
+  //       action: "download_report",
+  //       userName: "teste",
+  //       userId: 0,
+  //       notification: {
+  //         title: "Report download",
+  //         description: `Report '${title}' has been downloaded`
+  //       }
+  //     })
+
+  //   } catch(e) {
+  //     toast.error(`Notification can't be sent`)
+  //   }
+  // }
 
   async function handleDownloadReport(reportId) {
 
@@ -504,7 +564,7 @@ const Reports = () => {
                                   <div>
                                     {processingStatus === 'FINISHED' && <MdFileDownload onClick={() => handleDownloadReport(reportId)} />}
                                     {(processingStatus === 'FINISHED' || processingStatus === 'ERROR') && 
-                                    (deleting? <div className='deleting'><Loading /></div> : <MdDelete onClick={() => handleDeleteReport(reportId)} />) }
+                                    (deleting? <div className='deleting'><Loading /></div> : <MdDelete onClick={() => handleDeleteReport(reportId, report.title)} />) }
                                   </div>
                                 </div>
                                 <p>{`Period: ${report.period}`}</p>
