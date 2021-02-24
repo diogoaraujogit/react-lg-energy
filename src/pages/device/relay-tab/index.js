@@ -120,7 +120,7 @@ const RelayTab = () => {
                       <p>Time Off</p>
                       <BasicTimePicker />
                       <SwitchLabels size='small' />
-                      <span>DIsable</span>
+                      <span>Disable</span>
                     </div>
                   </div>
                 </Schedule>

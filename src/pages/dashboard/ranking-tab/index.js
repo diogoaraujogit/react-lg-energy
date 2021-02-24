@@ -27,8 +27,13 @@ import {
   LoadingArea,
   MessageArea,
 } from './styles';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 const RankingTab = () => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const [chartData, setChartData] = useState([])
 
@@ -132,8 +137,8 @@ const RankingTab = () => {
       }
 
     } catch (e) {
-      toast.error('Error loading devices')
-      setPageMessage('Error loading devices')
+      toast.error(transl.errorDevices)
+      setPageMessage(transl.errorDevices)
     }
 
     setPageLoading(false)
@@ -154,8 +159,8 @@ const RankingTab = () => {
       }
 
     } catch (e) {
-      toast.error('Error loading devices')
-      setPageMessage('Error loading devices')
+      toast.error(transl.errorRanking)
+      setPageMessage(transl.errorRanking)
     }
 
     setRankingLoading(false)
@@ -248,12 +253,12 @@ const RankingTab = () => {
     const data = [
       {
         "id": "used",
-        "label": "used",
+        "label": transl.used,
         "value": used,
       },
       {
         "id": "free",
-        "label": "free",
+        "label": transl.free,
         "value": free,
       }
     ]
@@ -263,7 +268,6 @@ const RankingTab = () => {
   }, [highlightedDevice, ranking])
 
   useEffect(() => {
-
 
     const aux = ranking?.devices?.sort((a, b) => (a.kWh > b.kWh) ? -1 : 1)
     setSortedRanking(aux)
@@ -299,7 +303,7 @@ const RankingTab = () => {
                       <ConsumptionChart>
                         <div className='info'>
                           <h2>{`${highlightedDevice?.percentage || '0'}%`}</h2>
-                          <p>General Consumption</p>
+                          <p>{transl.GeneralConsumption}</p>
                         </div>
                         <div className='chart'>
                           <PieChart data={chartData} />
@@ -311,7 +315,7 @@ const RankingTab = () => {
                       </div>
                       <div>
                         <button onClick={() => setShowRanking(false)}>
-                          SEARCH RANKING <MdKeyboardArrowUp />
+                          {transl.SearchRanking} <MdKeyboardArrowUp />
                         </button>
                       </div>
                     </RankingChart>
@@ -319,12 +323,12 @@ const RankingTab = () => {
                     <RankingSearch>
                       <div className='header'>
                         <button onClick={() => setShowRanking(true)}>
-                          RANKING GRAPH <MdKeyboardArrowDown />
+                          {transl.RankingChart} <MdKeyboardArrowDown />
                         </button>
                       </div>
 
                       <div className='search-select'>
-                        <p>Devices:</p>
+                        <p>{transl.Devices}:</p>
 
                         <AddDevice>
                           <Popup
@@ -334,8 +338,8 @@ const RankingTab = () => {
                             contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                             trigger={
                               <button>
-                                Add Device
-                        </button>
+                                {transl.AddDevices}
+                              </button>
                             }
                             modal
                           >
@@ -344,7 +348,7 @@ const RankingTab = () => {
 
                                 return (
                                   <AddDeviceModal>
-                                    <h3>Add Devices</h3>
+                                    <h3>{transl.AddDevices}</h3>
 
                                     <div className='search'>
                                       <Search>
@@ -386,7 +390,7 @@ const RankingTab = () => {
                                     </div>
                                     <div className='buttons'>
                                       <button onClick={() => close()}>
-                                        Cancel
+                                        {transl.Cancel}
                                       </button>
                                       <button
                                         disabled={saving}
@@ -395,7 +399,7 @@ const RankingTab = () => {
                                           close()
                                         }}
                                       >
-                                        Add {saving && <Loading />}
+                                        {transl.Add} {saving && <Loading />}
                                       </button>
                                     </div>
                                   </AddDeviceModal>
@@ -414,7 +418,7 @@ const RankingTab = () => {
 
                       <div className='search-date'>
                         <div>
-                          <p>Date</p>
+                          <p>{transl.Date}</p>
                           <div>
                             <BasicDatePicker format="MM/yyyy" views={['year', 'month']} value={startDate} handleChange={setStartDate} />
                           </div>
@@ -429,7 +433,7 @@ const RankingTab = () => {
 
                       <div className='search-button'>
                         <button onClick={() => handleSearch(selectedsDevices)}>
-                          SEARCH
+                          {transl.Search}
                         </button>
                       </div>
                     </RankingSearch>
@@ -447,11 +451,11 @@ const RankingTab = () => {
                       :
                       <RankingList>
                         <div className='table-line'>
-                          <span>Position</span>
-                          <span>Device</span>
-                          <span>General Consumption</span>
+                          <span>{transl.Position}</span>
+                          <span>{transl.Device}</span>
+                          <span>{transl.GeneralConsumption}</span>
                           <span>kWh</span>
-                          <span>Cost</span>
+                          <span>{transl.Cost}</span>
                         </div>
                         <div className='table-body'>
                           {

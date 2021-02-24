@@ -21,8 +21,15 @@ import {
   DevicesMessage, NotificationsMessage, DetailsLoading, DetailsMessage
 } from './styles';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import translation from './transl';
+import { format } from 'date-fns';
 
 const ConsumptionTab = () => {
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   const [yearDate, setYearDate] = useState(new Date())
   const [dropdown, setDropdown] = useState([])
@@ -70,14 +77,14 @@ const ConsumptionTab = () => {
         handleCards(response.data)
 
       } else {
-        toast.error('Error trying to get consumption')
-        setCardsMessage('Error trying to get consumption')
+        toast.error(transl.errorConsumption)
+        setCardsMessage(transl.errorConsumption)
       }
 
     } catch (e) {
-      toast.error('Error trying to get consumption')
+      toast.error(transl.errorConsumption)
 
-      setCardsMessage('Error trying to get consumption 2')
+      setCardsMessage(transl.errorConsumption)
     }
 
     setCardsLoading(false)
@@ -95,14 +102,14 @@ const ConsumptionTab = () => {
         handleServer(response.data)
         setServerData(response.data)
       } else {
-        toast.error('Error trying to get server data')
-        setServerMessage('Error trying to get server data')
+        toast.error(transl.errorDisk)
+        setServerMessage(transl.errorDisk)
       }
 
     } catch (e) {
-      toast.error('Error trying to get server data')
+      toast.error(transl.errorDisk)
 
-      setServerMessage('Error trying to get server data')
+      setServerMessage(transl.errorDisk)
     }
 
     setServerLoading(false)
@@ -120,14 +127,14 @@ const ConsumptionTab = () => {
       if (response.data && response_devices.data) {
         handleGroups(response.data, response_devices.data)
       } else {
-        toast.error('Error trying to get groups data')
-        setGroupsMessage('Error trying to get groups data')
+        toast.error(transl.errorGroups)
+        setGroupsMessage(transl.errorGroups)
       }
 
     } catch (e) {
-      toast.error('Error trying to get groups')
+      toast.error(transl.errorGroups)
 
-      setGroupsMessage('Error trying to get groups')
+      setGroupsMessage(transl.errorGroups)
     }
 
     setGroupsLoading(false)
@@ -145,14 +152,14 @@ const ConsumptionTab = () => {
         setNotificationsData(response.data)
 
       } else {
-        toast.error('Error trying to get notifications data')
-        setNotificationsMessage('Error trying to get notifications data')
+        toast.error(transl.errorNotifications)
+        setNotificationsMessage(transl.errorNotifications)
       }
 
     } catch (e) {
-      toast.error('Error trying to get notifications')
+      toast.error(transl.errorNotifications)
 
-      setNotificationsMessage('Error trying to get notifications')
+      setNotificationsMessage(transl.errorNotifications)
     }
 
     setNotificationsLoading(false)
@@ -170,13 +177,13 @@ const ConsumptionTab = () => {
         setDetailsData(response.data)
 
       } else {
-        toast.error('Error trying to get details')
-        setDetailsMessage('Error trying to get details')
+        toast.error(transl.errorDetails)
+        setDetailsMessage(transl.errorDetails)
       }
 
     } catch (e) {
-      toast.error('Error trying to get details')
-      setDetailsMessage('Error trying to get details')
+      toast.error(transl.errorDetails)
+      setDetailsMessage(transl.errorDetails)
     }
 
     setDetailsLoading(false)
@@ -195,13 +202,13 @@ const ConsumptionTab = () => {
         handleDevices(response.data)
 
       } else {
-        toast.error('Error trying to get devices data')
-        setDevicesMessage('Error trying to get devices data')
+        toast.error(transl.errorDevices)
+        setDevicesMessage(transl.errorDevices)
       }
 
     } catch (e) {
-      toast.error('Error trying to get devices')
-      setDevicesMessage('Error trying to get devices')
+      toast.error(transl.errorDevices)
+      setDevicesMessage(transl.errorDevices)
     }
 
     setDevicesLoading(false)
@@ -209,24 +216,27 @@ const ConsumptionTab = () => {
 
   const handleCards = (data) => {
 
+    const d = new Date()
+    const month = format(d, 'MM')
+
     const consumptionCards = [
       {
-        date: 'Today',
-        since: '00:00 AM',
+        date: transl.Today,
+        since: '00:00',
         kWh: '32.526 kWh',
         cost: 'R$ 35.492',
         foreign: 'today'
       },
       {
-        date: 'Week',
-        since: 'Monday',
+        date: transl.Week,
+        since: transl.Monday,
         kWh: '83.139 kWh',
         cost: 'R$ 97.13',
         foreign: 'weekly'
       },
       {
-        date: 'Month',
-        since: '01/12',
+        date: transl.Month,
+        since: `01/${month}`,
         kWh: '559.584 kWh',
         cost: 'R$ 640.816',
         foreign: 'monthly',
