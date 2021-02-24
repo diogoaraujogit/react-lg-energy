@@ -18,7 +18,7 @@ import {
   DashboardHighlights, DashboardCharts, DashboardNotifications,
   Server, UsageChart, Groups, Devices, CardsLoading, ServerLoading, GroupsLoading,
   DevicesLoading, NotificationsLoading, CardsMessage, ServerMessage, GroupsMessage,
-  DevicesMessage, NotificationsMessage, DetailsLoading, DetailsMessage
+  DevicesMessage, NotificationsMessage, DetailsLoading, DetailsMessage, Scroll
 } from './styles';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
@@ -651,6 +651,7 @@ const ConsumptionTab = () => {
                   <h3>Notifications</h3>
                   <p>{`${notificationsData.total} notifications`}</p>
                 </div>
+                <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
                 <div className='notifications'>
                   {
                     notificationsData?.result?.map(notification => {
@@ -664,6 +665,7 @@ const ConsumptionTab = () => {
                     })
                   }
                 </div>
+                </Scroll>
               </DashboardNotifications>
         }
       </DashboardHighlights>

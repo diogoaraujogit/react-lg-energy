@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import PerfectScrollbar from 'react-perfect-scrollbar';
 
 export const Container = styled.div`
   width: 100%;
@@ -314,20 +315,30 @@ export const NotificationsLoading = styled.div`
   justify-content: center;
 `;
 
+export const Scroll = styled(PerfectScrollbar)`
+
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+`;
+
 
 export const DashboardNotifications = styled.div`
   background: #FFFFFF 0% 0% no-repeat padding-box;
   box-shadow: 0px 2px 15px #0000000D;
   border-radius: 10px;
   margin-left: 2rem;
-  padding: 1.5rem 2.7rem;
+  padding: 1.5rem 0.1rem;
   height: 79.6rem;
+  display: flex;
+  flex-direction: column;
 
   .notifications-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
     margin-bottom: 3.2rem;
+    padding: 0rem 2.7rem;
 
     h3 {
       color: #222222;
@@ -342,12 +353,17 @@ export const DashboardNotifications = styled.div`
   }
 
   .notifications {
-    max-height: 90%;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
     overflow-y: auto;
+    padding: 0rem 2.7rem;
   }
 
   .notification {
     margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
 
     h4 {
       color: #222222;
