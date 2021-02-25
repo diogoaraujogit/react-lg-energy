@@ -1,16 +1,22 @@
 import React from 'react';
 import { useState } from 'react';
 import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import Layout from '../../components/Layout'
 import TabsComponent from '../../components/Tabs';
 import ConsumptionTab from './consumption-tab';
 import RankingTab from './ranking-tab';
 
 import { Container, Tabs, PageContent } from './styles';
+import translation from './transl';
 
 const Dashboard = () => {
 
-  const tabs = useMemo(() => ['Consumption', 'Ranking'], [])
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
+
+  const tabs = useMemo(() => [transl.Overview, transl.Ranking], [transl.Overview, transl.Ranking])
   const [tab, setTab] = useState(0)
 
   const renderTab = () => {

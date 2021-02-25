@@ -30,6 +30,20 @@ const ConsumptionTab = () => {
   const { english } = useSelector(props => props.intl)
   const transl = english? translation.en : translation.pt
 
+  const monthsName = {
+    January: transl.January,
+    February: transl.February,
+    March: transl.March,
+    April: transl.April,
+    May: transl.May,
+    June: transl.June,
+    July: transl.July,
+    August: transl.August,
+    September: transl.September,
+    October: transl.October,
+    November: transl.November,
+    December: transl.December,
+  }
 
   const [yearDate, setYearDate] = useState(new Date())
   const [dropdown, setDropdown] = useState([])
@@ -242,7 +256,7 @@ const ConsumptionTab = () => {
         foreign: 'monthly',
       },
       {
-        date: 'Year',
+        date: transl.Year,
         since: '01/01',
         kWh: '1.1802.04 kWh',
         cost: 'R$ 13.401.133',
@@ -270,12 +284,12 @@ const ConsumptionTab = () => {
     const chartData = [
       {
         "id": "used",
-        "label": "used",
+        "label": transl.used,
         "value": used,
       },
       {
         "id": "free",
-        "label": "free",
+        "label": transl.free,
         "value": free,
       }
     ]
@@ -289,39 +303,31 @@ const ConsumptionTab = () => {
       {
         id: 1,
         value: data.online,
-        date: 'Online',
+        date: transl.Online,
       },
       {
         id: 2,
         value: data.offline,
-        date: 'Offline',
+        date: transl.Offline,
       },
       {
         id: 3,
         value: data.registeredIdLora,
-        date: 'Registered',
+        date: transl.Registered,
       },
       {
         id: 4,
         value: data.unregisteredIdLora,
-        date: 'Not registered',
+        date: transl.NotRegistered,
       },
-      // {
-      //   id: 5,
-      //   value: '88',
-      //   date: 'Setted',
-      // },
-      // {
-      //   id: 6,
-      //   value: '12',
-      //   date: 'Manually setted',
-      // },
       {
         id: 5,
         value: data.unconfigured,
-        date: 'Unconfigured',
+        date: transl.Unconfigured,
       },
     ]
+
+    console.log(barData)
 
     setDevicesChart(barData)
 
@@ -394,7 +400,7 @@ const ConsumptionTab = () => {
           contentStyle={{ width: '120rem', height: '55.1rem', borderRadius: '1rem', backgroundColor: '#F8F8F8' }}
           trigger={
             <button>
-              Show All
+              {transl.ShowAll}
             </button>
           }
           modal
@@ -411,12 +417,12 @@ const ConsumptionTab = () => {
                       <p>Total</p>
                       <h3>{`${yearTotal} kWh`}</h3>
                     </div>
-                    <p>Year</p>
+                    <p>{transl.Year}</p>
                     <div className='date'>
                       <BasicDatePicker value={yearDate} handleChange={setYearDate} format='yyyy' views={['year']} />
                     </div>
                     <button>
-                      SEARCH
+                      {transl.Search}
                     </button>
                   </div>
 
@@ -433,9 +439,9 @@ const ConsumptionTab = () => {
                         :
                         <ConsumptionTable>
                           <div className='table-header'>
-                            <p>Date</p>
+                            <p>{transl.Date}</p>
                             <p>kWh</p>
-                            <p>Cost</p>
+                            <p>{transl.Cost}</p>
                             <div></div>
                           </div>
                           <div className='table-body'>
@@ -443,7 +449,7 @@ const ConsumptionTab = () => {
                               detailsData?.data?.map(month => {
 
                                 const days = month.days
-                                const monthName = month.monthname
+                                const monthName = monthsName[month.monthname]
                                 const total = month.total
                                 const cost = (month.total * 1.06).toFixed(2)
                                 const drop = dropdown.includes(monthName)
@@ -551,23 +557,23 @@ const ConsumptionTab = () => {
                   </ServerMessage>
                   :
                   <Server>
-                    <h4>Server</h4>
-                    <h3>DISK USAGE</h3>
+                    <h4>{transl.Server}</h4>
+                    <h3>{transl.DiskUsage}</h3>
                     <div className='data'>
                       <div className='legend'>
                         <div>
                           <MdLens style={{ color: '#E1E1E1' }} />
-                          <p>Free</p>
+                          <p>{transl.Free}</p>
                         </div>
                         <div>
                           <MdLens style={{ color: '#C5004F' }} />
-                          <p>Used space</p>
+                          <p>{transl.UsedSpace}</p>
                         </div>
                       </div>
                       <UsageChart>
                         <div className='used-info'>
                           <p>{`${serverData?.percentageUsed || '-'}%`}</p>
-                          <span>Used Space</span>
+                          <span>{transl.UsedSpace}</span>
                         </div>
                         <div className='chart'>
                           <PieChart data={serverChart} />
@@ -575,8 +581,8 @@ const ConsumptionTab = () => {
                       </UsageChart>
                     </div>
                     <div className='info'>
-                      <p>{`Available: ${serverData?.free || '-'}`}</p>
-                      <p>{`Used Space: ${serverData?.used || '-'}`}</p>
+                      <p>{`${transl.Available}: ${serverData?.free || '-'}`}</p>
+                      <p>{`${transl.UsedSpace}: ${serverData?.used || '-'}`}</p>
                     </div>
                   </Server>
             }
@@ -592,17 +598,17 @@ const ConsumptionTab = () => {
                   </GroupsMessage>
                   :
                   <Groups>
-                    <h4>Groups</h4>
-                    <h3>Total of devices registered</h3>
+                    <h4>{transl.Groups}</h4>
+                    <h3>{transl.TotalRegistered}</h3>
                     <h2>{groupsData?.devices}</h2>
                     <div>
                       <div className='groups'>
                         <p>{groupsData?.groups}</p>
-                        <span>Groups</span>
+                        <span>{transl.Groups}</span>
                       </div>
                       <div className='subgroups'>
                         <p>{groupsData?.subgroups}</p>
-                        <span>Subgroups</span>
+                        <span>{transl.Subgroups}</span>
                       </div>
                     </div>
                   </Groups>
@@ -620,7 +626,7 @@ const ConsumptionTab = () => {
                 </DevicesMessage>
                 :
                 <Devices>
-                  <h4>Devices</h4>
+                  <h4>{transl.Devices}</h4>
                   <div>
                     <BarChart
                       data={devicesChart}
@@ -648,8 +654,8 @@ const ConsumptionTab = () => {
               :
               <DashboardNotifications>
                 <div className='notifications-header'>
-                  <h3>Notifications</h3>
-                  <p>{`${notificationsData.total} notifications`}</p>
+                  <h3>{transl.Notifications}</h3>
+                  <p>{`${notificationsData.total} ${transl.notifications}`}</p>
                 </div>
                 <Scroll options={{ suppressScrollX: true, useBothWheelAxes: false }}>
                 <div className='notifications'>
