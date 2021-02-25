@@ -26,6 +26,8 @@ export const Container = styled.div`
 
 `;
 
+
+
 export const Header = styled.div`
   display: flex;
   flex-direction: row;
@@ -192,10 +194,11 @@ export const ManualRelay = styled.div`
   p {
     margin-right: 2rem;
     color: #707070;
+    font-size: 1.4rem;
   }
 
   button {
-
+    font-size: 1.4rem;
     width: 7rem;
     height: 3rem;
     border: none;

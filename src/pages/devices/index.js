@@ -21,9 +21,15 @@ import { Link } from 'react-router-dom';
 import { base_device } from './base_device';
 
 import { MdSearch, MdClear } from 'react-icons/md'
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 
 const Devices = () => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   // ESTADOS INTERNOS
 
@@ -118,7 +124,7 @@ const Devices = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
 
@@ -135,32 +141,32 @@ const Devices = () => {
           })
 
         if (response.data) {
-          toast.info('Device created')
+          toast.info(transl.deviceSuccess)
           notifyCreation(deviceName)
           getGroups()
           close()
         } else {
-          toast.error('Error trying to create device')
+          toast.error(transl.errorCreate)
         }
 
       } catch (e) {
-        toast.error('An error occurred')
+        toast.error(transl.errorCreate)
         const error = e.response?.data
 
-        setFormError('Unable to connect to server')
+        setFormError(transl.errorConnect)
 
         if (error) {
           if (error.statusCode === 409) {
-            setFormError('Device name already exists')
+            setFormError(transl.errorName)
           }
           else if (error.statusCode === 500 || error.statusCode === 400) {
-            setFormError('An unexpected error occurred')
+            setFormError(transl.errorUnexpected)
           }
         }
       }
 
     } else {
-      setFormError('Device name is required')
+      setFormError(transl.nameRequired)
     }
 
     setRegistering(false)
@@ -187,7 +193,7 @@ const Devices = () => {
 
     } catch (e) {
 
-      setBodyMessage('Unable to load devices')
+      setBodyMessage(transl.errorDevices)
 
     }
 
@@ -214,12 +220,12 @@ const Devices = () => {
     setDevicesLength(count)
 
     if (count < 1) {
-      setBodyMessage('No devices')
+      setBodyMessage(transl.noDevices)
     } else {
       setBodyMessage('')
     }
 
-  }, [groupsArray])
+  }, [groupsArray, transl.noDevices])
 
 
 
@@ -239,7 +245,7 @@ const Devices = () => {
         device.idLora?.toLowerCase().includes(search.toLowerCase())
       )
 
-      obj.devices = result_devices
+    obj.devices = result_devices
 
       return obj
     })
@@ -253,20 +259,20 @@ const Devices = () => {
 
 
   return (
-    <Layout title='Devices'>
+    <Layout title={transl.title}>
       <Container>
         <Header>
           <Info>
             <div>
-              <h2>Devices</h2>
-              <span>{`${devicesLength} Devices`}</span>
+              <h2>{transl.Devices}</h2>
+              <span>{`${devicesLength} ${transl.Devices}`}</span>
             </div>
             <div>
               <span>Status:&emsp;</span>
               <MdLens />
-              <p>&nbsp;Active&emsp;</p>
+              <p>&nbsp;{transl.Active}&emsp;</p>
               <MdLens />
-              <p>&nbsp;Inactive</p>
+              <p>&nbsp;{transl.Inactive}</p>
             </div>
           </Info>
           <Features disableSchedules={disableSchedules} filtered={isFiltered}>
@@ -305,7 +311,7 @@ const Devices = () => {
                 trigger={
                   <button className='filter-button'>
                     <RiFilterFill />
-                    <span>filter</span>
+                    <span>{transl.filter}</span>
                   </button>
                 }
                 modal
@@ -314,11 +320,11 @@ const Devices = () => {
                   close => {
                     return (
                       <AddFilter>
-                        <h2>Filter</h2>
+                        <h2>{transl.Filter}</h2>
                         <div className='filter-select'>
                           <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
                             <option key={0} value=''>
-                              Select a group
+                              {transl.SelectGroup}
                             </option>
                             {
                               groups && Array.isArray(groups) && groups.map(group => {
@@ -335,24 +341,24 @@ const Devices = () => {
 
                         <div className='filter-options'>
                           <button className={filterSelect === 'all' && 'filter-selected'} onClick={() => setFilterSelect('all')}>
-                            ALL
+                            {transl.All}
                           </button>
                           <button className={filterSelect === 'on' && 'filter-selected'} onClick={() => setFilterSelect('on')}>
-                            ON
+                            {transl.On}
                           </button>
                           <button className={filterSelect === 'off' && 'filter-selected'} onClick={() => setFilterSelect('off')}>
-                            OFF
+                            {transl.Off}
                           </button>
                         </div>
                         <button onClick={() => removeFilter()}>
-                          REMOVE FILTER
+                          {transl.RemoveFilter}
                         </button>
                         <div className='filter-buttons'>
                           <button onClick={() => close()}>
-                            Cancel
+                            {transl.Cancel}
                           </button>
                           <button onClick={() => handleFilter(close)}>
-                            Filter
+                            {transl.Filter}
                           </button>
                         </div>
                       </AddFilter>
@@ -363,7 +369,7 @@ const Devices = () => {
               </Popup>
 
               <button className='disable-schedules' onClick={() => setDisableSchedules(!disableSchedules)}>
-                {disableSchedules ? 'Schedules disabled' : 'Disable Schedules'}
+                {disableSchedules ? transl.SchedulesDisabled : transl.DisableSchedules}
               </button>
 
 
@@ -377,7 +383,7 @@ const Devices = () => {
                 contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
                 trigger={
                   <button className='add-device-button'>
-                    New Device
+                    {transl.NewDevice}
                   </button>
                 }
                 modal
@@ -386,7 +392,7 @@ const Devices = () => {
                   close => {
                     return (
                       <AddDevice formError={formError} registering={registering}>
-                        <p>New Device</p>
+                        <p>{transl.NewDevice}</p>
                         <div>
                           <span>{formError}</span>
                         </div>
@@ -398,14 +404,14 @@ const Devices = () => {
                               setFormError('')
                               setDeviceName(event.target.value);
                             }}
-                            placeholder='Device name'
+                            placeholder={transl.DeviceName}
                           />
                           <div>
                             <button disabled={registering} onClick={() => close()}>
-                              Cancel
+                              {transl.Cancel}
                             </button>
                             <button disabled={registering} type='submit'>
-                              Register {registering && <Loading />}
+                              {transl.Register} {registering && <Loading />}
                             </button>
                           </div>
                         </form>
@@ -417,7 +423,7 @@ const Devices = () => {
               </Popup>
             </div>
             <div>
-              <span>Relay:&emsp;</span>
+              <span>{transl.Relay}:&emsp;</span>
               <MdLens />
               <p>&nbsp;ON&emsp;</p>
               <MdLens />
@@ -428,7 +434,7 @@ const Devices = () => {
 
         <SearchInfo>
           {
-            search && <><h3>Showing results for:&nbsp;</h3>
+            search && <><h3>{transl.ShowResults}:&nbsp;</h3>
               <p>{search}</p></>
           }
         </SearchInfo>
@@ -459,7 +465,7 @@ const Devices = () => {
                           <h2>{name}</h2>
                           <div>
                             <Link to={`/groups/${group_id}`}>
-                              See Group
+                              {transl.SeeGroup}
                             </Link>
                           </div>
                         </GroupHeader>

@@ -13,16 +13,21 @@ import Loading from '../../components/Loading'
 
 import { FiArrowLeft } from 'react-icons/fi'
 import api_crud from '../../services/api_crud';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setDevice } from '../../store/modules/device/actions';
 import { toast } from 'react-toastify';
+import translation from './transl';
 
 const Device = () => {
 
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
+
   const dispatch = useDispatch()
 
-  const tabs = useMemo(() => ['Search', 'Readings', 'Info', 'Settings', 'Relay'], [])
-  const [tab, setTab] = useState(4)
+  const tabs = useMemo(() => [transl.Search, transl.Readings, transl.Info, transl.Settings, transl.Relay], [transl.Info, transl.Readings, transl.Relay, transl.Search, transl.Settings])
+  const [tab, setTab] = useState(0)
 
   const [bodyLoading, setBodyLoading] = useState(false)
   const [bodyMessage, setBodyMessage] = useState('')
@@ -63,12 +68,12 @@ const Device = () => {
         console.log(response.data)
         dispatch(setDevice(response.data))
       } else {
-        setBodyMessage('Unable to get device')
+        setBodyMessage(transl.errorDevice)
       }
 
     } catch (e) {
-      toast.error('Unable to get device')
-      setBodyMessage('Unable to get device')
+      toast.error(transl.errorDevice)
+      setBodyMessage(transl.errorDevice)
     }
 
     setBodyLoading(false)
@@ -83,7 +88,7 @@ const Device = () => {
   }, [])
 
   return (
-    <Layout title='Device'>
+    <Layout title={transl.title}>
       <Container>
 
         <Header>

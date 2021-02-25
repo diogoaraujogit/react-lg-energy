@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import { format, parse, parseISO } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import { MdEqualizer, MdShowChart } from 'react-icons/md';
@@ -7,9 +9,13 @@ import BarChart from '../../../../components/BarChart';
 import LineChart from '../../../../components/LineChart';
 import { hours } from '../../../../config';
 import { setBarSelection, setLineSelection } from '../../../../store/modules/analytics/actions';
+import translation from '../../transl';
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
 const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const { barSelection, lineSelection } = useSelector(state => state.analytics)
 
@@ -28,18 +34,18 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
   }
 
   const relMonths = {
-    '01': 'January',
-    '02': 'February',
-    '03': 'March',
-    '04': 'April',
-    '05': 'May',
-    '06': 'June',
-    '07': 'July',
-    '08': 'August',
-    '09': 'September',
-    '10': 'October',
-    '11': 'November',
-    '12': 'December'
+    '01': transl.January,
+    '02': transl.February,
+    '03': transl.March,
+    '04': transl.April,
+    '05': transl.May,
+    '06': transl.June,
+    '07': transl.July,
+    '08': transl.August,
+    '09': transl.September,
+    '10': transl.October,
+    '11': transl.November,
+    '12': transl.December,
   }
 
   console.log('----> Analytics e Logs')
@@ -98,25 +104,25 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
     return (
       [
         {
-          title: 'Highest',
+          title: transl.Highest,
           date: b_date || '02 SET 2020',
           un: un || 'A',
           value: b_value || 206
         },
         {
-          title: 'Lowest',
+          title: transl.Lowest,
           date: l_date || '02 SET 2020',
           un: un || 'A',
           value: l_value || 206
         },
         {
-          title: 'Average',
+          title: transl.Average,
           date: a_date || '02 SET 2020',
           un: un || 'A',
           value: a_value || 206
         },
         {
-          title: 'Selected',
+          title: transl.Selected,
           date: s_date || '-',
           un: un || 'A',
           value: s_value || '-'
@@ -328,7 +334,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
                 data={barData}
                 keys={phase}
                 indexBy='date'
-                xLegend='Date'
+                xLegend={transl.Date}
                 yLegend={`${param} (${un})`}
                 maxValue={maxBar}
                 minValue={minBar}
@@ -337,7 +343,7 @@ const BodyData = ({ analytics, logs, phase, searchType, period, param, un }) => 
               :
               <LineChart
                 data={lineData}
-                xLegend={isAnalytics ? 'Date' : 'Time'}
+                xLegend={isAnalytics ? transl.Date : transl.Time}
                 yLegend={`${param} (${un})`}
                 setSelection={setLineSelection}
               />
