@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useMemo, useState, useEffect } from 'react';
 import { MdLens } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,8 +16,13 @@ import api_logs from '../../../services/api_logs';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { setLogSelection } from '../../../store/modules/logs/actions';
+import translation from '../transl';
 
 const ReadTab = () => {
+
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const { device } = useSelector(state => state.device)
   const id = device.idLora
@@ -37,22 +43,22 @@ const ReadTab = () => {
 
   const param_options = [
     {
-      title: 'Current',
+      title: transl.Current,
       value: 'current',
       un: 'A'
     },
     {
-      title: 'Consumption',
+      title: transl.Consumption,
       value: 'powerConsumption',
       un: 'kWh'
     },
     {
-      title: 'Active Power',
+      title: transl.Power,
       value: 'activePower',
       un: 'kW'
     },
     {
-      title: 'Demand',
+      title: transl.Demand,
       value: 'demand',
       un: 'kWh'
     }
@@ -63,11 +69,11 @@ const ReadTab = () => {
 
     const lastOption = param === 'current' ?
       {
-        title: 'Average',
+        title: transl.Average,
         value: 'Average'
       } :
       {
-        title: 'Total',
+        title: transl.Total,
         value: 'Total'
       }
 
@@ -89,15 +95,15 @@ const ReadTab = () => {
 
     return [
       {
-        title: 'Phase A',
+        title: transl.PhaseA,
         value: 'Phase A'
       },
       {
-        title: 'Phase B',
+        title: transl.PhaseB,
         value: 'Phase B'
       },
       {
-        title: 'Phase C',
+        title: transl.PhaseC,
         value: 'Phase C'
       },
       lastOption
@@ -121,17 +127,17 @@ const ReadTab = () => {
       }
 
     } catch (e) {
-      toast.error('An error occurred')
+      toast.error(transl.errorOcurred)
       const error = e.response?.data
 
-      setChartMessage('Unable to connect to server')
+      setChartMessage(transl.errorConnect)
 
       if (error) {
         if (error.statusCode === 400) {
-          setChartMessage('Invalid search')
+          setChartMessage(transl.invalidSearch)
         }
         else if (error.statusCode === 500) {
-          setChartMessage('An unexpected error occurred')
+          setChartMessage(transl.errorUnexpected)
         }
       }
     }
@@ -150,7 +156,7 @@ const ReadTab = () => {
 
       dispatch(setLogSelection({}))
     } else {
-      setChartMessage('Set a valid ID')
+      setChartMessage(transl.invalidId)
     }
 
   }
@@ -164,7 +170,7 @@ const ReadTab = () => {
   useEffect(() => {
 
     if (id && !(logs && logs.data && logs.data.length)) {
-      setChartMessage('There is no data for this search')
+      setChartMessage(transl.noData)
     }
   }, [logs])
 
@@ -202,7 +208,7 @@ const ReadTab = () => {
           </div>
           <div>
             <MdLens />
-            <span>&nbsp;Online time:&nbsp;</span>
+            <span>&nbsp;{transl.OnlineTime}:&nbsp;</span>
             <span>00:00:00</span>
           </div>
         </Info>
@@ -211,11 +217,11 @@ const ReadTab = () => {
       <SearchInfo>
         <div className='search-info'>
           <div>
-            <p>Parameter:&nbsp;</p>
+            <p>{transl.Parameter}:&nbsp;</p>
             <span>{show_param}</span>
           </div>
           <div>
-            <p>Period:&nbsp;</p>
+            <p>{transl.Period}:&nbsp;</p>
             <span>{show_period}</span>
           </div>
         </div>
@@ -248,7 +254,7 @@ const ReadTab = () => {
             <Body>
               <SearchBox>
                 <div className='search-select'>
-                  <p>Parameter:</p>
+                  <p>{transl.Parameter}:</p>
 
                   <select value={param} onChange={(e) => setParam(e.target.value)}>
                     {
@@ -270,7 +276,7 @@ const ReadTab = () => {
 
                 <div className='search-date'>
                   <div>
-                    <p>Date</p>
+                    <p>{transl.Date}</p>
                     <div>
                       <BasicDatePicker value={startDate} handleChange={setStartDate} />
                     </div>
@@ -285,7 +291,7 @@ const ReadTab = () => {
 
                 <div className='search-button'>
                   <button onClick={() => handleSearch()}>
-                    SEARCH
+                    {transl.SearchButton}
                   </button>
                 </div>
               </SearchBox>

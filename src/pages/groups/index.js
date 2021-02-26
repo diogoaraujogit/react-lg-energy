@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout'
 import { useHistory } from 'react-router-dom'
@@ -21,9 +22,15 @@ import { base_device } from '../devices/base_device';
 
 import { MdSearch, MdClear } from 'react-icons/md'
 import api_notifications from '../../services/api_notifications';
+import { useSelector } from 'react-redux';
+import translation from './transl';
 
 
 const Groups = () => {
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   // ESTADOS INTERNOS
 
@@ -81,7 +88,7 @@ const Groups = () => {
       })
 
     } catch (e) {
-
+      toast.error(transl.notificationError)
     }
   }
 
@@ -99,32 +106,32 @@ const Groups = () => {
           })
 
         if (response.data) {
-          toast.info('Group created')
+          toast.info(transl.deviceSuccess)
           notifyCreation(deviceName)
           getGroups()
           close()
         } else {
-          toast.error('Error trying to create group')
+          toast.error(transl.errorCreate)
         }
 
       } catch (e) {
-        toast.error('An error occurred')
+        toast.error(transl.errorOcurred)
         const error = e.response?.data
 
-        setFormError('Unable to connect to server')
+        setFormError(transl.errorConnect)
 
         if (error) {
           if (error.statusCode === 409) {
-            setFormError('Group name already exists')
+            setFormError(transl.errorName)
           }
           else if (error.statusCode === 500) {
-            setFormError('An unexpected error occurred')
+            setFormError(transl.errorUnexpected)
           }
         }
       }
 
     } else {
-      setFormError('Group name is required')
+      setFormError(transl.nameRequired)
     }
 
     setRegistering(false)
@@ -150,7 +157,7 @@ const Groups = () => {
 
     } catch (e) {
 
-      setBodyMessage('Error trying to load groups')
+      setBodyMessage(transl.errorDevices)
 
     }
 
@@ -171,7 +178,7 @@ const Groups = () => {
     setDevicesLength(count)
 
     if (!count || count < 1) {
-      setBodyMessage('No groups found')
+      setBodyMessage(transl.noDevices)
     } else {
       setBodyMessage('')
     }
@@ -193,13 +200,13 @@ const Groups = () => {
 
 
   return (
-    <Layout title='Groups'>
+    <Layout title={transl.title}>
       <Container>
         <Header>
           <Info>
             <div>
-              <h2>Groups</h2>
-              <span>{`${devicesLength} Groups`}</span>
+              <h2>{transl.Groups}</h2>
+              <span>{`${devicesLength} ${transl.Groups}`}</span>
             </div>
 
           </Info>
@@ -237,7 +244,7 @@ const Groups = () => {
                 contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
                 trigger={
                   <button className='add-device-button'>
-                    New Group
+                    {transl.NewDevice}
                   </button>
                 }
                 modal
@@ -246,7 +253,7 @@ const Groups = () => {
                   close => {
                     return (
                       <AddDevice formError={formError} registering={registering}>
-                        <p>New Group</p>
+                        <p>{transl.NewDevice}</p>
                         <div>
                           <span>{formError}</span>
                         </div>
@@ -258,14 +265,14 @@ const Groups = () => {
                               setFormError('')
                               setDeviceName(event.target.value);
                             }}
-                            placeholder='Group name'
+                            placeholder={transl.DeviceName}
                           />
                           <div>
                             <button disabled={registering} onClick={() => close()}>
-                              Cancel
+                              {transl.Cancel}
                             </button>
                             <button disabled={registering} type='submit'>
-                              Register {registering && <Loading />}
+                              {transl.Register} {registering && <Loading />}
                             </button>
                           </div>
                         </form>
@@ -281,7 +288,7 @@ const Groups = () => {
 
         <SearchInfo>
           {
-            search && <><h3>Showing results for:&nbsp;</h3>
+            search && <><h3>{transl.ShowResults}:&nbsp;</h3>
               <p>{search}</p></>
           }
         </SearchInfo>
@@ -309,11 +316,11 @@ const Groups = () => {
                         <div>
                           <div>
                             <h4>{group.totalDevices}</h4>
-                            <p>&nbsp;Devices</p>
+                            <p>&nbsp;{transl.Devices}</p>
                           </div>
                           <div>
                             <h4>{group.totalSubgroups}</h4>
-                            <p>&nbsp;Subgroups</p>
+                            <p>&nbsp;{transl.Subgroups}</p>
                           </div>
                         </div>
                       </Group>

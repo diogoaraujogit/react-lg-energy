@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom'
 import Layout from '../../components/Layout'
@@ -11,15 +13,19 @@ import Loading from '../../components/Loading'
 
 import { FiArrowLeft } from 'react-icons/fi'
 import api_crud from '../../services/api_crud';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setGroup } from '../../store/modules/group/actions';
 import { toast } from 'react-toastify';
+import translation from './transl';
 
 const Group = () => {
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const dispatch = useDispatch()
 
-  const tabs = useMemo(() => ['Search', 'Settings', 'Info'], [])
+  const tabs = useMemo(() => [transl.Search, transl.Settings, transl.Info], [])
   const [tab, setTab] = useState(0)
 
   const [bodyLoading, setBodyLoading] = useState(false)
@@ -55,12 +61,12 @@ const Group = () => {
         console.log(response.data)
         dispatch(setGroup(response.data))
       } else {
-        setBodyMessage('Unable to get device')
+        setBodyMessage(transl.errorGroup)
       }
 
     } catch (e) {
-      toast.error('Unable to get device')
-      setBodyMessage('Unable to get device')
+      toast.error(transl.errorGroup)
+      setBodyMessage(transl.errorGroup)
     }
 
     setBodyLoading(false)
@@ -74,7 +80,7 @@ const Group = () => {
   }, [])
 
   return (
-    <Layout title='Group'>
+    <Layout title={transl.title}>
       <Container>
 
         <Header>

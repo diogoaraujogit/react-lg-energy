@@ -12,12 +12,17 @@ import { toast } from 'react-toastify';
 import { format, parse } from 'date-fns';
 import { LoadingArea } from '../../dashboard/ranking-tab/styles';
 import { PageMessage } from '../../comparatives/styles';
+import translation from '../transl';
 
 const RelayTab = () => {
 
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
+
   const { device } = useSelector(state => state.device)
 
-  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+  const weekDays = [transl.Monday, transl.Tuesday, transl.Wednesday, transl.Thursday, transl.Friday, transl.Saturday, transl.Sunday]
 
   const [pageLoading, setPageLoading] = useState(false)
   const [pageMessage, setPageMessage] = useState('')
@@ -55,13 +60,12 @@ const RelayTab = () => {
       const response = await api_crud.post('/devices/relay', body)
 
       if (response) {
-        toast.info('Response')
-        console.log(response)
+        toast.info(transl.CommandSuccess)
         // checked? setChecked(false) : setChecked(true)
       }
 
     } catch (e) {
-      toast.error('Error')
+      toast.error(transl.CommandError)
     }
 
     // setDisabled(false)
@@ -80,8 +84,8 @@ const RelayTab = () => {
       }
 
     } catch (e) {
-      toast.error('')
-      setPageMessage('error trying to load schedules')
+      toast.error(transl.errorSchedules)
+      setPageMessage(transl.errorSchedules)
     }
 
     setPageLoading(false)
@@ -98,12 +102,12 @@ const RelayTab = () => {
       console.log(responses)
 
       if (!responses.filter(response => !response.data).length) {
-        toast.success('All changes have been saved')
+        toast.success(transl.allSaved)
         getSchedules()
       }
 
     } catch (e) {
-      toast.error('At least one of the changes could not be saved')
+      toast.error(transl.errorSaveSchedules)
     }
 
     setSaving(false)
@@ -158,7 +162,7 @@ const RelayTab = () => {
                   </div>
                   <div>
                     <MdLens />
-                    <span>&nbsp;Online time:&nbsp;</span>
+                    <span>&nbsp;{transl.OnlineTime}:&nbsp;</span>
                     <span>00:00:00</span>
                   </div>
                 </Info>
@@ -167,11 +171,11 @@ const RelayTab = () => {
                     onEdit &&
                     <div>
                       <button onClick={() => handleCancel()}>
-                        Cancel
-              </button>
+                        {transl.Cancel}
+                      </button>
 
                       <button disabled={saving} onClick={() => handleSave()}>
-                        Save {saving && <Loading />}
+                        {transl.Save} {saving && <Loading />}
                       </button>
                     </div>
 
@@ -181,9 +185,9 @@ const RelayTab = () => {
               </Header>
 
               <ManualRelay>
-                <p>On/Off Manual Relay</p>
-                <button onClick={() => handleSwitch(true)}>ON</button>
-                <button onClick={() => handleSwitch(false)}>OFF</button>
+                <p>{transl.onoffRelay}</p>
+                <button onClick={() => handleSwitch(true)}>{transl.ON}</button>
+                <button onClick={() => handleSwitch(false)}>{transl.OFF}</button>
                 {/* <SwitchLabels variable={relay} func={handleSwitch} disabled={!device?.isRelayEnabled}  /> */}
               </ManualRelay>
 
@@ -207,18 +211,18 @@ const RelayTab = () => {
                           <h4>{weekDay}</h4>
                           <div>
                             <div>
-                              <p>Time On</p>
+                              <p>{transl.TimeOn}</p>
                               <BasicTimePicker value={validOnTime} handleChange={e => handleTime(e, onValidSchedule)} />
                               <SwitchLabels size='small' variable={onValidSchedule.isEnabled}
                                 func={(checked, setChecked) => handleEnable(checked, setChecked, onValidSchedule)} />
-                              <span>Enable</span>
+                              <span>{transl.Enable}</span>
                             </div>
                             <div>
-                              <p>Time Off</p>
+                              <p>{transl.TimeOff}</p>
                               <BasicTimePicker value={validOffTime} handleChange={e => handleTime(e, offValidSchedule)} />
                               <SwitchLabels size='small' variable={offValidSchedule.isEnabled}
                                 func={(checked, setChecked) => handleEnable(checked, setChecked, offValidSchedule)} />
-                              <span>Enable</span>
+                              <span>{transl.Enable}</span>
                             </div>
                           </div>
                         </Schedule>

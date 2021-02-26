@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { MdLens } from 'react-icons/md';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,8 +20,12 @@ import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { setBarSelection, setLineSelection } from '../../../store/modules/analytics/actions';
 import { FaWeebly } from 'react-icons/fa';
+import translation from '../transl';
 
 const SearchTab = () => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const { group } = useSelector(state => state.group)
   const id = group.id
@@ -50,28 +56,27 @@ const SearchTab = () => {
 
   const param_options = [
     {
-      title: 'Consumption',
+      title: transl.Consumption,
       value: 'powerConsumption',
       un: 'kWh'
     }
   ]
 
-
   const period_options = [
     {
-      title: 'Day',
+      title: transl.Day,
       value: 'daily'
     },
     {
-      title: 'Week',
+      title: transl.Week,
       value: 'weekly'
     },
     {
-      title: 'Month',
+      title: transl.Month,
       value: 'monthly'
     },
     {
-      title: 'Year',
+      title: transl.Year,
       value: 'yearly'
     }
   ]
@@ -80,11 +85,11 @@ const SearchTab = () => {
 
     const lastOption = param === 'current' ?
       {
-        title: 'Average',
+        title: transl.Average,
         value: 'Average'
       } :
       {
-        title: 'Total',
+        title: transl.Total,
         value: 'Total'
       }
 
@@ -106,15 +111,15 @@ const SearchTab = () => {
 
     return [
       {
-        title: 'Phase A',
+        title: transl.PhaseA,
         value: 'Phase A'
       },
       {
-        title: 'Phase B',
+        title: transl.PhaseB,
         value: 'Phase B'
       },
       {
-        title: 'Phase C',
+        title: transl.PhaseC,
         value: 'Phase C'
       },
       lastOption
@@ -138,16 +143,16 @@ const SearchTab = () => {
       }
 
     } catch (e) {
-      toast.error('An error occurred')
-      setChartMessage('Unable to connect to server')
+      toast.error(transl.errorOcurred)
+      setChartMessage(transl.errorConnect)
       const error = e.response?.data
 
       if (error) {
         if (error.statusCode === 400) {
-          setChartMessage('Invalid search')
+          setChartMessage(transl.invalidSearch)
         }
         else if (error.statusCode === 500) {
-          setChartMessage('An unexpected error occurred')
+          setChartMessage(transl.errorUnexpected)
         }
 
       }
@@ -181,17 +186,17 @@ const SearchTab = () => {
       }
 
     } catch (e) {
-      toast.error('An error occurred')
+      toast.error(transl.errorOcurred)
       const error = e.response?.data
 
-      setChartMessage('Unable to connect to server')
+      setChartMessage(transl.errorConnect)
 
       if (error) {
         if (error.statusCode === 400) {
-          setChartMessage('Invalid search')
+          setChartMessage(transl.invalidSearch)
         }
         else if (error.statusCode === 500) {
-          setChartMessage('An unexpected error occurred')
+          setChartMessage(transl.errorUnexpected)
         }
       }
     }
@@ -231,7 +236,7 @@ const SearchTab = () => {
       dispatch(setBarSelection({}))
       dispatch(setLineSelection({}))
     } else {
-      subID ? setChartMessage('Invalid ID') : setChartMessage('Invalid subgroup')
+      subID ? setChartMessage(transl.invalidId) : setChartMessage(transl.invalidSubgroup)
     }
 
   }
@@ -264,12 +269,12 @@ const SearchTab = () => {
 
     if (period === 'weekly') {
       if (id && selectedSub && (!(logs && logs.data && logs.data.length) || !(analytics && analytics.data && analytics.data.length))) {
-        setChartMessage('There is no data for this search')
+        setChartMessage(transl.noData)
       }
     }
 
     if (id && selectedSub && !(logs && logs.data && logs.data.length) && !(analytics && analytics.data && analytics.data.length)) {
-      setChartMessage('There is no data for this search')
+      setChartMessage(transl.noData)
     }
   }, [analytics, logs, period, searchType])
 
@@ -288,7 +293,7 @@ const SearchTab = () => {
       setStartFormatted(start)
       setEndFormatted(end)
 
-      const date = `${start} to ${end}`
+      const date = `${start} ${transl.to} ${end}`
 
       return date
     }
@@ -321,11 +326,11 @@ const SearchTab = () => {
       <SearchInfo>
         <div className='search-info'>
           <div>
-            <p>Parameter:&nbsp;</p>
+            <p>{transl.Parameter}:&nbsp;</p>
             <span>{show_param}</span>
           </div>
           <div>
-            <p>Period:&nbsp;</p>
+            <p>{transl.Period}:&nbsp;</p>
             <span>{show_period}</span>
           </div>
         </div>
@@ -333,7 +338,7 @@ const SearchTab = () => {
         <div className='values'>
           {
             <div>
-              <p>Total Consumption:&nbsp;</p>
+              <p>{transl.TotalConsumption}:&nbsp;</p>
               <span>{totalConsumption && `${totalConsumption} kWh`}</span>
             </div>
           }
@@ -365,7 +370,7 @@ const SearchTab = () => {
             <Body>
               <SearchBox>
                 <div className='search-select'>
-                  <p>Parameter:</p>
+                  <p>{transl.Parameter}:</p>
 
                   <select value={param} onChange={(e) => setParam(e.target.value)}>
                     {
@@ -380,7 +385,7 @@ const SearchTab = () => {
                     }
                   </select>
 
-                  <p>Subgroup:</p>
+                  <p>{transl.Subgroup}:</p>
 
                   <select value={selectedSub} onChange={(e) => setSelectedSub(e.target.value)}>
                     {
@@ -397,8 +402,8 @@ const SearchTab = () => {
 
                 </div>
                 <div className='search-radio'>
-                  <RadioButton label='Period' value='simple' variable={searchType} func={setSearchType} />
-                  <RadioButton label='Date' value='advanced' variable={searchType} func={setSearchType} />
+                  <RadioButton label={transl.Period} value='simple' variable={searchType} func={setSearchType} />
+                  <RadioButton label={transl.Date} value='advanced' variable={searchType} func={setSearchType} />
                 </div>
                 {
                   searchType === 'simple' ?
@@ -420,13 +425,13 @@ const SearchTab = () => {
                     :
                     <div className='search-date'>
                       <div>
-                        <p>Start</p>
+                        <p>{transl.Start}</p>
                         <div>
                           <BasicDatePicker value={startDate} handleChange={setStartDate} />
                         </div>
                       </div>
                       <div>
-                        <p>Final</p>
+                        <p>{transl.Final}</p>
                         <div>
                           <BasicDatePicker value={endDate} handleChange={setEndDate} />
                         </div>
@@ -435,7 +440,7 @@ const SearchTab = () => {
                 }
                 <div className='search-button'>
                   <button onClick={() => handleSearch()}>
-                    SEARCH
+                    {transl.SearchButton}
                   </button>
                 </div>
               </SearchBox>

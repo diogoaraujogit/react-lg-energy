@@ -24,14 +24,16 @@ import { MdSearch, MdClear } from 'react-icons/md'
 import { useSelector } from 'react-redux';
 import CheckboxLabels from '../../../components/Checkbox';
 import api_notifications from '../../../services/api_notifications';
+import translation from '../transl';
 
 
 const ConfigTab = () => {
 
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
   const { group } = useSelector(state => state.group)
   const { id } = group
-  console.log('GRUPO NO REDUX')
-  console.log(group)
   // ESTADOS INTERNOS
 
   const groupName = group.name || '-'
@@ -125,13 +127,13 @@ const ConfigTab = () => {
       })
 
       if (response.data) {
-        toast.success('Success')
+        toast.success(transl.updateSuccess)
         getGroups()
         getDevices()
       }
 
     } catch (e) {
-      toast.error('Error trying to save')
+      toast.error(transl.updateError)
     }
 
     setSaving(false)
@@ -152,7 +154,7 @@ const ConfigTab = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
 
@@ -166,14 +168,14 @@ const ConfigTab = () => {
       })
 
       if (response.data) {
-        toast.info('Device removed')
+        toast.info(transl.deviceRemovedSuccess)
         notifyRemoveDevice(device.name)
         getGroups()
         getDevices()
       }
 
     } catch (e) {
-      toast.error('Error trying to remove device')
+      toast.error(transl.deviceRemovedError)
     }
 
     setDeleting(false)
@@ -217,17 +219,17 @@ const ConfigTab = () => {
         }
 
       } catch (e) {
-        toast.error('An error occurred')
+        toast.error(transl.errorOcurred)
         const error = e.response?.data
 
-        setFormError('Unable to connect to server')
+        setFormError(transl.errorConnect)
 
         if (error) {
           if (error.statusCode === 409) {
             setFormError('Subgroup name already exists')
           }
           else if (error.statusCode === 500) {
-            setFormError('An unexpected error occurred')
+            setFormError(transl.errorUnexpected)
           }
         }
       }
@@ -353,9 +355,9 @@ const ConfigTab = () => {
           <div>
             <span>Status:&emsp;</span>
             <MdLens />
-            <p>&nbsp;Active&emsp;</p>
+            <p>&nbsp;{transl.Active}&emsp;</p>
             <MdLens />
-            <p>&nbsp;Inactive</p>
+            <p>&nbsp;{transl.Inactive}</p>
           </div>
         </Info>
         <Features filtered={isFiltered}>
@@ -394,7 +396,7 @@ const ConfigTab = () => {
               trigger={
                 <button className='filter-button'>
                   <RiFilterFill />
-                  <span>filter</span>
+                  <span>{transl.filter}</span>
                 </button>
               }
               modal
@@ -424,14 +426,14 @@ const ConfigTab = () => {
 
           
                       <button onClick={() => removeFilter()}>
-                        REMOVE FILTER
+                        {transl.RemoveFilter}
                         </button>
                       <div className='filter-buttons'>
                         <button onClick={() => close()}>
-                          Cancel
+                          {transl.Cancel}
                           </button>
                         <button onClick={() => handleFilter(close)}>
-                          Filter
+                          {transl.Filter}
                           </button>
                       </div>
                     </AddFilter>
@@ -476,10 +478,10 @@ const ConfigTab = () => {
                         />
                         <div>
                           <button disabled={registering} onClick={() => close()}>
-                            Cancel
+                            {transl.Cancel}
                             </button>
                           <button disabled={registering} type='submit'>
-                            Register {registering && <Loading />}
+                            {transl.Register} {registering && <Loading />}
                           </button>
                         </div>
                       </form>
@@ -598,13 +600,13 @@ const ConfigTab = () => {
                                     </div>
                                     <div className='buttons'>
                                       <button onClick={() => close()}>
-                                        Cancel
+                                        {transl.Cancel}
                                       </button>
                                       <button
                                         disabled={saving}
                                         onClick={() => handleEditSub(group, close)}
                                       >
-                                        Save {saving && <Loading />}
+                                        {transl.Save} {saving && <Loading />}
                                       </button>
                                     </div>
                                   </EditSub>

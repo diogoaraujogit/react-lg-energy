@@ -10,8 +10,12 @@ import { setGroup } from '../../../store/modules/group/actions';
 import Loading from '../../../components/Loading';
 import { useHistory } from 'react-router-dom';
 import api_notifications from '../../../services/api_notifications';
+import translation from '../transl';
 
 const InfoTab = () => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
 
   const { group } = useSelector(state => state.group)
   const { id } = group
@@ -50,7 +54,7 @@ const InfoTab = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
   }
@@ -65,14 +69,14 @@ const InfoTab = () => {
       })
 
       if (response.data) {
-        toast.success('Success')
+        toast.success(transl.updateSuccess)
         notifyUpdate()
         getGroup()
         setOnEdit(false)
       }
 
     } catch (e) {
-      toast.error('Unable to save')
+      toast.error(transl.updateError)
     }
 
     setSaving(false)
@@ -93,7 +97,7 @@ const InfoTab = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
 
@@ -106,14 +110,14 @@ const InfoTab = () => {
       const response = await api_crud.delete(`groups/${group.id}`)
 
       if (response) {
-        toast.info('Group was successfully deleted')
+        toast.info(transl.deleteSucces)
         notifyDelete(group.name)
         history.push('/groups')
       }
 
     } catch (e) {
-      toast.error('Error trying to delete this group')
-      setFormError('Error trying to delete this group')
+      toast.error(transl.errorDelete)
+      setFormError(transl.errorDelete)
     }
 
     setDeleting(false)
@@ -132,12 +136,12 @@ const InfoTab = () => {
         console.log(response.data)
         dispatch(setGroup(response.data))
       } else {
-        setBodyMessage('Unable to get group')
+        setBodyMessage(transl.errorGroup)
       }
 
     } catch (e) {
-      toast.error('Unable to get group')
-      setBodyMessage('Unable to get group')
+      toast.error(transl.errorGroup)
+      setBodyMessage(transl.errorGroup)
     }
 
     setBodyLoading(false)
@@ -169,17 +173,17 @@ const InfoTab = () => {
             onEdit ?
               <div>
                 <button onClick={() => handleCancel()}>
-                  Cancel
+                  {transl.Cancel}
                 </button>
 
                 <button disabled={saving} onClick={() => handleSave()}>
-                  Save {saving && <Loading />}
+                  {transl.Save} {saving && <Loading />}
                 </button>
               </div>
               :
               <button onClick={() => setOnEdit(true)}>
                 <MdEdit />
-                    Edit
+                    {transl.Edit}
               </button>
           }
 
@@ -191,7 +195,7 @@ const InfoTab = () => {
             contentStyle={{ width: '53rem', height: '25rem', borderRadius: '1rem' }}
             trigger={
               <button className='add-device-button'>
-                DELETE GROUP
+                {transl.DeleteGroupButton}
               </button>
             }
             modal
@@ -200,21 +204,21 @@ const InfoTab = () => {
               close => {
                 return (
                   <DelDevice formError={formError} deleting={deleting}>
-                    <p>Delete Group</p>
+                    <p>{transl.DeleteGroup}</p>
                     <div>
                       <span>{formError}</span>
                     </div>
                     <div>
                       <p>
-                        Are you sure you want to delete this group?
+                        {transl.ConfirmDelete}
                       </p>
                     </div>
                     <div className='buttons'>
                       <button disabled={deleting} onClick={() => close()}>
-                        Cancel
+                        {transl.Cancel}
                         </button>
                       <button disabled={deleting} onClick={() => handleDelete()}>
-                        Delete {deleting && <Loading />}
+                        {transl.Delete} {deleting && <Loading />}
                       </button>
                     </div>
                   </DelDevice>

@@ -23,7 +23,6 @@ const Device = () => {
   const { english } = useSelector(props => props.intl)
   const transl = english? translation.en : translation.pt
 
-
   const dispatch = useDispatch()
 
   const tabs = useMemo(() => [transl.Search, transl.Readings, transl.Info, transl.Settings, transl.Relay], [transl.Info, transl.Readings, transl.Relay, transl.Search, transl.Settings])

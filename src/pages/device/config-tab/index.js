@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useCallback, useEffect, useState } from 'react';
 
 import { Container, Header, Info, Features, LoadingArea, BodyMessage, Body, Values, Limits } from './styles';
@@ -7,8 +9,13 @@ import Loading from '../../../components/Loading';
 import { toast } from 'react-toastify';
 import api_crud from '../../../services/api_crud';
 import { setDevice } from '../../../store/modules/device/actions';
+import translation from '../transl'
 
 const ConfigTab = () => {
+
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   const { device } = useSelector(state => state.device)
   const { id } = device
@@ -41,11 +48,6 @@ const ConfigTab = () => {
     setOnEdit(false)
   }
 
-  useEffect(() => {
-    console.log('Min COnsumption')
-    console.log(minConsumption)
-  }, [minConsumption])
-
   const handleSave = async () => {
     setSaving(true)
 
@@ -65,13 +67,13 @@ const ConfigTab = () => {
       const response = await api_crud.patch(`devices/${device.id}`, body)
 
       if (response.data) {
-        toast.success('Sucess')
+        toast.success(transl.updateSuccess)
         getDevice()
         setOnEdit(false)
       }
 
     } catch (e) {
-      toast.error('Error trying to save')
+      toast.error(transl.updateError)
     }
 
     setSaving(false)
@@ -89,12 +91,12 @@ const ConfigTab = () => {
         console.log(response.data)
         dispatch(setDevice(response.data))
       } else {
-        setBodyMessage('Unable to get device')
+        setBodyMessage(transl.errorDevice)
       }
 
     } catch (e) {
-      toast.error('Unable to get device')
-      setBodyMessage('Unable to get device')
+      toast.error(transl.errorDevice)
+      setBodyMessage(transl.errorDevice)
     }
 
     setBodyLoading(false)
@@ -126,7 +128,7 @@ const ConfigTab = () => {
           </div>
           <div>
             <MdLens />
-            <span>&nbsp;Online time:&nbsp;</span>
+            <span>&nbsp;{transl.OnlineTime}:&nbsp;</span>
             <span>00:00:00</span>
           </div>
         </Info>
@@ -136,11 +138,11 @@ const ConfigTab = () => {
             onEdit &&
             <div>
               <button onClick={() => handleCancel()}>
-                Cancel
+                {transl.Cancel}
               </button>
 
               <button disabled={saving} onClick={() => handleSave()}>
-                Save {saving && <Loading />}
+                {transl.Save} {saving && <Loading />}
               </button>
             </div>
 
@@ -162,10 +164,10 @@ const ConfigTab = () => {
             :
             <Body>
               <Values>
-                <h3>LIMIT OF VALUES</h3>
+                <h3>{transl.LimitValues}</h3>
                 <div>
                   <Limits>
-                    <h4>Energy Consumption <span>(kWh)</span></h4>
+                    <h4>{transl.Consumption}<span>(kWh)</span></h4>
                     <div>
                       <div>
                         <input
@@ -190,7 +192,7 @@ const ConfigTab = () => {
                     </div>
                   </Limits>
                   <Limits>
-                    <h4>Power <span>(kW)</span></h4>
+                    <h4>{transl.Power}<span>(kW)</span></h4>
                     <div>
                       <div>
                         <input
@@ -215,7 +217,7 @@ const ConfigTab = () => {
                     </div>
                   </Limits>
                   <Limits>
-                    <h4>Power Current <span>(A)</span></h4>
+                    <h4>{transl.Current}<span>(A)</span></h4>
                     <div>
                       <div>
                         <input
@@ -240,7 +242,7 @@ const ConfigTab = () => {
                     </div>
                   </Limits>
                   <Limits>
-                    <h4>Demand <span>(kWh)</span></h4>
+                    <h4>{transl.Demand}<span>(kWh)</span></h4>
                     <div>
                       <div>
                         <input

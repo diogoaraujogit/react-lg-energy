@@ -1,10 +1,18 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import LineChart from '../../../../components/LineChart';
 import { setLogSelection } from '../../../../store/modules/logs/actions';
+import translation from '../../transl';
 import { Container, Cards, Card, ChartArea, ChartHeader, ChartBody } from './styles';
 
 const BodyData = ({ logs, phase, param, un }) => {
+
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   const { logSelection } = useSelector(state => state.logs)
 
@@ -55,25 +63,25 @@ const BodyData = ({ logs, phase, param, un }) => {
     return (
       [
         {
-          title: 'Highest',
+          title: transl.Highest,
           date: b_date || '02 SET 2020',
           un: un || 'A',
           value: b_value || 206
         },
         {
-          title: 'Lowest',
+          title: transl.Lowest,
           date: l_date || '02 SET 2020',
           un: un || 'A',
           value: l_value || 206
         },
         {
-          title: 'Average',
+          title: transl.Average,
           date: a_date || '02 SET 2020',
           un: un || 'A',
           value: a_value || 206
         },
         {
-          title: 'Selected',
+          title: transl.Selected,
           date: s_date || '-',
           un: un || 'A',
           value: s_value || '-'
@@ -159,7 +167,7 @@ const BodyData = ({ logs, phase, param, un }) => {
             
               <LineChart
                 data={lineData}
-                xLegend={'Time'}
+                xLegend={transl.Time}
                 yLegend={`${param} (${un})`}
                 setSelection={setLogSelection}
                 readings={true}

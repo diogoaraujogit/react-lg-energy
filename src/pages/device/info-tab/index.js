@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useCallback, useState } from 'react';
 
 import { Container, Header, Info, Features, DelDevice, LoadingArea, BodyMessage, Body, Boards, Values } from './styles';
@@ -11,8 +13,14 @@ import { setDevice } from '../../../store/modules/device/actions';
 import Loading from '../../../components/Loading';
 import { useHistory } from 'react-router-dom';
 import api_notifications from '../../../services/api_notifications';
+import translation from '../transl';
 
 const InfoTab = () => {
+
+  
+  const { english } = useSelector(props => props.intl)
+  const transl = english? translation.en : translation.pt
+
 
   const { device } = useSelector(state => state.device)
   const { id } = device
@@ -123,7 +131,7 @@ const InfoTab = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
   }
@@ -146,22 +154,20 @@ const InfoTab = () => {
       isRelayEnabled,
     }
 
-    console.log('Body')
-    console.log(body)
 
     try {
 
       const response = await api_crud.patch(`devices/${device.id}`, body)
 
       if (response.data) {
-        toast.success('Sucess')
+        toast.success(transl.updateSuccess)
         notifyUpdate(device, body)
         getDevice()
         setOnEdit(false)
       }
 
     } catch (e) {
-      toast.error('Error trying to save')
+      toast.error(transl.updateError)
     }
 
     setSaving(false)
@@ -182,7 +188,7 @@ const InfoTab = () => {
       })
 
     } catch(e) {
-      toast.error(`Notification can't be sent`)
+      toast.error(transl.notificationError)
     }
   }
 
@@ -195,14 +201,14 @@ const InfoTab = () => {
       const response = await api_crud.delete(`devices/${device.id}`)
 
       if (response) {
-        toast.info('Device was successfully deleted')
+        toast.info(transl.deleteSucces)
         notifyDelete(device.name)
         history.push('/devices')
       }
 
     } catch (e) {
-      toast.error('Error trying to delete')
-      setFormError('Unable to delete this device')
+      toast.error(transl.deleteError)
+      setFormError(transl.deleteError)
     }
 
     setDeleting(false)
@@ -221,12 +227,12 @@ const InfoTab = () => {
         console.log(response.data)
         dispatch(setDevice(response.data))
       } else {
-        setBodyMessage('Unable to get device')
+        setBodyMessage(transl.errorDevice)
       }
 
     } catch (e) {
-      toast.error('Unable to get device')
-      setBodyMessage('Unable to get device')
+      toast.error(transl.errorDevice)
+      setBodyMessage(transl.errorDevice)
     }
 
     setBodyLoading(false)
@@ -250,7 +256,7 @@ const InfoTab = () => {
           </div>
           <div>
             <MdLens />
-            <span>&nbsp;Online time:&nbsp;</span>
+            <span>&nbsp;{transl.OnlineTime}:&nbsp;</span>
             <span>00:00:00</span>
           </div>
         </Info>
@@ -260,17 +266,17 @@ const InfoTab = () => {
             onEdit ?
               <div>
                 <button onClick={() => handleCancel()}>
-                  Cancel
+                  {transl.Cancel}
                 </button>
 
                 <button disabled={saving} onClick={() => handleSave()}>
-                  Save {saving && <Loading />}
+                  {transl.Save} {saving && <Loading />}
                 </button>
               </div>
               :
               <button onClick={() => setOnEdit(true)}>
                 <MdEdit />
-                    Edit
+                    {transl.Edit}
               </button>
           }
 
@@ -282,8 +288,8 @@ const InfoTab = () => {
             contentStyle={{ width: '53rem', height: '25rem', borderRadius: '1rem' }}
             trigger={
               <button className='add-device-button'>
-                DELETE DEVICE
-                  </button>
+                {transl.DeleteDeviceButton}
+              </button>
             }
             modal
           >
@@ -291,21 +297,21 @@ const InfoTab = () => {
               close => {
                 return (
                   <DelDevice formError={formError} deleting={deleting}>
-                    <p>Delete Device</p>
+                    <p>{transl.DeleteDevice}</p>
                     <div>
                       <span>{formError}</span>
                     </div>
                     <div>
                       <p>
-                        Are you sure you want to delete this device?
+                        {transl.ConfirmDelete}
                       </p>
                     </div>
                     <div className='buttons'>
                       <button disabled={deleting} onClick={() => close()}>
-                        Cancel
+                        {transl.Cancel}
                         </button>
                       <button disabled={deleting} onClick={() => handleDelete()}>
-                        Delete {deleting && <Loading />}
+                        {transl.Delete} {deleting && <Loading />}
                       </button>
                     </div>
                   </DelDevice>
@@ -331,7 +337,7 @@ const InfoTab = () => {
               <Boards>
 
                 <div>
-                  <h4>DESCRIPTION</h4>
+                  <h4>{transl.description}</h4>
                   <div>
                     {
                       onEdit ?
@@ -347,7 +353,7 @@ const InfoTab = () => {
                 </div>
                 <div>
                   <div>
-                    <h4>Added to the subgroup:</h4>
+                    <h4>{transl.AddedSubgroup}:</h4>
                     <h2>{device.idSubgroup && device.idSubgroup.name}</h2>
                   </div>
                   <div>
@@ -361,16 +367,16 @@ const InfoTab = () => {
                       />
                     </div>
                     <p>
-                      {`The relay option is ${isRelayEnabled ? 'enabled' : 'disabled'}`}
+                      {`${transl.RelayOption} ${isRelayEnabled ? transl.enabled : transl.disabled}`}
                       <br />
-                      {`Click to ${isRelayEnabled ? 'disable' : 'enable'}`}
+                      {`${transl.clickTo} ${isRelayEnabled ? transl.disable : transl.enable}`}
                     </p>
                   </div>
                 </div>
               </Boards>
               <Values>
                 <div>
-                  <h4>Electrical Switchboard</h4>
+                  <h4>{transl.Switchboard}</h4>
                   <div>
                     {
                       onEdit ?
@@ -385,7 +391,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Nominal Current</h4>
+                  <h4>{transl.NominalCUrrent}</h4>
                   <div>
                     {
                       onEdit ?
@@ -400,7 +406,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Rated Voltage</h4>
+                  <h4>{transl.RatedVoltage}</h4>
                   <div>
                     {
                       onEdit ?
@@ -415,7 +421,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Current Transformer</h4>
+                  <h4>{transl.CurrentTransformer}</h4>
                   <div>
                     {
                       onEdit ?
@@ -430,7 +436,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Phase</h4>
+                  <h4>{transl.Phase}</h4>
                   <div>
                     {
                       onEdit ?
@@ -445,7 +451,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Diameter</h4>
+                  <h4>{transl.Diameter}</h4>
                   <div>
                     {
                       onEdit ?
@@ -460,7 +466,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Frame Voltage</h4>
+                  <h4>{transl.FrameVoltage}</h4>
                   <div>
                     {
                       onEdit ?
@@ -477,7 +483,7 @@ const InfoTab = () => {
               </Values>
               <Values>
                 <div>
-                  <h4>ID Lora</h4>
+                  <h4>{transl.IDLora}</h4>
                   <div>
                     {
                       onEdit ?
@@ -493,7 +499,7 @@ const InfoTab = () => {
                   </div>
                 </div>
                 <div>
-                  <h4>Mac Address</h4>
+                  <h4>{transl.MacAddress}</h4>
                   <div>
                     {
                       onEdit ?
