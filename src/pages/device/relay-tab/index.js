@@ -17,12 +17,41 @@ import translation from '../transl';
 const RelayTab = () => {
 
   const { english } = useSelector(props => props.intl)
-  const transl = english? translation.en : translation.pt
+  const transl = english ? translation.en : translation.pt
 
 
   const { device } = useSelector(state => state.device)
 
-  const weekDays = [transl.Monday, transl.Tuesday, transl.Wednesday, transl.Thursday, transl.Friday, transl.Saturday, transl.Sunday]
+  const weekDays = [
+    {
+      title: transl.Monday,
+      name: 'MONDAY',
+    },
+    {
+      title: transl.Tuesday,
+      name: 'TUESDAY',
+    },
+    {
+      title: transl.Wednesday,
+      name: 'WEDNESDAY'
+    },
+    {
+      title: transl.Thursday,
+      name: 'THURSDAY',
+    },
+    {
+      title: transl.Friday,
+      name: 'FRIDAY',
+    },
+    {
+      title: transl.Saturday,
+      name: 'SATURDAY',
+    },
+    {
+      title: transl.Sunday,
+      name: 'SUNDAY',
+    },
+  ]
 
   const [pageLoading, setPageLoading] = useState(false)
   const [pageMessage, setPageMessage] = useState('')
@@ -113,7 +142,7 @@ const RelayTab = () => {
     setSaving(false)
   }
 
-  const handleScheduleChange = ({idDevice, dayOfWeek, action, isEnabled, hour, minute}, params) => {
+  const handleScheduleChange = ({ idDevice, dayOfWeek, action, isEnabled, hour, minute }, params) => {
 
     const newSchedule = { idDevice, dayOfWeek, action, isEnabled, hour, minute, ...params }
 
@@ -196,11 +225,11 @@ const RelayTab = () => {
                   {
                     weekDays.map(weekDay => {
 
-                      const [onSchedule] = allSchedules.filter(schedule => schedule.dayOfWeek.toLowerCase() === weekDay.toLowerCase() && schedule.action === 'ON')
-                      const [offSchedule] = allSchedules.filter(schedule => schedule.dayOfWeek.toLowerCase() === weekDay.toLowerCase() && schedule.action === 'OFF')
+                      const [onSchedule] = allSchedules.filter(schedule => schedule.dayOfWeek.toLowerCase() === weekDay.name.toLowerCase() && schedule.action === 'ON')
+                      const [offSchedule] = allSchedules.filter(schedule => schedule.dayOfWeek.toLowerCase() === weekDay.name.toLowerCase() && schedule.action === 'OFF')
 
-                      const onValidSchedule = onSchedule || { idDevice: device.id, dayOfWeek: weekDay.toUpperCase(), action: 'ON', isEnabled: false, hour: "00", minute: "00" }
-                      const offValidSchedule = offSchedule || { idDevice: device.id, dayOfWeek: weekDay.toUpperCase(), action: 'OFF', isEnabled: false, hour: "00", minute: "00" }
+                      const onValidSchedule = onSchedule || { idDevice: device.id, dayOfWeek: weekDay.name.toUpperCase(), action: 'ON', isEnabled: false, hour: "00", minute: "00" }
+                      const offValidSchedule = offSchedule || { idDevice: device.id, dayOfWeek: weekDay.name.toUpperCase(), action: 'OFF', isEnabled: false, hour: "00", minute: "00" }
 
                       const validOnTime = parse(`${onValidSchedule.hour}:${onValidSchedule.minute}`, 'HH:mm', new Date())
                       const validOffTime = parse(`${offValidSchedule.hour}:${offValidSchedule.minute}`, 'HH:mm', new Date())
@@ -208,7 +237,7 @@ const RelayTab = () => {
 
                       return (
                         <Schedule>
-                          <h4>{weekDay}</h4>
+                          <h4>{weekDay.title}</h4>
                           <div>
                             <div>
                               <p>{transl.TimeOn}</p>

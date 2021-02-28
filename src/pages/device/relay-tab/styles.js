@@ -199,7 +199,7 @@ export const ManualRelay = styled.div`
 
   button {
     font-size: 1.4rem;
-    width: 7rem;
+    width: 10rem;
     height: 3rem;
     border: none;
     border-radius: 5px;
@@ -246,7 +246,7 @@ export const Schedule = styled.div`
   box-shadow: 0px 2px 5px #0000000D;
   display: flex;
   flex-direction: column;
-  padding: 2rem 5rem;
+  padding: 2rem 1rem;
 
   h4 {
     margin-bottom: 2rem;
@@ -264,7 +264,8 @@ export const Schedule = styled.div`
   > div {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 5rem;
     width: 100%;
 
     > div {

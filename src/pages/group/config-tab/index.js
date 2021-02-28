@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+
 import React, { useEffect, useState } from 'react';
 import Layout from '../../../components/Layout'
 import { useHistory } from 'react-router-dom'
@@ -211,11 +213,11 @@ const ConfigTab = () => {
         })
 
         if (response.data) {
-          toast.info('Sucess')
+          toast.info(transl.subgroupCreate)
           getGroups()
           close()
         } else {
-          toast.error('Error trying to create subgroup')
+          toast.error(transl.errorCreateSubgroup)
         }
 
       } catch (e) {
@@ -226,7 +228,7 @@ const ConfigTab = () => {
 
         if (error) {
           if (error.statusCode === 409) {
-            setFormError('Subgroup name already exists')
+            setFormError(transl.errorNameSub)
           }
           else if (error.statusCode === 500) {
             setFormError(transl.errorUnexpected)
@@ -235,7 +237,7 @@ const ConfigTab = () => {
       }
 
     } else {
-      setFormError('Subgroup name is required')
+      setFormError(transl.nameRequiredSub)
     }
 
     setRegistering(false)
@@ -262,7 +264,7 @@ const ConfigTab = () => {
 
     } catch (e) {
 
-      setBodyMessage('Unable to load subgroups')
+      setBodyMessage(transl.errorSubs)
 
     }
 
@@ -290,7 +292,7 @@ const ConfigTab = () => {
     // setDevicesLength(count)
 
     if (groupsArray && Array.isArray(groupsArray) && groupsArray.length < 1) {
-      setBodyMessage('No subgroups found')
+      setBodyMessage(transl.noSubs)
     } else {
       setBodyMessage('')
     }
@@ -405,11 +407,11 @@ const ConfigTab = () => {
                 close => {
                   return (
                     <AddFilter>
-                      <h2>Filter</h2>
+                      <h2>{transl.Filter}</h2>
                       <div className='filter-select'>
                         <select value={filterOption} onChange={(e) => setFilterOption(e.target.value)}>
                           <option key={0} value=''>
-                            Select a subgroup
+                            {transl.SelectGroup}
                             </option>
                           {
                             groups && Array.isArray(groups) && groups.map(group => {
@@ -453,7 +455,7 @@ const ConfigTab = () => {
               contentStyle={{ width: '53rem', height: '27rem', borderRadius: '1rem' }}
               trigger={
                 <button className='add-device-button'>
-                  New Subgroup
+                  {transl.NewSub}
                   </button>
               }
               modal
@@ -462,7 +464,7 @@ const ConfigTab = () => {
                 close => {
                   return (
                     <AddDevice formError={formError} registering={registering}>
-                      <p>New Subgroup</p>
+                      <p>{transl.NewSub}</p>
                       <div>
                         <span>{formError}</span>
                       </div>
@@ -474,7 +476,7 @@ const ConfigTab = () => {
                             setFormError('')
                             setSubName(event.target.value);
                           }}
-                          placeholder='Subgroup name'
+                          placeholder={transl.subName}
                         />
                         <div>
                           <button disabled={registering} onClick={() => close()}>
@@ -539,7 +541,7 @@ const ConfigTab = () => {
                             contentStyle={{ width: '37rem', height: '54rem', borderRadius: '1rem' }}
                             trigger={
                               <p>
-                                Edit Subgroup
+                                {transl.EditSub}
                               </p>
                             }
                             modal
