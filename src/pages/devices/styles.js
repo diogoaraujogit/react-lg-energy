@@ -621,23 +621,23 @@ export const ManualRelay = styled.div`
     height: 3rem;
     border: none;
     border-radius: 5px;
-    background-color: #00d624;
+    background-color: #222222;
     color: #ffffff;
     box-shadow: 0rem 0rem 1rem #ccc;
     transition: background 0.2s;
 
     &:hover {
-      background-color: ${darken('0.1', '#00d624')}
-    }
-
-    &:nth-child(2) {
-      background-color: #ff0000;
-
-      &:hover {
-      background-color: ${darken('0.1', '#ff0000')}
-    }
+      background-color: ${darken('0.1', '#222222')}
     }
   }
+
+  .off {
+      background-color: #c1c1c1;
+
+      &:hover {
+      background-color: ${darken('0.1', '#c1c1c1')}
+    }
+    }
 `;
 
 export const RelayPopup = styled.div`
