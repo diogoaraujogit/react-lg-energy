@@ -4,7 +4,8 @@ import { useHistory } from 'react-router-dom'
 
 import {
   Container, Header, Info, Features, AddDevice, AddFilter, Search, SearchInfo,
-  Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card
+  Body, LoadingArea, BodyMessage, Groups, Group, GroupHeader, Cards, Card, ManualRelay,
+  RelayPopup
 } from './styles';
 
 import { MdLens } from 'react-icons/md'
@@ -28,7 +29,7 @@ import translation from './transl';
 const Devices = () => {
 
   const { english } = useSelector(props => props.intl)
-  const transl = english? translation.en : translation.pt
+  const transl = english ? translation.en : translation.pt
 
 
   // ESTADOS INTERNOS
@@ -37,7 +38,7 @@ const Devices = () => {
   const [bodyMessage, setBodyMessage] = useState('')
   const [groups, setGroups] = useState([])
 
-  const [switchDisabled, setSwitchDisabled] = useState(false)
+  const [sendingCommand, setSendingCommand] = useState(false)
   const [devicesLength, setDevicesLength] = useState(0)
 
   const [deviceName, setDeviceName] = useState('')
@@ -123,7 +124,7 @@ const Devices = () => {
         }
       })
 
-    } catch(e) {
+    } catch (e) {
       toast.error(transl.notificationError)
     }
   }
@@ -137,8 +138,8 @@ const Devices = () => {
       try {
 
         const response = await api_crud.post('/devices', {
-            ...base_device, name: deviceName
-          })
+          ...base_device, name: deviceName
+        })
 
         if (response.data) {
           toast.info(transl.deviceSuccess)
@@ -245,7 +246,7 @@ const Devices = () => {
         device.idLora?.toLowerCase().includes(search.toLowerCase())
       )
 
-    obj.devices = result_devices
+      obj.devices = result_devices
 
       return obj
     })
@@ -255,8 +256,57 @@ const Devices = () => {
     setGroupsArray(newGroups)
   }, [search, groupsFiltered])
 
+  const handleSwitch = (value, id) => {
 
+    console.log('handle switch')
 
+    const body = {
+      idDevice: id,
+      action: value ? 'ON' : 'OFF'
+    }
+
+    switchDevice(body)
+
+  }
+
+  async function switchDevice(body, checked, setChecked, setDisabled) {
+
+    setSendingCommand(true)
+
+    try {
+
+      const response = await api_crud.post('/devices/relay', body)
+
+      if (response) {
+        toast.info(transl.CommandSuccess)
+        // checked? setChecked(false) : setChecked(true)
+      }
+
+    } catch (e) {
+      toast.error(transl.CommandError)
+    }
+
+    setSendingCommand(false)
+  }
+
+  const relayPopup = (close, action, id) => {
+
+    return (
+      <RelayPopup>
+        <p>{transl.ConfirmAction}</p>
+
+        <div>
+          <button onClick={() => close()}>
+            {transl.Cancel}
+          </button>
+          <button disabled={sendingCommand} onClick={() => handleSwitch(action, id)}>
+            {transl.Confirm} {sendingCommand && <Loading />}
+          </button>
+        </div>
+
+      </RelayPopup>
+    )
+  }
 
   return (
     <Layout title={transl.title}>
@@ -490,9 +540,28 @@ const Devices = () => {
                                       <span>{idLora && `id: ${idLora}`}</span>
                                     </div>
                                   </div>
-                                  <SwitchLabels label='' func={(checked, setChecked) => handlePowerDevice(checked, setChecked)} variable={relay_status}
-                                    fontSize={'2.4rem'} font480={'1.6rem'} disabled={switchDisabled} size='medium'
-                                  />
+                                  <ManualRelay>
+                                    <Popup
+                                      contentStyle={{ width: '37rem', height: '15rem', borderRadius: '1rem' }}
+                                      trigger={
+                                        <button className='on'>{transl.On}</button>
+                                      }
+                                      modal
+                                    >
+                                      {(close) => relayPopup(close, true, id)}
+                                    </Popup>
+
+                                    <Popup
+                                      contentStyle={{ width: '37rem', height: '15rem', borderRadius: '1rem' }}
+                                      trigger={
+                                        <button className='off'>{transl.Off}</button>
+                                      }
+                                      modal
+                                    >
+                                      {(close) => relayPopup(close, false, id)}
+                                    </Popup>
+
+                                  </ManualRelay>
                                 </Card>
                               )
                             })

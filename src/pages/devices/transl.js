@@ -22,6 +22,7 @@ const translation = {
     Off: 'OFF',
     RemoveFilter: 'REMOVE FILTER',
     Cancel: 'Cancel',
+    Confirm: 'Confirm',
     NewDevice: 'New Device',
     DeviceName: 'Device name',
     Register: 'Register',
@@ -30,6 +31,9 @@ const translation = {
     SeeGroup: 'See group',
     DisableSchedules: 'Disable schedules',
     SchedulesDisabled: 'Schedules disabled',
+    ConfirmAction: 'Confirm action',
+    CommandSuccess: 'The command has been sent',
+    CommandError: 'Error trying to send command',
   },
   pt: {
     notificationError: `A notificação não pôde ser enviada`,
@@ -53,6 +57,7 @@ const translation = {
     Off: 'OFF',
     RemoveFilter: 'REMOVER FILTRO',
     Cancel: 'Cancelar',
+    Confirm: 'Confirmar',
     NewDevice: 'Novo Dispositivo',
     DeviceName: 'Nome do dispositivo',
     Register: 'Registrar',
@@ -61,6 +66,9 @@ const translation = {
     SeeGroup: 'Ver grupo',
     DisableSchedules: 'Desabilitar agendamentos',
     SchedulesDisabled: 'Agendamentos desabilitados',
+    ConfirmAction: 'Confirmar ação',
+    CommandSuccess: 'O comando foi enviado',
+    CommandError: 'Erro ao tentar enviar o comando',
   }
 }
 

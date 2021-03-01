@@ -554,7 +554,6 @@ export const Card = styled.div`
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 2rem;
     }
 
     .card-names {
@@ -599,4 +598,112 @@ export const Card = styled.div`
   }
 
   
+`;
+
+
+export const ManualRelay = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0rem;
+  gap: 1rem;
+
+  p {
+    margin-right: 2rem;
+    color: #707070;
+    font-size: 1.4rem;
+  }
+
+  button {
+    font-size: 1.4rem;
+    width: 4rem;
+    height: 3rem;
+    border: none;
+    border-radius: 5px;
+    background-color: #00d624;
+    color: #ffffff;
+    box-shadow: 0rem 0rem 1rem #ccc;
+    transition: background 0.2s;
+
+    &:hover {
+      background-color: ${darken('0.1', '#00d624')}
+    }
+
+    &:nth-child(2) {
+      background-color: #ff0000;
+
+      &:hover {
+      background-color: ${darken('0.1', '#ff0000')}
+    }
+    }
+  }
+`;
+
+export const RelayPopup = styled.div`
+  padding: 3rem;
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+
+  > div {
+    display: flex;
+    flex-direction: row;
+  }
+
+  p {
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+      button {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width: 12rem;
+        height: 4.2rem;
+        border: none;
+        border-radius: 5px;
+        color: #222222;
+        font-size: 1.8rem;
+        font-weight: 500;
+
+        &:first-child {
+          margin-right: 2rem;
+          background-color: transparent;
+          box-shadow: none;
+        }
+
+        &:nth-child(2) {
+          color: #ffffff;
+          background-color: #222222;
+          transition: background-color 0.2s;
+
+          &:hover {
+            background-color: ${() => lighten(0.1, '#222222')}
+          }
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.6;
+        }
+
+        .MuiCircularProgress-root {
+          width: 1.4rem !important;
+          height: 1.4rem !important;
+          margin-left: 1rem;
+        }
+
+        .MuiCircularProgress-svg {
+          color: #ffffff;
+          opacity: 1;
+          width: 1.4rem;
+          height: 1.4rem;
+        }
+      }
+
 `;

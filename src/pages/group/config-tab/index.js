@@ -550,9 +550,9 @@ const ConfigTab = () => {
                               close => {
                                 return (
                                   <EditSub>
-                                    <h3>Edit Subgroup</h3>
+                                    <h3>{transl.EditSub}</h3>
                                     <div className='name'>
-                                      <span>Subgroup name</span>
+                                      <span>{transl.subName}</span>
                                       <input
                                         value={actualSub}
                                         onChange={e => setActualSub(e.target.value)}

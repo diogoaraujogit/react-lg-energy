@@ -44,18 +44,31 @@ const Tariffs = () => {
 
       const [responseTariffs, responseCurrent] = await Promise.all(
         [
-          api_tariffs.get('/'),
+          api_tariffs.get(''),
           api_tariffs.get('/current')
         ]
       )
 
-      console.log(responseCurrent)
-      console.log(responseTariffs)
-
-      if (responseTariffs.data && responseCurrent.data) {
+      if (responseTariffs.data) {
         setTariffs(responseTariffs.data)
-        setCurrentTariff(responseCurrent.data)
-        setTempTariff(responseCurrent.data)
+
+        if(responseCurrent.data) {
+          setCurrentTariff(responseCurrent.data)
+          setTempTariff(responseCurrent.data)
+        } else {
+
+          const dummyCurrentTariff = {
+            period: format(new Date(), 'MM/yyyy'),
+            tariff_value: '0.00',
+            tariff_peak_value: '0.00',
+            peak_hour_start: '00:00:00',
+            peak_hour_end: '00:00:00'
+          }
+
+          setCurrentTariff(dummyCurrentTariff)
+          setTempTariff(dummyCurrentTariff)
+        }
+        
       }
 
     } catch (e) {
@@ -124,7 +137,7 @@ const Tariffs = () => {
   console.log(tempTariff)
 
   const handleDateFormat = () => {
-    const stringDate = parse(tempTariff.period, 'MM/yyyy', new Date())
+    const stringDate = tempTariff.period? parse(tempTariff.period, 'MM/yyyy', new Date()) : new Date()
 
     return stringDate
   }
@@ -165,7 +178,7 @@ const Tariffs = () => {
                         </div>
                         :
                         <div>
-                          {tempTariff.peak_hour_start?.slice(0, -3)}
+                          {currentTariff.peak_hour_start?.slice(0, -3)}
                         </div>
                       }
                     </div>
@@ -181,7 +194,7 @@ const Tariffs = () => {
                         </div>
                         :
                         <div>
-                          {tempTariff.peak_hour_end?.slice(0, -3)}
+                          {currentTariff.peak_hour_end?.slice(0, -3)}
                         </div>
                       }
                     </div>
@@ -219,7 +232,7 @@ const Tariffs = () => {
                           </div>
                           :
                           <div>
-                            <p>{`$ ${currentTariff.tariff_value || '1,07'}`}</p>
+                            <p>{`$ ${currentTariff.tariff_value || '0.00'}`}</p>
                           </div>
 
                       }
@@ -239,7 +252,7 @@ const Tariffs = () => {
                           </div>
                           :
                           <div>
-                            <p>{`$ ${currentTariff.tariff_peak_value}`}</p>
+                            <p>{`$ ${currentTariff?.tariff_peak_value || '0.00'}`}</p>
                           </div>
 
                       }
@@ -260,7 +273,7 @@ const Tariffs = () => {
                           </div>
                           :
                           <div>
-                            <p>{`${currentTariff.period}`}</p>
+                            <p>{`${currentTariff?.period || '-'}`}</p>
                           </div>
 
                       }
